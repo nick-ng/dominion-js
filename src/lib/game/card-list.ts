@@ -9,6 +9,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		displayNames: ["Copper", "Coppers"],
 		effects: [],
 		description: "",
+		imageUrl: "copper.png",
 		fullImage: true,
 		cost: 0,
 		coins: 1,

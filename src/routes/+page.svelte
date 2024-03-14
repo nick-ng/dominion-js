@@ -3,14 +3,8 @@
 </script>
 
 <div>
-	<h1>V2 Site!</h1>
+	<h1>Jurisdiction</h1>
+	<p>Dominion</p>
+	<a href="/simulator">Simulator</a>
 	<p>API Host: {PUBLIC_API_HOST}</p>
-	<button
-		on:click={async () => {
-			const res = await fetch(`${PUBLIC_API_HOST}/hello`);
-			const resText = await res.text();
-
-			console.log("resText", resText);
-		}}>Click!</button
-	>
 </div>
