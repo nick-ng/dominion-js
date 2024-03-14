@@ -17,14 +17,12 @@
 
 {#if card}
 	<button
+		class={`${className} border-0 p-0`}
 		on:click={() => {
 			onClick(cardId);
 		}}
 	>
-		<div
-			class={`${className} card-style h-[300px] w-[200px] border-4 bg-black`}
-			{style}
-		>
+		<div class="card-style h-[300px] w-[200px] border-4 bg-black" {style}>
 			<h3>{card.displayNames[0]}</h3>
 		</div>
 	</button>
