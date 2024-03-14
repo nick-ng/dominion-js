@@ -1,5 +1,5 @@
-# dominion-js
-Dominion in JavaScript (TypeScript)\
+# Dominion-JS
+Dominion in JavaScript (TypeScript)
 
 ## ToDos
 
