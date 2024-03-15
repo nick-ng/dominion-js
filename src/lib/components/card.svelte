@@ -179,7 +179,7 @@
 		// It's possible to have the mouse move off the card while dragging
 		// Listen for a global "mouseup" event as a fallback
 		// @todo(nick-ng): figure out a better way to recognise dragging
-		window.addEventListener("mouseup", endHandler);
+		window.addEventListener("mouseup", () => endHandler(true));
 
 		if (initialCentre.x >= 0 && initialCentre.y >= 0) {
 			skipTransition = true;
