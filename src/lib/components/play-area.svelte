@@ -1,17 +1,21 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
 
-	import { CARD_HEIGHT_PX, CARD_WIDTH_PX } from "$lib/game/card-list";
+	import { CARD_WIDTH_PX } from "$lib/game/card-list";
 
 	import Card from "./card.svelte";
 	import ResourceDisplay from "./resource-display.svelte";
+	import { onMount } from "svelte";
 
 	export let playerState: PlayerState;
 	export let clickedCard = "";
 	export let onPlayCard: (cardId: string) => void | Promise<void> = () => {};
 
 	let isThreshold = false;
-	let playedCardCentres: { [cardId: string]: { x: number; y: number } } = {};
+	let playedCardCenters: { [cardId: string]: { x: number; y: number } } = {};
+	let playZoneEl: HTMLElement | null = null;
+
+	onMount(() => {});
 </script>
 
 <div class="border-subtle">
@@ -46,6 +50,7 @@
 				</div>
 				<div
 					class={`box-content flex h-card flex-row justify-start border-2 border-dashed ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
+					bind:this={playZoneEl}
 				>
 					<div
 						class={`flex h-full flex-row items-center justify-start`}
@@ -60,7 +65,7 @@
 									{cardId}
 									hoverFront
 									hoverGrow
-									initialCentre={playedCardCentres[cardId] ?? { x: -1, y: -1 }}
+									initialCenter={playedCardCenters[cardId] ?? { x: -1, y: -1 }}
 								/>
 							</div>
 						{/each}
@@ -82,14 +87,14 @@
 						hoverFront
 						hoverGrow
 						draggable
-						dragThresholdY={CARD_HEIGHT_PX * 0.6}
+						dragTarget={playZoneEl}
 						onDragThresholdChange={(_cardId, newIsThreshold) => {
 							isThreshold = newIsThreshold;
 						}}
-						onDrag={(cardId, cardCentre) => {
+						onDrag={(cardId, cardCenter) => {
 							clickedCard = cardId;
-							// @todo(nick-ng): figure out how/when to clear card centres
-							playedCardCentres[cardId] = cardCentre;
+							// @todo(nick-ng): figure out how/when to clear card centers
+							playedCardCenters[cardId] = cardCenter;
 							onPlayCard(cardId);
 						}}
 					/>

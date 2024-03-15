@@ -9,9 +9,8 @@
 	export let hoverUp = false;
 	export let hoverFront = false;
 	export let draggable = false;
-	export let dragThresholdX = 0;
-	export let dragThresholdY = 300;
-	export let initialCentre: { x: number; y: number } = { x: -1, y: -1 };
+	export let dragTarget: HTMLElement | null = null;
+	export let initialCenter: { x: number; y: number } = { x: -1, y: -1 };
 	export let onClick: (cardId: string) => void | Promise<void> = () => {};
 	export let onDragThresholdChange: (
 		cardId: string,
@@ -19,29 +18,29 @@
 	) => void | Promise<void> = () => {};
 	export let onDrag: (
 		cardId: string,
-		cardCentre: { x: number; y: number },
+		cardCenter: { x: number; y: number },
 	) => void | Promise<void> = () => {};
 
-	// @todo(nick-ng): check threshold based on whether the card's centre overlaps a provided element
 	const checkThreshold = (
-		currentX: number,
-		currentY: number,
-		dragThresholdX: number,
-		dragThresholdY: number,
+		thisElement: HTMLElement | null,
+		targetElement: HTMLElement | null,
 	) => {
-		if (dragThresholdX < 0 && currentX > dragThresholdX) {
-			return false;
-		} else if (dragThresholdX > 0 && currentX < dragThresholdX) {
+		if (!thisElement || !targetElement) {
 			return false;
 		}
 
-		if (dragThresholdY < 0 && currentY > dragThresholdY) {
-			return false;
-		} else if (dragThresholdY > 0 && currentY < dragThresholdY) {
-			return false;
-		}
+		const thisRect = thisElement.getBoundingClientRect();
+		const targetRect = targetElement.getBoundingClientRect();
 
-		return true;
+		const thisCenterX = (thisRect.left + thisRect.right) / 2;
+		const thisCenterY = (thisRect.top + thisRect.bottom) / 2;
+
+		return (
+			thisCenterX > targetRect.left &&
+			thisCenterX < targetRect.right &&
+			thisCenterY > targetRect.top &&
+			thisCenterY < targetRect.bottom
+		);
 	};
 
 	const getCursorXY = (e: TouchEvent | MouseEvent) => {
@@ -96,21 +95,21 @@
 			if (isMouseDown) {
 				hoverClass = `${hoverClass} scale-110`;
 			} else {
-				hoverClass = `${hoverClass} hover:scale-110`;
+				hoverClass = `${hoverClass} can-hover:hover:scale-110`;
 			}
 		}
 		if (hoverUp) {
 			if (isMouseDown) {
 				hoverClass = `${hoverClass} bottom-2`;
 			} else {
-				hoverClass = `${hoverClass} hover:bottom-2`;
+				hoverClass = `${hoverClass} can-hover:hover:bottom-2`;
 			}
 		}
 		if (hoverFront) {
 			if (isMouseDown) {
 				hoverClass = `${hoverClass} z-10`;
 			} else {
-				hoverClass = `${hoverClass} hover:z-10`;
+				hoverClass = `${hoverClass} can-hover:hover:z-10`;
 			}
 		}
 	}
@@ -132,12 +131,7 @@
 			currentX = -(startX - x);
 			currentY = startY - y;
 
-			let newIsThreshold = checkThreshold(
-				currentX,
-				currentY,
-				dragThresholdX,
-				dragThresholdY,
-			);
+			let newIsThreshold = checkThreshold(cardButtonEl, dragTarget);
 
 			if (isThreshold !== newIsThreshold) {
 				onDragThresholdChange(cardId, newIsThreshold);
@@ -151,12 +145,7 @@
 	}
 
 	function endHandler(deliberate: boolean) {
-		const isThreshold = checkThreshold(
-			currentX,
-			currentY,
-			dragThresholdX,
-			dragThresholdY,
-		);
+		const isThreshold = checkThreshold(cardButtonEl, dragTarget);
 
 		if (isThreshold) {
 			const rect = cardButtonEl.getBoundingClientRect();
@@ -181,15 +170,15 @@
 		// @todo(nick-ng): figure out a better way to recognise dragging
 		window.addEventListener("mouseup", () => endHandler(true));
 
-		if (initialCentre.x >= 0 && initialCentre.y >= 0) {
+		if (initialCenter.x >= 0 && initialCenter.y >= 0) {
 			skipTransition = true;
 
 			const rect = cardButtonEl.getBoundingClientRect();
-			const centreX = (rect.left + rect.right) / 2;
-			const centreY = (rect.top + rect.bottom) / 2;
+			const centerX = (rect.left + rect.right) / 2;
+			const centerY = (rect.top + rect.bottom) / 2;
 
-			const adjustX = initialCentre.x - centreX;
-			const adjustY = centreY - initialCentre.y;
+			const adjustX = initialCenter.x - centerX;
+			const adjustY = centerY - initialCenter.y;
 
 			buttonStyle2 = [`left: ${adjustX}px`, `bottom: ${adjustY}px`].join(";");
 
