@@ -5,6 +5,7 @@ Dominion in JavaScript (TypeScript)
 
 - [x] Drag cards to play
 - [x] Drag cards on mobile
+- [x] Smooth transition from hand to in-play
 - [ ] Cards with "standard" effects (+action, +card, etc.)
 - [ ] Cards with "custom" effects (text descriptions)
 - [ ] Options
@@ -15,4 +16,6 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src/lib/components/card.svelte:169: @todo(nick-ng): add tooltip to cards for extra rules
+- src/lib/components/card.svelte:178: @todo(nick-ng): figure out a better way to recognise dragging
+- src/lib/components/card.svelte:202: @todo(nick-ng): add tooltip to cards for extra rules
+- src/lib/components/play-area.svelte:89: @todo(nick-ng): figure out how/when to clear card centres

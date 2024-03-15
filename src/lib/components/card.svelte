@@ -11,12 +11,16 @@
 	export let draggable = false;
 	export let dragThresholdX = 0;
 	export let dragThresholdY = 300;
+	export let initialCentre: { x: number; y: number } = { x: -1, y: -1 };
 	export let onClick: (cardId: string) => void | Promise<void> = () => {};
 	export let onDragThresholdChange: (
 		cardId: string,
 		isThreshold: boolean,
 	) => void | Promise<void> = () => {};
-	export let onDrag: (cardId: string) => void | Promise<void> = () => {};
+	export let onDrag: (
+		cardId: string,
+		cardCentre: { x: number; y: number },
+	) => void | Promise<void> = () => {};
 
 	const checkThreshold = (
 		currentX: number,
@@ -66,6 +70,9 @@
 	let currentY = 0;
 	let isThreshold = false;
 	let hoverClass = "";
+	let cardButtonEl: HTMLElement;
+	let buttonStyle2 = "";
+	let skipTransition = false;
 
 	$: card = getCardFromId(cardId);
 	$: isFullImage = card?.fullImage && card?.imageUrl;
@@ -151,7 +158,12 @@
 		);
 
 		if (isThreshold) {
-			onDrag(cardId);
+			const rect = cardButtonEl.getBoundingClientRect();
+
+			const x = (rect.left + rect.right) / 2;
+			const y = (rect.top + rect.bottom) / 2;
+
+			onDrag(cardId, { x, y });
 			onDragThresholdChange(cardId, false);
 		}
 
@@ -162,8 +174,29 @@
 
 	onMount(() => {
 		// It's possible to have the mouse move off the card while dragging
-		// Listen for a global "mouseup" event
+		// Listen for a global "mouseup" event as a fallback
+		// @todo(nick-ng): figure out a better way to recognise dragging
 		window.addEventListener("mouseup", endHandler);
+
+		if (initialCentre.x >= 0 && initialCentre.y >= 0) {
+			skipTransition = true;
+
+			const rect = cardButtonEl.getBoundingClientRect();
+			const centreX = (rect.left + rect.right) / 2;
+			const centreY = (rect.top + rect.bottom) / 2;
+
+			const adjustX = initialCentre.x - centreX;
+			const adjustY = centreY - initialCentre.y;
+
+			buttonStyle2 = [`left: ${adjustX}px`, `bottom: ${adjustY}px`].join(";");
+
+			setTimeout(() => {
+				skipTransition = false;
+			}, 1);
+			setTimeout(() => {
+				buttonStyle2 = "transition-duration: 300ms";
+			}, 2);
+		}
 	});
 
 	// @todo(nick-ng): add tooltip to cards for extra rules
@@ -171,8 +204,9 @@
 
 {#if card}
 	<button
-		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 ${draggable && isMouseDown ? "" : "transition-all"}`}
-		style={buttonStyle}
+		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
+		style={`${buttonStyle};${buttonStyle2};`}
+		bind:this={cardButtonEl}
 		on:click={() => {
 			onClick(cardId);
 		}}
