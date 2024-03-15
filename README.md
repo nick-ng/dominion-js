@@ -5,4 +5,4 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src/lib/components/card.svelte:86: @todo(nick-ng): add tooltip to cards for extra rules
+- src/lib/components/card.svelte:169: @todo(nick-ng): add tooltip to cards for extra rules
