@@ -22,6 +22,7 @@
 		cardCentre: { x: number; y: number },
 	) => void | Promise<void> = () => {};
 
+	// @todo(nick-ng): check threshold based on whether the card's centre overlaps a provided element
 	const checkThreshold = (
 		currentX: number,
 		currentY: number,

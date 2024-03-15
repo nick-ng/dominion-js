@@ -16,6 +16,7 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src/lib/components/card.svelte:180: @todo(nick-ng): figure out a better way to recognise dragging
-- src/lib/components/card.svelte:204: @todo(nick-ng): add tooltip to cards for extra rules
+- src/lib/components/card.svelte:25: @todo(nick-ng): check threshold based on whether the card's centre overlaps a provided element
+- src/lib/components/card.svelte:181: @todo(nick-ng): figure out a better way to recognise dragging
+- src/lib/components/card.svelte:205: @todo(nick-ng): add tooltip to cards for extra rules
 - src/lib/components/play-area.svelte:91: @todo(nick-ng): figure out how/when to clear card centres
