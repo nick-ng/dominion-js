@@ -28,13 +28,13 @@
 			<div class="px-1">
 				<div class="text-center">Discard</div>
 				<div
-					class="border-subtle h-card w-card box-content border-2 border-dashed"
+					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				></div>
 			</div>
 			<div class="px-1">
 				<div class="text-center">Deck</div>
 				<div
-					class="border-subtle h-card w-card box-content border-2 border-dashed"
+					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				></div>
 			</div>
 			<div class="relative flex-grow px-1">
@@ -45,7 +45,7 @@
 					Drag cards here to play
 				</div>
 				<div
-					class={`h-card box-content flex flex-row justify-start border-2 border-dashed ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
+					class={`box-content flex h-card flex-row justify-start border-2 border-dashed ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
 				>
 					<div
 						class={`flex h-full flex-row items-center justify-start`}
@@ -53,7 +53,7 @@
 					>
 						{#each playerState.cardsInPlay as cardId (cardId)}
 							<div
-								class="h-card basis-card-overlap relative flex-shrink-0 flex-grow"
+								class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
 							>
 								<Card
 									class="absolute left-0"
@@ -71,11 +71,11 @@
 	</div>
 	<div class="flex flex-row justify-center">
 		<div
-			class="h-card flex flex-shrink flex-row"
+			class="flex h-card flex-shrink flex-row"
 			style={`flex-basis: ${CARD_WIDTH_PX * playerState.cardsInHand.length * 0.8}px`}
 		>
 			{#each playerState.cardsInHand as cardId (cardId)}
-				<div class="h-card basis-card-overlap relative flex-shrink-0 flex-grow">
+				<div class="relative h-card flex-shrink-0 flex-grow basis-card-overlap">
 					<Card
 						class="absolute left-0"
 						{cardId}
