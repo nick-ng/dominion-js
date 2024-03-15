@@ -6,18 +6,30 @@
 
 	export let playerState: PlayerState;
 	export let clickedCard = "";
+
+	let isThreshold = false;
 </script>
 
 <div class="border-subtle">
-	<div class="flex flex-row justify-start">
-		<ResourceDisplay
-			class="m-1"
-			actions={playerState.actions}
-			coins={playerState.coins}
-			buys={playerState.buys}
-			horizontal
-		/>
-		<div>{clickedCard}</div>
+	<div class="py-2">
+		<div class="mb-2 px-2">
+			<ResourceDisplay
+				actions={playerState.actions}
+				coins={playerState.coins}
+				buys={playerState.buys}
+				horizontal
+			/>
+		</div>
+		<div class="flex h-[300px] flex-row items-stretch justify-start px-2">
+			<div>Discard</div>
+			<div>Deck</div>
+			<div
+				class={`flex-grow border border-dashed px-1 ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
+			>
+				<div>In Play</div>
+				<div>{clickedCard}</div>
+			</div>
+		</div>
 	</div>
 	<div class="flex flex-row justify-center">
 		<div
@@ -27,9 +39,16 @@
 			{#each playerState.cardsInHand as cardId}
 				<div class="relative h-[300px] flex-shrink-0 flex-grow basis-[110px]">
 					<Card
-						class="absolute bottom-0 left-0 transition-all hover:z-10 hover:scale-110"
+						class="absolute left-0"
 						{cardId}
-						onClick={(cardId) => {
+						hoverFront
+						hoverGrow
+						draggable
+						dragThresholdY={200}
+						onDragThresholdChange={(_cardId, newIsThreshold) => {
+							isThreshold = newIsThreshold;
+						}}
+						onDrag={(cardId) => {
 							clickedCard = cardId;
 						}}
 					/>
