@@ -149,7 +149,7 @@
 		}
 	}
 
-	function endHandler() {
+	function endHandler(deliberate: boolean) {
 		const isThreshold = checkThreshold(
 			currentX,
 			currentY,
@@ -163,7 +163,9 @@
 			const x = (rect.left + rect.right) / 2;
 			const y = (rect.top + rect.bottom) / 2;
 
-			onDrag(cardId, { x, y });
+			if (deliberate) {
+				onDrag(cardId, { x, y });
+			}
 			onDragThresholdChange(cardId, false);
 		}
 
@@ -212,12 +214,19 @@
 		}}
 		on:mousedown={startHandler}
 		on:mousemove={moveHandler}
-		on:mouseup={endHandler}
+		on:mouseup={() => {
+			endHandler(true);
+		}}
 		on:touchstart={startHandler}
 		on:touchmove={moveHandler}
-		on:touchend={endHandler}
+		on:touchend={() => {
+			endHandler(true);
+		}}
+		on:mouseleave={() => {
+			endHandler(false);
+		}}
 	>
-		<div class="h-[300px] w-[200px] border-2 border-solid bg-black" {style}>
+		<div class="h-card w-card border-2 border-solid bg-black" {style}>
 			<h3>{card.displayNames[0]}</h3>
 		</div>
 	</button>
