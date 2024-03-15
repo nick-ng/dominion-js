@@ -180,7 +180,7 @@
 			const adjustX = initialCenter.x - centerX;
 			const adjustY = centerY - initialCenter.y;
 
-			buttonStyle2 = [`left: ${adjustX}px`, `bottom: ${adjustY}px`].join(";");
+			buttonStyle2 = `left: ${adjustX}px;bottom: ${adjustY}px;`;
 
 			setTimeout(() => {
 				skipTransition = false;
@@ -188,6 +188,9 @@
 			setTimeout(() => {
 				buttonStyle2 = "transition-duration: 300ms";
 			}, 2);
+			setTimeout(() => {
+				buttonStyle2 = "";
+			}, 302);
 		}
 	});
 

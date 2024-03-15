@@ -93,8 +93,7 @@
 						}}
 						onDrag={(cardId, cardCenter) => {
 							clickedCard = cardId;
-							// @todo(nick-ng): figure out how/when to clear card centers
-							playedCardCenters[cardId] = cardCenter;
+							playedCardCenters = { [cardId]: cardCenter };
 							onPlayCard(cardId);
 						}}
 					/>
