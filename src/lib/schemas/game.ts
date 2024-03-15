@@ -10,6 +10,7 @@ export const playerStateSchema = z.object({
 	topCardOfDiscard: z.string().nullable(),
 	discardPile: z.string().array(),
 	cardsInHand: z.string().array(),
+	cardsInPlay: z.string().array(),
 });
 
 export const effectSchema = z.object({

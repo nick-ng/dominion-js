@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
+	import { playerStateSchema } from "$lib/schemas/game";
 	import PlayArea from "$lib/components/play-area.svelte";
 
-	const playerState: PlayerState = {
+	const playerState0: PlayerState = {
 		actions: 2,
 		coins: 0,
 		buys: 1,
@@ -23,9 +24,26 @@
 		topCardOfDiscard: null,
 		discardPile: [],
 		cardsInHand: ["copper:1", "estate:1", "copper:2", "copper:3", "estate:2"],
+		cardsInPlay: [],
 	};
+
+	let playerState = playerStateSchema.parse(playerState0);
 </script>
 
 <div>
-	<PlayArea {playerState} />
+	<PlayArea
+		{playerState}
+		onPlayCard={(cardId) => {
+			playerState.cardsInHand = playerState.cardsInHand.filter(
+				(c) => c !== cardId,
+			);
+			playerState.cardsInPlay = [...playerState.cardsInPlay, cardId];
+		}}
+	/>
+	<button
+		class="button-default"
+		on:click={() => {
+			playerState = playerStateSchema.parse(playerState0);
+		}}>Reset</button
+	>
 </div>
