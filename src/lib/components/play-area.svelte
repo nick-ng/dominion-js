@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
-	import Card from "./card.svelte";
 
+	import { CARD_HEIGHT_PX, CARD_WIDTH_PX } from "$lib/game/card-list";
+
+	import Card from "./card.svelte";
 	import ResourceDisplay from "./resource-display.svelte";
 
 	export let playerState: PlayerState;
@@ -26,13 +28,13 @@
 			<div class="px-1">
 				<div class="text-center">Discard</div>
 				<div
-					class="border-subtle box-content h-[300px] w-[200px] border-2 border-dashed"
+					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				></div>
 			</div>
 			<div class="px-1">
 				<div class="text-center">Deck</div>
 				<div
-					class="border-subtle box-content h-[300px] w-[200px] border-2 border-dashed"
+					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				></div>
 			</div>
 			<div class="relative flex-grow px-1">
@@ -43,15 +45,15 @@
 					Drag cards here to play
 				</div>
 				<div
-					class={`box-content flex h-[300px] flex-row justify-start border-2 border-dashed ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
+					class={`box-content flex h-card flex-row justify-start border-2 border-dashed ${isThreshold ? "border-yellow-200" : "border-subtle"}`}
 				>
 					<div
 						class={`flex h-full flex-row items-center justify-start`}
-						style={`flex-basis: ${200 * playerState.cardsInPlay.length * 0.8}px`}
+						style={`flex-basis: ${CARD_WIDTH_PX * playerState.cardsInPlay.length * 0.8}px`}
 					>
 						{#each playerState.cardsInPlay as cardId (cardId)}
 							<div
-								class="relative h-[300px] flex-shrink-0 flex-grow basis-[110px]"
+								class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
 							>
 								<Card
 									class="absolute left-0"
@@ -69,18 +71,18 @@
 	</div>
 	<div class="flex flex-row justify-center">
 		<div
-			class="flex h-[300px] flex-shrink flex-row"
-			style={`flex-basis: ${200 * playerState.cardsInHand.length * 0.8}px`}
+			class="flex h-card flex-shrink flex-row"
+			style={`flex-basis: ${CARD_WIDTH_PX * playerState.cardsInHand.length * 0.8}px`}
 		>
 			{#each playerState.cardsInHand as cardId (cardId)}
-				<div class="relative h-[300px] flex-shrink-0 flex-grow basis-[110px]">
+				<div class="relative h-card flex-shrink-0 flex-grow basis-card-overlap">
 					<Card
 						class="absolute left-0"
 						{cardId}
 						hoverFront
 						hoverGrow
 						draggable
-						dragThresholdY={200}
+						dragThresholdY={CARD_HEIGHT_PX * 0.6}
 						onDragThresholdChange={(_cardId, newIsThreshold) => {
 							isThreshold = newIsThreshold;
 						}}

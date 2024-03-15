@@ -2,6 +2,9 @@ import type { Card } from "$lib/schemas/types";
 
 import { BASE_GAME_CARDS } from "./base-game-card-list";
 
+export const CARD_HEIGHT_PX = 210;
+export const CARD_WIDTH_PX = Math.ceil((CARD_HEIGHT_PX / 3) * 2);
+
 export const BASE_CARDS: { [key: string]: Card } = {
 	copper: {
 		types: ["treasure"],
