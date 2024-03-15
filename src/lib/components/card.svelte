@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { getCardFromId } from "$lib/game/card-list";
 	import { onMount } from "svelte";
+	import { getCardFromId } from "$lib/game/card-list";
+
+	import CardContents from "./card-contents.svelte";
 
 	let className = "";
 	export { className as class };
@@ -79,13 +81,6 @@
 	$: buttonStyle = [
 		draggable && isMouseDown && `left: ${currentX}px`,
 		draggable && isMouseDown && `bottom: ${currentY}px`,
-	]
-		.filter((a) => a)
-		.join(";");
-	$: style = [
-		isFullImage && `background-image: url("${card?.imageUrl}")`,
-		isFullImage && "background-size: cover",
-		isFullImage && "background-position: center",
 	]
 		.filter((a) => a)
 		.join(";");
@@ -219,8 +214,6 @@
 			endHandler(false);
 		}}
 	>
-		<div class="h-card w-card border-2 border-solid bg-black" {style}>
-			<h3>{card.displayNames[0]}</h3>
-		</div>
+		<CardContents {card} />
 	</button>
 {/if}

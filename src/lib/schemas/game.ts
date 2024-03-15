@@ -17,6 +17,7 @@ export const effectSchema = z.object({
 	// "buy", "action", "coin", "card", "custom-<name-of-card>"
 	type: z.string(),
 	value: z.number().optional(),
+	description: z.string().optional(),
 });
 
 export const cardSchema = z.object({
@@ -24,7 +25,7 @@ export const cardSchema = z.object({
 	name: z.string(),
 	displayNames: z.string().array(),
 	effects: effectSchema.array(),
-	description: z.string(),
+	hints: z.string().optional(),
 	imageUrl: z.string().optional(),
 	fullImage: z.boolean().optional(),
 	cost: z.number(),
