@@ -16,6 +16,8 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
+- src\lib\stores\game-state.ts:18: // @todo(nick-ng): connect to websocket here
+- src\lib\stores\game-state.ts:19: // @todo(nick-ng): should websocket stuff be in a .svelte file instead?
 - src\lib\components\symbols\victory-point.svelte:1:<!-- @todo(nick-ng): draw your own victory point symbol -->
 - src\lib\components\symbols\coin.svelte:1:<!-- @todo(nick-ng): draw your own coin symbol -->
 - src\lib\components\play-area.svelte:42: <!-- @todo(nick-ng): make a cardback component -->

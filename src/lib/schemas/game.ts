@@ -32,3 +32,18 @@ export const cardSchema = z.object({
 	victoryPoints: z.number().optional(),
 	coins: z.number().optional(),
 });
+
+export const playerSchema = z.object({
+	name: z.string(),
+	playerId: z.string(),
+	token: z.string(),
+});
+
+export const gameStateSchema = z.object({
+	supply: z.record(z.string(), z.string().array()), // { [cardName]: cardIds[] }
+	trash: z.string().array(), // cardId[]
+	playerStates: z.record(z.string(), playerStateSchema), // { [playerId]: playerState }
+	turnOrder: z.string().array(), // playerId[]
+	players: z.record(z.string(), playerSchema), // { [playerId]: { name, id, token } }
+	host: z.string(), // playerId
+});
