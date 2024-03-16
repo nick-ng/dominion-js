@@ -16,6 +16,8 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src/lib/components/card.svelte:170: @todo(nick-ng): figure out a better way to recognise dragging
-- src/lib/components/card.svelte:194: @todo(nick-ng): add tooltip to cards for extra rules
-- src/lib/components/play-area.svelte:96: @todo(nick-ng): figure out how/when to clear card centers
+- src\lib\components\symbols\victory-point.svelte:1:<!-- @todo(nick-ng): draw your own victory point symbol -->
+- src\lib\components\symbols\coin.svelte:1:<!-- @todo(nick-ng): draw your own coin symbol -->
+- src\lib\components\play-area.svelte:42: <!-- @todo(nick-ng): make a cardback component -->
+- src\lib\components\card.svelte:164: // @todo(nick-ng): figure out a better way to recognise dragging
+- src\lib\components\card.svelte:191: // @todo(nick-ng): add tooltip to cards for extra rules

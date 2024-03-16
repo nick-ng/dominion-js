@@ -4,6 +4,7 @@ import { BASE_GAME_CARDS } from "./base-game-card-list";
 
 export const CARD_HEIGHT_PX = 210;
 export const CARD_WIDTH_PX = Math.ceil((CARD_HEIGHT_PX / 3) * 2);
+export const CARD_WIDTH_OVERLAP_PX = Math.ceil(CARD_WIDTH_PX * 0.7);
 
 export const BASE_CARDS: { [key: string]: Card } = {
 	copper: {
@@ -11,7 +12,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "copper",
 		displayNames: ["Copper", "Coppers"],
 		effects: [],
-		description: "",
 		imageUrl: "copper.png",
 		fullImage: true,
 		cost: 0,
@@ -22,7 +22,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "silver",
 		displayNames: ["Silver", "Silvers"],
 		effects: [],
-		description: "",
 		imageUrl: "silver.png",
 		fullImage: true,
 		cost: 3,
@@ -33,7 +32,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "gold",
 		displayNames: ["Gold", "Golds"],
 		effects: [],
-		description: "",
 		imageUrl: "gold.png",
 		fullImage: true,
 		cost: 6,
@@ -44,7 +42,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "estate",
 		displayNames: ["Estate", "Estates"],
 		effects: [],
-		description: "",
 		imageUrl: "estate.png",
 		fullImage: true,
 		cost: 2,
@@ -55,7 +52,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "duchy",
 		displayNames: ["Duchy", "Duchies"],
 		effects: [],
-		description: "",
 		imageUrl: "duchy.png",
 		fullImage: true,
 		cost: 5,
@@ -66,7 +62,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "province",
 		displayNames: ["Province", "Provinces"],
 		effects: [],
-		description: "",
 		imageUrl: "province.png",
 		fullImage: true,
 		cost: 8,
@@ -77,7 +72,6 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		name: "curse",
 		displayNames: ["Curse", "Curses"],
 		effects: [],
-		description: "",
 		imageUrl: "curse.png",
 		fullImage: true,
 		cost: 0,
