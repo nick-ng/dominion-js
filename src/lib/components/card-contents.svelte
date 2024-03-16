@@ -7,37 +7,46 @@
 
 	export let card: Card;
 
-	$: isFullImage = card?.fullImage && card?.imageUrl;
-	$: style = [
-		isFullImage && `background-image: url("${card?.imageUrl}")`,
-		isFullImage && "background-size: cover",
-		isFullImage && "background-position: center",
-	]
-		.filter((a) => a)
-		.join(";");
+	$: isFullImage = card.fullImage && card?.imageUrl;
+
+	let imageStyle = card.imageUrl
+		? `background-image: url("${card.imageUrl}");background-size: contain;background-repeat: no-repeat;background-position: center;`
+		: "";
 </script>
 
-<CardFrame fullImageUrl={card?.fullImage && card?.imageUrl}>
-	<h3 class="leading-none">{card.displayNames[0]}</h3>
+<CardFrame fullImageUrl={card?.fullImage && card?.imageUrl} class="relative">
+	<h4 class="leading-none">{card.displayNames[0]}</h4>
 	{#if isFullImage || !card.imageUrl}
 		<div class="flex-grow" />
 	{:else}
-		<img src={card.imageUrl} alt={card.displayNames[0]} />
+		<div class="flex-shrink basis-16" style={imageStyle} />
 	{/if}
 	{#each card.effects as effect}
 		{#if effect.type === "action"}
-			<div class="text-center font-bold">
+			<div class="text-center">
 				+{effect.value}
 				{effect.value === 1 ? "Action" : "Actions"}
 			</div>
 		{:else}
-			<div class="text-left"></div>
+			<div class="text-left text-sm">{effect.description}</div>
 		{/if}
 	{/each}
 	{#if card.coins}
-		<div><Coin /> {card.coins}</div>
+		<div><Coin /> +{card.coins}</div>
 	{/if}
 	{#if card.victoryPoints}
 		<div><VictoryPoint /> {card.victoryPoints}</div>
 	{/if}
+	{#if !isFullImage && card.imageUrl}
+		<div class="flex-grow" />
+	{/if}
+	<div
+		class="mt-1 flex flex-row justify-between border-t pt-0.5 text-left text-sm"
+	>
+		<div>
+			<Coin />
+			{card.cost}
+		</div>
+		<div class="capitalize">{card.types.join(" - ")}</div>
+	</div>
 </CardFrame>

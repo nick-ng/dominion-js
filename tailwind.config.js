@@ -1,4 +1,8 @@
-import { CARD_HEIGHT_PX, CARD_WIDTH_PX } from "./src/lib/game/card-list";
+import {
+	CARD_HEIGHT_PX,
+	CARD_WIDTH_PX,
+	CARD_WIDTH_OVERLAP_PX,
+} from "./src/lib/game/card-list";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -15,11 +19,11 @@ export default {
 			width: {
 				prose: "65ch",
 				card: `${CARD_WIDTH_PX}px`,
-				"card-overlap": `${Math.ceil(CARD_WIDTH_PX * 0.55)}px`,
+				"card-overlap": `${CARD_WIDTH_OVERLAP_PX}px`,
 			},
 			flexBasis: {
 				prose: "65ch",
-				"card-overlap": `${Math.ceil(CARD_WIDTH_PX * 0.55)}px`,
+				"card-overlap": `${CARD_WIDTH_OVERLAP_PX}px`,
 			},
 			fontFamily: {
 				good: '"Comic Sans MS", sans-serif',

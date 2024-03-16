@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
 
-	import { CARD_WIDTH_PX } from "$lib/game/card-list";
+	import { CARD_WIDTH_OVERLAP_PX } from "$lib/game/card-list";
 
 	import Card from "./card.svelte";
 	import ResourceDisplay from "./resource-display.svelte";
 	import { onMount } from "svelte";
+	import CardFrame from "./card-frame.svelte";
 
 	export let playerState: PlayerState;
 	export let clickedCard = "";
@@ -19,27 +20,28 @@
 </script>
 
 <div class="border-subtle">
-	<div class="py-2">
-		<div class="mb-2 px-2">
-			<ResourceDisplay
-				actions={playerState.actions}
-				coins={playerState.coins}
-				buys={playerState.buys}
-				horizontal
-			/>
-		</div>
+	<!-- In Play -->
+	<div class="my-2">
 		<div class="flex flex-row items-stretch justify-start px-2">
 			<div class="px-1">
 				<div class="text-center">Discard</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
-				></div>
+				>
+					{#if playerState.topCardOfDiscard}
+						<Card cardId={playerState.topCardOfDiscard} />
+					{/if}
+				</div>
 			</div>
 			<div class="px-1">
 				<div class="text-center">Deck</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
-				></div>
+				>
+					{#if playerState.cardsInDeck > 0}
+						<CardFrame fullImageUrl="favicon.png" />
+					{/if}
+				</div>
 			</div>
 			<div class="relative flex-grow px-1">
 				<div class="text-center">Played Cards</div>
@@ -54,7 +56,7 @@
 				>
 					<div
 						class={`flex h-full flex-row items-center justify-start`}
-						style={`flex-basis: ${CARD_WIDTH_PX * playerState.cardsInPlay.length * 0.8}px`}
+						style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.cardsInPlay.length}px`}
 					>
 						{#each playerState.cardsInPlay as cardId (cardId)}
 							<div
@@ -74,10 +76,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex flex-row justify-center">
+	<!-- Hand -->
+	<div class="mb-2 flex flex-row justify-between">
+		<div class="mb-2 px-2">
+			<ResourceDisplay
+				actions={playerState.actions}
+				coins={playerState.coins}
+				buys={playerState.buys}
+			/>
+		</div>
 		<div
 			class="flex h-card flex-shrink flex-row"
-			style={`flex-basis: ${CARD_WIDTH_PX * playerState.cardsInHand.length * 0.8}px`}
+			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.cardsInHand.length}px`}
 		>
 			{#each playerState.cardsInHand as cardId (cardId)}
 				<div class="relative h-card flex-shrink-0 flex-grow basis-card-overlap">
@@ -100,5 +110,6 @@
 				</div>
 			{/each}
 		</div>
+		<div />
 	</div>
 </div>
