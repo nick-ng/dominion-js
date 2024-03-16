@@ -77,17 +77,30 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		cost: 0,
 		victoryPoints: -1,
 	},
+	unknown: {
+		types: ["unknown"],
+		name: "unknown",
+		displayNames: ["Unknown", "Unknowns"],
+		effects: [],
+		imageUrl: "favicon.png",
+		fullImage: true,
+		cost: 0,
+		victoryPoints: 0,
+	},
 };
 
-export const CARD_LIST: { [key: string]: Card } = {
+export const ALL_CARDS: { [key: string]: Card } = {
 	...BASE_CARDS,
 	...BASE_GAME_CARDS,
 };
 
+export const BASE_GAME_CARD_LIST = Object.keys(BASE_GAME_CARDS);
+export const KINGDOM_CARD_LIST = [...BASE_GAME_CARD_LIST];
+
 export function getCardFromId(cardId: string): Card | null {
 	const [cardName] = cardId.split(":");
 
-	const card = CARD_LIST[cardName];
+	const card = ALL_CARDS[cardName];
 
 	return card || null;
 }

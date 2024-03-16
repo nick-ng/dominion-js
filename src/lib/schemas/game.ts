@@ -5,12 +5,13 @@ export const playerStateSchema = z.object({
 	coins: z.number(),
 	buys: z.number(),
 	ownedCards: z.string().array(),
-	cardsInDeck: z.number(),
+	deckCount: z.number(),
 	deck: z.string().array(),
 	topCardOfDiscard: z.string().nullable(),
 	discardPile: z.string().array(),
-	cardsInHand: z.string().array(),
-	cardsInPlay: z.string().array(),
+	hand: z.string().array(),
+	handCount: z.number(),
+	inPlay: z.string().array(),
 });
 
 export const effectSchema = z.object({

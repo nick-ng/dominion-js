@@ -9,7 +9,6 @@
 	import CardFrame from "./card-frame.svelte";
 
 	export let playerState: PlayerState;
-	export let clickedCard = "";
 	export let onPlayCard: (cardId: string) => void | Promise<void> = () => {};
 
 	let isThreshold = false;
@@ -34,11 +33,11 @@
 				</div>
 			</div>
 			<div class="px-1">
-				<div class="text-center">Deck: {playerState.cardsInDeck}</div>
+				<div class="text-center">Deck: {playerState.deckCount}</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				>
-					{#if playerState.cardsInDeck > 0}
+					{#if playerState.deckCount > 0}
 						<!-- @todo(nick-ng): make a cardback component -->
 						<CardFrame fullImageUrl="favicon.png" />
 					{/if}
@@ -57,9 +56,9 @@
 				>
 					<div
 						class={`flex h-full flex-row items-center justify-start`}
-						style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.cardsInPlay.length}px`}
+						style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.inPlay.length}px`}
 					>
-						{#each playerState.cardsInPlay as cardId (cardId)}
+						{#each playerState.inPlay as cardId (cardId)}
 							<div
 								class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
 							>
@@ -88,9 +87,9 @@
 		</div>
 		<div
 			class="flex h-card flex-shrink flex-row"
-			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.cardsInHand.length}px`}
+			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.hand.length}px`}
 		>
-			{#each playerState.cardsInHand as cardId (cardId)}
+			{#each playerState.hand as cardId (cardId)}
 				<div class="relative h-card flex-shrink-0 flex-grow basis-card-overlap">
 					<Card
 						class="absolute left-0"
@@ -103,7 +102,6 @@
 							isThreshold = newIsThreshold;
 						}}
 						onDrag={(cardId, cardCenter) => {
-							clickedCard = cardId;
 							playedCardCenters = { [cardId]: cardCenter };
 							onPlayCard(cardId);
 						}}
