@@ -13,3 +13,5 @@ vite.config.ts.timestamp-*
 
 enchants2.json
 /scripts/enchant-database.json
+
+dist-*

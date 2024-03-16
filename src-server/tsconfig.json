@@ -1,0 +1,13 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "../dist-server",
+		"module": "NodeNext"
+	},
+	"files": ["./main.ts", "./worker.ts"],
+	"include": ["./**/*"],
+	"watchOptions": {
+		"watchFile": "dynamicprioritypolling",
+		"watchDirectory": "dynamicprioritypolling"
+	}
+}
