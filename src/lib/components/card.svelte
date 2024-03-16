@@ -77,7 +77,6 @@
 	let skipTransition = false;
 
 	$: card = getCardFromId(cardId);
-	$: isFullImage = card?.fullImage && card?.imageUrl;
 	$: buttonStyle = [
 		draggable && isMouseDown && `left: ${currentX}px`,
 		draggable && isMouseDown && `bottom: ${currentY}px`,
