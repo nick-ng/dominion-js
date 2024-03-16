@@ -34,11 +34,12 @@
 				</div>
 			</div>
 			<div class="px-1">
-				<div class="text-center">Deck</div>
+				<div class="text-center">Deck: {playerState.cardsInDeck}</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				>
 					{#if playerState.cardsInDeck > 0}
+						<!-- @todo(nick-ng): make a cardback component -->
 						<CardFrame fullImageUrl="favicon.png" />
 					{/if}
 				</div>

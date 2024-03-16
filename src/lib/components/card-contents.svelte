@@ -10,25 +10,25 @@
 	$: isFullImage = card.fullImage && card?.imageUrl;
 
 	let imageStyle = card.imageUrl
-		? `background-image: url("${card.imageUrl}");background-size: contain;background-repeat: no-repeat;background-position: center;`
+		? `background-image: url("${card.imageUrl}");background-size: cover;background-repeat: no-repeat;background-position: center;`
 		: "";
 </script>
 
 <CardFrame fullImageUrl={card?.fullImage && card?.imageUrl} class="relative">
-	<h4 class="leading-none">{card.displayNames[0]}</h4>
+	<h4 class="mb-1 leading-none">{card.displayNames[0]}</h4>
 	{#if isFullImage || !card.imageUrl}
 		<div class="flex-grow" />
 	{:else}
-		<div class="flex-shrink basis-16" style={imageStyle} />
+		<div class="mx-1 mb-1 flex-shrink basis-16 border" style={imageStyle} />
 	{/if}
 	{#each card.effects as effect}
 		{#if effect.type === "action"}
-			<div class="text-center">
+			<div class="text-center text-sm">
 				+{effect.value}
 				{effect.value === 1 ? "Action" : "Actions"}
 			</div>
 		{:else}
-			<div class="text-left text-sm">{effect.description}</div>
+			<div class="text-left text-xs">{effect.description}</div>
 		{/if}
 	{/each}
 	{#if card.coins}
