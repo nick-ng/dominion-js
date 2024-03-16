@@ -4,6 +4,9 @@
 
 	import CardContents from "./card-contents.svelte";
 
+	const DRAG_BORDER_X_PX = 30;
+	const DRAG_BORDER_Y_PX = 30;
+
 	let className = "";
 	export { className as class };
 	export let cardId: string;
@@ -48,20 +51,31 @@
 	const getCursorXY = (e: TouchEvent | MouseEvent) => {
 		// check MouseEvent because TouchEvent only exists on touch devices
 		if (e instanceof MouseEvent) {
-			return { x: e.screenX, y: e.screenY };
+			return {
+				x: e.screenX,
+				y: e.screenY,
+				clientX: e.clientX,
+				clientY: e.clientY,
+			};
 		}
 
-		let averageX = 0;
-		let averageY = 0;
+		let totalX = 0;
+		let totalY = 0;
+		let totalClientX = 0;
+		let totalClientY = 0;
 
 		for (let i = 0; i < e.touches.length; i++) {
-			averageX += e.touches[i].screenX;
-			averageY += e.touches[i].screenY;
+			totalX += e.touches[i].screenX;
+			totalY += e.touches[i].screenY;
+			totalClientX += e.touches[i].clientX;
+			totalClientY += e.touches[i].clientY;
 		}
 
 		return {
-			x: averageX / e.touches.length,
-			y: averageY / e.touches.length,
+			x: totalX / e.touches.length,
+			y: totalY / e.touches.length,
+			clientX: totalClientX / e.touches.length,
+			clientY: totalClientY / e.touches.length,
 		};
 	};
 
@@ -109,9 +123,33 @@
 	}
 
 	function startHandler(e: TouchEvent | MouseEvent) {
-		const { x, y } = getCursorXY(e);
+		if (e instanceof MouseEvent) {
+			console.log(e.clientX, e.clientY);
+		}
+
+		const { x, y, clientX, clientY } = getCursorXY(e);
+		const rect = cardButtonEl.getBoundingClientRect();
+
+		console.log(rect.top, rect.bottom, clientY);
+
 		startX = x;
+		const l0 = rect.left + DRAG_BORDER_X_PX;
+		const r0 = rect.right - DRAG_BORDER_X_PX;
+		if (l0 > clientX) {
+			startX = x + (l0 - clientX);
+		} else if (r0 < clientX) {
+			startX = x - (clientX - r0);
+		}
+
 		startY = y;
+		const t0 = rect.top + DRAG_BORDER_Y_PX;
+		const b0 = rect.bottom - DRAG_BORDER_Y_PX;
+		if (t0 > clientY) {
+			startY = y + (t0 - clientY);
+		} else if (b0 < clientY) {
+			startY = y - (clientY - b0);
+		}
+
 		currentX = 0;
 		currentY = hoverUp ? 10 : 0;
 
