@@ -111,6 +111,8 @@
 				</div>
 			{/each}
 		</div>
-		<div />
+		<div>
+			<!-- Hack to have space on sides of cards -->
+		</div>
 	</div>
 </div>

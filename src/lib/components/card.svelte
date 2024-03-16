@@ -186,6 +186,16 @@
 				buttonStyle2 = "";
 			}, 302);
 		}
+
+		cardButtonEl.addEventListener(
+			"touchmove",
+			(e) => {
+				if (isMouseDown) {
+					e.preventDefault();
+				}
+			},
+			{ passive: false },
+		);
 	});
 
 	// @todo(nick-ng): add tooltip to cards for extra rules

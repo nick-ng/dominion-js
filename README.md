@@ -20,4 +20,4 @@ Dominion in JavaScript (TypeScript)
 - src\lib\components\symbols\coin.svelte:1:<!-- @todo(nick-ng): draw your own coin symbol -->
 - src\lib\components\play-area.svelte:42: <!-- @todo(nick-ng): make a cardback component -->
 - src\lib\components\card.svelte:164: // @todo(nick-ng): figure out a better way to recognise dragging
-- src\lib\components\card.svelte:191: // @todo(nick-ng): add tooltip to cards for extra rules
+- src\lib\components\card.svelte:201: // @todo(nick-ng): add tooltip to cards for extra rules
