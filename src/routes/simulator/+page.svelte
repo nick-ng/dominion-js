@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PlayArea from "$lib/components/play-area.svelte";
-	import { getStartingPlayerState, getTest0PlayerState } from "./player-states";
+	import { getTest0PlayerState } from "$lib/game/player-states";
 
 	let playerState = getTest0PlayerState();
 </script>
@@ -19,4 +19,10 @@
 			playerState = getTest0PlayerState();
 		}}>Reset 0</button
 	>
+	<details>
+		<summary>Debug</summary>
+		<pre>
+			{JSON.stringify(playerState, null, "  ")}
+		</pre>
+	</details>
 </div>

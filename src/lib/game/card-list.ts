@@ -77,20 +77,45 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		cost: 0,
 		victoryPoints: -1,
 	},
+};
+
+export const SPECIAL_CARDS: { [key: string]: Card } = {
 	unknown: {
 		types: ["unknown"],
 		name: "unknown",
 		displayNames: ["Unknown", "Unknowns"],
-		effects: [],
-		imageUrl: "favicon.png",
+		effects: [
+			{
+				type: "unknown-0",
+				description: "You haven't seen this card yet.",
+			},
+		],
+		imageUrl: "unknown.png",
 		fullImage: true,
 		cost: 0,
 		victoryPoints: 0,
+	},
+
+	cellary: {
+		types: ["action"],
+		name: "cellary",
+		displayNames: ["Cellary", "Cellaries"],
+		imageUrl: "cellar.png",
+		effects: [
+			{ type: "action", value: 1 },
+			{
+				type: "cellar-0",
+				description:
+					"Discard any number of cards. +1 Card per card discarded. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+			},
+		],
+		cost: 2,
 	},
 };
 
 export const ALL_CARDS: { [key: string]: Card } = {
 	...BASE_CARDS,
+	...SPECIAL_CARDS,
 	...BASE_GAME_CARDS,
 };
 

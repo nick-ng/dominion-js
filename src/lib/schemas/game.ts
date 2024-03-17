@@ -46,5 +46,8 @@ export const gameStateSchema = z.object({
 	playerStates: z.record(z.string(), playerStateSchema), // { [playerId]: playerState }
 	turnOrder: z.string().array(), // playerId[]
 	players: z.record(z.string(), playerSchema), // { [playerId]: { name, id, token } }
-	host: z.string(), // playerId
+	hostId: z.string(), // playerId
+	turn: z.number(),
+	gameSeed: z.number(),
+	turnAdjustment: z.number(),
 });
