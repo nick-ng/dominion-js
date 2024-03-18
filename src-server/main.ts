@@ -1,3 +1,3 @@
 import { victoryPointEmoji } from "$lib/emojis";
 
-console.log(victoryPointEmoji);
+console.info(victoryPointEmoji);

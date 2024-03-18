@@ -79,15 +79,53 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	},
 };
 
-export const CARD_LIST: { [key: string]: Card } = {
+export const SPECIAL_CARDS: { [key: string]: Card } = {
+	unknown: {
+		types: ["unknown"],
+		name: "unknown",
+		displayNames: ["Unknown", "Unknowns"],
+		effects: [
+			{
+				type: "unknown-0",
+				description: "You haven't seen this card yet.",
+			},
+		],
+		imageUrl: "unknown.png",
+		fullImage: true,
+		cost: 0,
+		victoryPoints: 0,
+	},
+
+	cellary: {
+		types: ["action"],
+		name: "cellary",
+		displayNames: ["Cellary", "Cellaries"],
+		imageUrl: "cellar.png",
+		effects: [
+			{ type: "action", value: 1 },
+			{
+				type: "cellar-0",
+				description:
+					"Discard any number of cards. +1 Card per card discarded. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+			},
+		],
+		cost: 2,
+	},
+};
+
+export const ALL_CARDS: { [key: string]: Card } = {
 	...BASE_CARDS,
+	...SPECIAL_CARDS,
 	...BASE_GAME_CARDS,
 };
+
+export const BASE_GAME_CARD_LIST = Object.keys(BASE_GAME_CARDS);
+export const KINGDOM_CARD_LIST = [...BASE_GAME_CARD_LIST];
 
 export function getCardFromId(cardId: string): Card | null {
 	const [cardName] = cardId.split(":");
 
-	const card = CARD_LIST[cardName];
+	const card = ALL_CARDS[cardName];
 
 	return card || null;
 }

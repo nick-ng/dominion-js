@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { getCardFromId } from "$lib/game/card-list";
+	import { getCardFromId } from "$lib/engine/card-list";
 
 	import CardContents from "./card-contents.svelte";
 
@@ -123,14 +123,8 @@
 	}
 
 	function startHandler(e: TouchEvent | MouseEvent) {
-		if (e instanceof MouseEvent) {
-			console.log(e.clientX, e.clientY);
-		}
-
 		const { x, y, clientX, clientY } = getCursorXY(e);
 		const rect = cardButtonEl.getBoundingClientRect();
-
-		console.log(rect.top, rect.bottom, clientY);
 
 		startX = x;
 		const l0 = rect.left + DRAG_BORDER_X_PX;

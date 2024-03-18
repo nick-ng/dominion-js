@@ -1,50 +1,52 @@
 <script lang="ts">
-	import type { PlayerState } from "$lib/schemas/types";
-	import { playerStateSchema } from "$lib/schemas/game";
 	import PlayArea from "$lib/components/play-area.svelte";
+	import { getTest0PlayerState } from "$lib/engine/player-states";
+	import Game from "$lib/engine/game";
 
-	const playerState0: PlayerState = {
-		actions: 2,
-		coins: 0,
-		buys: 1,
-		cardsInDeck: 3,
-		ownedCards: [
-			"estate:1",
-			"estate:2",
-			"estate:3",
-			"copper:1",
-			"copper:2",
-			"copper:3",
-			"copper:4",
-			"copper:5",
-			"copper:6",
-			"copper:7",
-			"cellar:1",
-		],
-		deck: [],
-		topCardOfDiscard: "cellar:1",
-		discardPile: [],
-		cardsInHand: ["copper:1", "estate:1", "copper:2", "copper:3", "estate:2"],
-		cardsInPlay: [],
-	};
+	let player = { name: "player 1", playerId: "aaaaaa", token: "a12345" };
+	let success = true;
+	let reason = "";
+	let game = new Game([player], player.playerId);
+	game.reset();
+	game.playerStates[player.playerId] = getTest0PlayerState(player.playerId);
 
-	let playerState = playerStateSchema.parse(playerState0);
+	let gameState = game.getGameStateForPlayer(player.playerId);
 </script>
 
 <div>
 	<PlayArea
-		{playerState}
+		playerState={gameState.playerStates[player.playerId]}
 		onPlayCard={(cardId) => {
-			playerState.cardsInHand = playerState.cardsInHand.filter(
-				(c) => c !== cardId,
-			);
-			playerState.cardsInPlay = [...playerState.cardsInPlay, cardId];
+			const result = game.playCard(player.playerId, cardId);
+			success = result.success;
+			reason = result.reason;
+			gameState = game.getGameStateForPlayer(player.playerId);
 		}}
 	/>
-	<button
-		class="button-default"
-		on:click={() => {
-			playerState = playerStateSchema.parse(playerState0);
-		}}>Reset</button
-	>
+	<div>
+		<button
+			class="button-default"
+			on:click={() => {
+				game = new Game(
+					[{ name: "player 1", playerId: player.playerId, token: "a12345" }],
+					player.playerId,
+				);
+				game.reset();
+				game.playerStates[player.playerId] = getTest0PlayerState(
+					player.playerId,
+				);
+				gameState = game.getGameStateForPlayer(player.playerId);
+			}}>Reset 0</button
+		>
+		{#if !success}
+			<div>{reason}</div>
+		{/if}
+	</div>
+	<details>
+		<summary>Debug</summary>
+		<pre>
+			{JSON.stringify(game, null, "  ")}
+			{JSON.stringify(gameState.playerStates[player.playerId], null, "  ")}
+		</pre>
+	</details>
 </div>

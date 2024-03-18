@@ -1,9 +1,7 @@
 <script lang="ts">
+	import { coinEmoji, victoryPointEmoji } from "$lib/emojis";
 	import type { Card } from "$lib/schemas/types";
 	import CardFrame from "./card-frame.svelte";
-
-	import Coin from "./symbols/coin.svelte";
-	import VictoryPoint from "./symbols/victory-point.svelte";
 
 	export let card: Card;
 
@@ -42,8 +40,7 @@
 			</div>
 		{:else if effect.type === "coin"}
 			<div class="text-center text-sm">
-				+<Coin />
-				{effect.value}
+				+{coinEmoji}{effect.value}
 			</div>
 		{:else if effect.type === "line"}
 			<hr />
@@ -52,10 +49,10 @@
 		{/if}
 	{/each}
 	{#if card.coins}
-		<div>+<Coin /> {card.coins}</div>
+		<div>+{coinEmoji}{card.coins}</div>
 	{/if}
 	{#if card.victoryPoints}
-		<div><VictoryPoint /> {card.victoryPoints}</div>
+		<div>{victoryPointEmoji}{card.victoryPoints}</div>
 	{/if}
 	{#if !isFullImage && card.imageUrl}
 		<div class="flex-grow" />
@@ -64,8 +61,7 @@
 		class="mt-1 flex flex-row justify-between border-t pt-0.5 text-left text-xs"
 	>
 		<div>
-			<Coin />
-			{card.cost}
+			{coinEmoji}{card.cost}
 		</div>
 		<div class="capitalize">{card.types.join(", ")}</div>
 	</div>

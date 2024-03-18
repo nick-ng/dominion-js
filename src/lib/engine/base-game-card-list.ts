@@ -17,21 +17,6 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		],
 		cost: 2,
 	},
-	cellary: {
-		types: ["action"],
-		name: "cellary",
-		displayNames: ["Cellary", "Cellaries"],
-		imageUrl: "cellar.png",
-		effects: [
-			{ type: "action", value: 1 },
-			{
-				type: "cellar-0",
-				description:
-					"Discard any number of cards. +1 Card per card discarded. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
-			},
-		],
-		cost: 2,
-	},
 	moat: {
 		types: ["action", "reaction"],
 		name: "moat",
@@ -69,7 +54,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 			{ type: "action", value: 1 },
 			{
 				type: "merchant-0",
-				description: `The first time you play a Silver this turn, +${coinEmoji} 1`,
+				description: `The first time you play a Silver this turn, +${coinEmoji}1`,
 			},
 		],
 		cost: 3,
@@ -82,7 +67,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "workshop-0",
-				description: `Gain a card costing up to ${coinEmoji} 4`,
+				description: `Gain a card costing up to ${coinEmoji}4`,
 			},
 		],
 		cost: 3,
@@ -103,7 +88,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "remodel-0",
-				description: `Trash a card from your hand. Gain a card costing up to ${coinEmoji} 2 more than it.`,
+				description: `Trash a card from your hand. Gain a card costing up to ${coinEmoji}2 more than it.`,
 			},
 		],
 		cost: 4,
@@ -123,7 +108,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		cost: 4,
 	},
 	market: {
-		types: ["action", "attack"],
+		types: ["action"],
 		name: "market",
 		displayNames: ["Market", "Markets"],
 		imageUrl: "favicon.png",
@@ -143,7 +128,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "mine-0",
-				description: `You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to ${coinEmoji} 3 more than it.`,
+				description: `You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to ${coinEmoji}3 more than it.`,
 			},
 		],
 		cost: 4,

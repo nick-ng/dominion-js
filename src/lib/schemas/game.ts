@@ -1,16 +1,15 @@
 import z from "zod";
 
 export const playerStateSchema = z.object({
+	playerId: z.string(),
 	actions: z.number(),
 	coins: z.number(),
 	buys: z.number(),
 	ownedCards: z.string().array(),
-	cardsInDeck: z.number(),
 	deck: z.string().array(),
-	topCardOfDiscard: z.string().nullable(),
 	discardPile: z.string().array(),
-	cardsInHand: z.string().array(),
-	cardsInPlay: z.string().array(),
+	hand: z.string().array(),
+	inPlay: z.string().array(),
 });
 
 export const effectSchema = z.object({
@@ -31,4 +30,22 @@ export const cardSchema = z.object({
 	cost: z.number(),
 	victoryPoints: z.number().optional(),
 	coins: z.number().optional(),
+});
+
+export const playerSchema = z.object({
+	name: z.string(),
+	playerId: z.string(),
+	token: z.string(),
+});
+
+export const gameStateSchema = z.object({
+	supply: z.record(z.string(), z.string().array()), // { [cardName]: cardIds[] }
+	trash: z.string().array(), // cardId[]
+	playerStates: z.record(z.string(), playerStateSchema), // { [playerId]: playerState }
+	turnOrder: z.string().array(), // playerId[]
+	players: z.record(z.string(), playerSchema), // { [playerId]: { name, id, token } }
+	hostId: z.string(), // playerId
+	turn: z.number(),
+	gameSeed: z.number(),
+	turnAdjustment: z.number(),
 });

@@ -2,7 +2,7 @@ import {
 	CARD_HEIGHT_PX,
 	CARD_WIDTH_PX,
 	CARD_WIDTH_OVERLAP_PX,
-} from "./src/lib/game/card-list";
+} from "./src/lib/engine/card-list";
 
 /** @type {import('tailwindcss').Config} */
 export default {
