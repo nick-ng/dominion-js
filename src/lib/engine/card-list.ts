@@ -95,7 +95,16 @@ export const SPECIAL_CARDS: { [key: string]: Card } = {
 		cost: 0,
 		victoryPoints: 0,
 	},
-
+	back: {
+		types: ["back"],
+		name: "back",
+		displayNames: ["", ""],
+		effects: [],
+		imageUrl: "favicon.png",
+		fullImage: true,
+		cost: 0,
+		victoryPoints: 0,
+	},
 	cellary: {
 		types: ["action"],
 		name: "cellary",
