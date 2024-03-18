@@ -1,2 +1,2 @@
-export const coinEmoji = "🪙";
-export const victoryPointEmoji = "🧍";
+export const coinEmoji = "💰";
+export const victoryPointEmoji = "💎";

@@ -54,7 +54,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 			{ type: "action", value: 1 },
 			{
 				type: "merchant-0",
-				description: `The first time you play a Silver this turn, +${coinEmoji} 1`,
+				description: `The first time you play a Silver this turn, +${coinEmoji}1`,
 			},
 		],
 		cost: 3,
@@ -67,7 +67,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "workshop-0",
-				description: `Gain a card costing up to ${coinEmoji} 4`,
+				description: `Gain a card costing up to ${coinEmoji}4`,
 			},
 		],
 		cost: 3,
@@ -88,7 +88,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "remodel-0",
-				description: `Trash a card from your hand. Gain a card costing up to ${coinEmoji} 2 more than it.`,
+				description: `Trash a card from your hand. Gain a card costing up to ${coinEmoji}2 more than it.`,
 			},
 		],
 		cost: 4,
@@ -128,7 +128,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		effects: [
 			{
 				type: "mine-0",
-				description: `You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to ${coinEmoji} 3 more than it.`,
+				description: `You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to ${coinEmoji}3 more than it.`,
 			},
 		],
 		cost: 4,
