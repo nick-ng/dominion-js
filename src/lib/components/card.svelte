@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { getCardFromId } from "$lib/game/card-list";
+	import { getCardFromId } from "$lib/engine/card-list";
 
 	import CardContents from "./card-contents.svelte";
 

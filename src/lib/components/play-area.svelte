@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
 
-	import { CARD_WIDTH_OVERLAP_PX } from "$lib/game/card-list";
+	import { CARD_WIDTH_OVERLAP_PX } from "$lib/engine/card-list";
 
 	import Card from "./card.svelte";
 	import ResourceDisplay from "./resource-display.svelte";
@@ -14,8 +14,17 @@
 	let isThreshold = false;
 	let playedCardCenters: { [cardId: string]: { x: number; y: number } } = {};
 	let playZoneEl: HTMLElement | null = null;
+	let deckEl: HTMLElement | null = null;
 
-	onMount(() => {});
+	let deckCenter = { x: -1, y: -1 };
+
+	onMount(() => {
+		if (deckEl) {
+			const deckRect = deckEl.getBoundingClientRect();
+			deckCenter.x = (deckRect.left + deckRect.right) / 2;
+			deckCenter.y = (deckRect.top + deckRect.bottom) / 2;
+		}
+	});
 </script>
 
 <div class="border-subtle">
@@ -27,17 +36,22 @@
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
 				>
-					{#if playerState.topCardOfDiscard}
-						<Card cardId={playerState.topCardOfDiscard} />
+					{#if playerState.discardPile.length > 0}
+						<Card
+							cardId={playerState.discardPile[
+								playerState.discardPile.length - 1
+							]}
+						/>
 					{/if}
 				</div>
 			</div>
 			<div class="px-1">
-				<div class="text-center">Deck: {playerState.deckCount}</div>
+				<div class="text-center">Deck: {playerState.deck.length}</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
+					bind:this={deckEl}
 				>
-					{#if playerState.deckCount > 0}
+					{#if playerState.deck.length > 0}
 						<!-- @todo(nick-ng): make a cardback component -->
 						<CardFrame fullImageUrl="favicon.png" />
 					{/if}
@@ -94,6 +108,7 @@
 					<Card
 						class="absolute left-0"
 						{cardId}
+						initialCenter={deckCenter}
 						hoverFront
 						hoverGrow
 						draggable

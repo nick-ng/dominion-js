@@ -1,6 +1,7 @@
 import z from "zod";
 
 import {
+	playerSchema,
 	playerStateSchema,
 	cardSchema,
 	gameStateSchema,
@@ -12,3 +13,4 @@ export type Effect = z.infer<typeof effectSchema>;
 export type Card = z.infer<typeof cardSchema>;
 
 export type GameState = z.infer<typeof gameStateSchema>;
+export type Player = z.infer<typeof playerSchema>;

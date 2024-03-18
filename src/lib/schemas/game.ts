@@ -1,16 +1,14 @@
 import z from "zod";
 
 export const playerStateSchema = z.object({
+	playerId: z.string(),
 	actions: z.number(),
 	coins: z.number(),
 	buys: z.number(),
 	ownedCards: z.string().array(),
-	deckCount: z.number(),
 	deck: z.string().array(),
-	topCardOfDiscard: z.string().nullable(),
 	discardPile: z.string().array(),
 	hand: z.string().array(),
-	handCount: z.number(),
 	inPlay: z.string().array(),
 });
 

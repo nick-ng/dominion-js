@@ -108,7 +108,7 @@ export const BASE_GAME_CARDS: { [key: string]: Card } = {
 		cost: 4,
 	},
 	market: {
-		types: ["action", "attack"],
+		types: ["action"],
 		name: "market",
 		displayNames: ["Market", "Markets"],
 		imageUrl: "favicon.png",

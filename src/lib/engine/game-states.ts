@@ -13,7 +13,7 @@ export function getStartingGameState(
 
 	for (let i = 0; i < Object.values(players).length; i++) {
 		const player = Object.values(players)[i];
-		playerStates[player.playerId] = getStartingPlayerState();
+		playerStates[player.playerId] = getStartingPlayerState(player.playerId);
 	}
 
 	return structuredClone({

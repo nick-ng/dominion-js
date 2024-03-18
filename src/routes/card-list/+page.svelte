@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ALL_CARDS } from "$lib/game/card-list";
+	import { ALL_CARDS } from "$lib/engine/card-list";
 	import Card from "$lib/components/card.svelte";
 </script>
 
