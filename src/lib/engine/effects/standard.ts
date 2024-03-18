@@ -25,51 +25,51 @@ export function shuffleDiscard(
 	return prevGameState;
 }
 
-export function applyPlusCard(
+export function applyPlusSomething(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
 ): GameState {
 	if (
 		!prevGameState.playerStates[playerId] ||
-		cardEffect.type !== "card" ||
 		typeof cardEffect.value !== "number"
 	) {
 		return prevGameState;
 	}
 
-	for (let i = 0; i < cardEffect.value; i++) {
-		if (prevGameState.playerStates[playerId].deck.length === 0) {
-			shuffleDiscard(prevGameState, playerId);
-		}
+	switch (cardEffect.type) {
+		case "card": {
+			for (let i = 0; i < cardEffect.value; i++) {
+				if (prevGameState.playerStates[playerId].deck.length === 0) {
+					shuffleDiscard(prevGameState, playerId);
+				}
 
-		const cardId = prevGameState.playerStates[playerId].deck.shift();
-		if (!cardId) {
-			// discard pile has been shuffled into the deck. if there are still no cards, shuffling won't do anything
+				const cardId = prevGameState.playerStates[playerId].deck.shift();
+				if (!cardId) {
+					// discard pile has been shuffled into the deck. if there are still no cards, shuffling won't do anything
+					break;
+				}
+
+				prevGameState.playerStates[playerId].hand.push(cardId);
+			}
 			break;
 		}
-
-		prevGameState.playerStates[playerId].hand.push(cardId);
+		case "action": {
+			prevGameState.playerStates[playerId].actions =
+				prevGameState.playerStates[playerId].actions + cardEffect.value;
+			break;
+		}
+		case "buy": {
+			prevGameState.playerStates[playerId].buys =
+				prevGameState.playerStates[playerId].buys + cardEffect.value;
+			break;
+		}
+		case "coin": {
+			prevGameState.playerStates[playerId].coins =
+				prevGameState.playerStates[playerId].coins + cardEffect.value;
+			break;
+		}
 	}
-
-	return prevGameState;
-}
-
-export function applyPlusAction(
-	prevGameState: GameState,
-	cardEffect: Effect,
-	playerId: string,
-): GameState {
-	if (
-		!prevGameState.playerStates[playerId] ||
-		cardEffect.type !== "action" ||
-		typeof cardEffect.value !== "number"
-	) {
-		return prevGameState;
-	}
-
-	prevGameState.playerStates[playerId].actions =
-		prevGameState.playerStates[playerId].actions + cardEffect.value;
 
 	return prevGameState;
 }

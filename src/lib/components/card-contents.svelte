@@ -3,9 +3,6 @@
 	import type { Card } from "$lib/schemas/types";
 	import CardFrame from "./card-frame.svelte";
 
-	import Coin from "./symbols/coin.svelte";
-	import VictoryPoint from "./symbols/victory-point.svelte";
-
 	export let card: Card;
 
 	$: isFullImage = card.fullImage && card?.imageUrl;

@@ -1,9 +1,9 @@
 import type { GameState, PlayerState, Player } from "$lib/schemas/types";
 
-import { ALL_CARDS, getCardFromId } from "$lib/engine/card-list";
+import { getCardFromId } from "$lib/engine/card-list";
 import { getRandomGameSeed } from "$lib/utils";
 import { getStartingPlayerState } from "./player-states";
-import { applyPlusAction, applyPlusCard } from "./effects/standard";
+import { applyPlusSomething } from "./effects/standard";
 
 export default class Game {
 	constructor(players: Player[], hostId: string) {
@@ -135,22 +135,10 @@ export default class Game {
 		}
 
 		for (let i = 0; i < card.effects.length; i++) {
-			console.log("card.effects[i].type", card.effects[i].type);
 			// resolve effects here
 			switch (card.effects[i].type) {
-				case "card": {
-					const { playerStates } = applyPlusCard(
-						this.getGameState(),
-						card.effects[i],
-						playerId,
-					);
-
-					this.playerStates = playerStates;
-
-					break;
-				}
-				case "action": {
-					const { playerStates } = applyPlusAction(
+				default: {
+					const { playerStates } = applyPlusSomething(
 						this.getGameState(),
 						card.effects[i],
 						playerId,

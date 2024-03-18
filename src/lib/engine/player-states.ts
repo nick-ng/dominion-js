@@ -42,7 +42,7 @@ export function getTest0PlayerState(playerId: string): PlayerState {
 		actions: 1,
 		coins: 0,
 		buys: 0,
-		deck: [],
+		deck: ["moat:0", "mine:0", "remodel:0", "cellar:0"],
 		discardPile: [
 			"estate:1",
 			"estate:2",
