@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { getCardFromId } from "$lib/engine/card-list";
+	import { optionsStore } from "$lib/stores/options";
 
 	import CardContents from "./card-contents.svelte";
 
@@ -193,10 +194,14 @@
 	onMount(() => {
 		// It's possible to have the mouse move off the card while dragging
 		// Listen for a global "mouseup" event as a fallback
-		// @todo(nick-ng): figure out a better way to recognise dragging
-		window.addEventListener("mouseup", () => endHandler(true));
+		// @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
+		window.addEventListener("mouseup", () => endHandler(false));
 
-		if (initialCenter.x >= 0 && initialCenter.y >= 0) {
+		if (
+			$optionsStore.animationSpeed < 11 &&
+			initialCenter.x >= 0 &&
+			initialCenter.y >= 0
+		) {
 			skipTransition = true;
 
 			const rect = cardButtonEl.getBoundingClientRect();
@@ -208,15 +213,24 @@
 
 			buttonStyle2 = `left: ${adjustX}px;bottom: ${adjustY}px;`;
 
+			const distance = Math.pow(
+				Math.pow(adjustX, 2) + Math.pow(adjustY, 2),
+				0.5,
+			);
+
+			const animationSpeedMs =
+				(Math.log(distance) * 5 + 200 / $optionsStore.animationSpeed) *
+				(10.1 - $optionsStore.animationSpeed);
+
 			setTimeout(() => {
 				skipTransition = false;
 			}, 1);
 			setTimeout(() => {
-				buttonStyle2 = "transition-duration: 300ms";
+				buttonStyle2 = `transition-duration: ${animationSpeedMs}ms`;
 			}, 2);
 			setTimeout(() => {
 				buttonStyle2 = "";
-			}, 302);
+			}, animationSpeedMs + 2);
 		}
 
 		cardButtonEl.addEventListener(
@@ -235,7 +249,7 @@
 
 {#if card}
 	<button
-		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
+		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 align-top ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
 		style={`${buttonStyle};${buttonStyle2};`}
 		bind:this={cardButtonEl}
 		on:click={() => {

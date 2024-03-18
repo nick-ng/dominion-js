@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { PlayerState } from "$lib/schemas/types";
 
-	import { CARD_WIDTH_OVERLAP_PX } from "$lib/engine/card-list";
+	import { CARD_WIDTH_OVERLAP_PX, CARD_WIDTH_PX } from "$lib/engine/card-list";
 
 	import Card from "./card.svelte";
 	import ResourceDisplay from "./resource-display.svelte";
 	import { onMount } from "svelte";
-	import CardFrame from "./card-frame.svelte";
 
 	export let playerState: PlayerState;
 	export let onPlayCard: (cardId: string) => void | Promise<void> = () => {};
@@ -15,14 +14,33 @@
 	let playedCardCenters: { [cardId: string]: { x: number; y: number } } = {};
 	let playZoneEl: HTMLElement | null = null;
 	let deckEl: HTMLElement | null = null;
+	let discardEl: HTMLElement | null = null;
 
 	let deckCenter = { x: -1, y: -1 };
+	let discardCenter = { x: -1, y: -1 };
+	let playZoneWidthPx = 0;
+
+	$: playZoneBasisPx = Math.min(
+		CARD_WIDTH_OVERLAP_PX * playerState.inPlay.length,
+		playZoneWidthPx - CARD_WIDTH_PX,
+	);
 
 	onMount(() => {
 		if (deckEl) {
 			const deckRect = deckEl.getBoundingClientRect();
 			deckCenter.x = (deckRect.left + deckRect.right) / 2;
 			deckCenter.y = (deckRect.top + deckRect.bottom) / 2;
+		}
+
+		if (discardEl) {
+			const discardRect = discardEl.getBoundingClientRect();
+			discardCenter.x = (discardRect.left + discardRect.right) / 2;
+			discardCenter.y = (discardRect.top + discardRect.bottom) / 2;
+		}
+
+		if (playZoneEl) {
+			const playZoneRect = playZoneEl.getBoundingClientRect();
+			playZoneWidthPx = playZoneRect.right - playZoneRect.left;
 		}
 	});
 </script>
@@ -35,6 +53,7 @@
 				<div class="text-center">Discard</div>
 				<div
 					class="border-subtle box-content h-card w-card border-2 border-dashed"
+					bind:this={discardEl}
 				>
 					{#if playerState.discardPile.length > 0}
 						<Card
@@ -52,8 +71,8 @@
 					bind:this={deckEl}
 				>
 					{#if playerState.deck.length > 0}
-						<!-- @todo(nick-ng): make a cardback component -->
-						<CardFrame fullImageUrl="favicon.png" />
+						<!-- @todo(nick-ng): figure out how to animate cards going from discard pile to deck -->
+						<Card cardId="back:0" initialCenter={discardCenter} />
 					{/if}
 				</div>
 			</div>
@@ -69,12 +88,12 @@
 					bind:this={playZoneEl}
 				>
 					<div
-						class={`flex h-full flex-row items-center justify-start`}
-						style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.inPlay.length}px`}
+						class={`flex h-full flex-shrink flex-row items-center justify-start`}
+						style={`flex-basis: ${playZoneBasisPx}px`}
 					>
 						{#each playerState.inPlay as cardId (cardId)}
 							<div
-								class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
+								class="relative h-card flex-shrink flex-grow basis-card-overlap"
 							>
 								<Card
 									class="absolute left-0"

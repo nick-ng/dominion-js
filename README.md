@@ -20,6 +20,6 @@ Dominion in JavaScript (TypeScript)
 - src\lib\stores\game-state.ts:19: // @todo(nick-ng): should websocket stuff be in a .svelte file instead?
 - src\lib\components\symbols\victory-point.svelte:5:<!-- @todo(nick-ng): draw your own victory point symbol? -->
 - src\lib\components\symbols\coin.svelte:5:<!-- @todo(nick-ng): draw your own coin symbol? -->
-- src\lib\components\play-area.svelte:55: <!-- @todo(nick-ng): make a cardback component -->
-- src\lib\components\card.svelte:196: // @todo(nick-ng): figure out a better way to recognise dragging
-- src\lib\components\card.svelte:233: // @todo(nick-ng): add tooltip to cards for extra rules
+- src\lib\components\play-area.svelte:74: <!-- @todo(nick-ng): figure out how to animate cards going from discard pile to deck -->
+- src\lib\components\card.svelte:197: // @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
+- src\lib\components\card.svelte:247: // @todo(nick-ng): add tooltip to cards for extra rules

@@ -6,8 +6,7 @@
 	export let card: Card;
 
 	$: isFullImage = card.fullImage && card?.imageUrl;
-
-	let imageStyle = card.imageUrl
+	$: imageStyle = card.imageUrl
 		? `background-image: url("${card.imageUrl}");background-size: cover;background-repeat: no-repeat;background-position: center;`
 		: "";
 </script>
@@ -57,12 +56,14 @@
 	{#if !isFullImage && card.imageUrl}
 		<div class="flex-grow" />
 	{/if}
-	<div
-		class="mt-1 flex flex-row justify-between border-t pt-0.5 text-left text-xs"
-	>
-		<div>
-			{coinEmoji}{card.cost}
+	{#if card.name !== "back"}
+		<div
+			class="mt-1 flex flex-row justify-between border-t pt-0.5 text-left text-xs"
+		>
+			<div>
+				{coinEmoji}{card.cost}
+			</div>
+			<div class="capitalize">{card.types.join(", ")}</div>
 		</div>
-		<div class="capitalize">{card.types.join(", ")}</div>
-	</div>
+	{/if}
 </CardFrame>
