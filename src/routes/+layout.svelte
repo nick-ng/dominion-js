@@ -8,8 +8,12 @@
 
 <div class="relative mx-2 mt-2">
 	<nav class="mb-1">
-		<a class="button-default px-2 no-underline" href="simulator">Simulator</a>
-		<a class="button-default px-2 no-underline" href="card-list">Card List</a>
+		<a class="button-default inline-block px-2 no-underline" href="simulator"
+			>Simulator</a
+		>
+		<a class="button-default inline-block px-2 no-underline" href="card-list"
+			>Card List</a
+		>
 	</nav>
 	<div class="mainarea">
 		<slot />

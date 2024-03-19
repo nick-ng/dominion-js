@@ -13,7 +13,7 @@
 
 <CardFrame
 	fullImageUrl={card?.fullImage && card?.imageUrl}
-	class="relative leading-tight"
+	class={`relative ${isFullImage ? "text-lg" : "text-sm"} leading-tight`}
 >
 	<h4 class="mb-1 leading-none">{card.displayNames[0]}</h4>
 	{#if isFullImage || !card.imageUrl}
@@ -23,22 +23,22 @@
 	{/if}
 	{#each card.effects as effect}
 		{#if effect.type === "card"}
-			<div class="text-center text-sm">
+			<div class="text-center">
 				+{effect.value}
 				{effect.value === 1 ? "Card" : "Cards"}
 			</div>
 		{:else if effect.type === "action"}
-			<div class="text-center text-sm">
+			<div class="text-center">
 				+{effect.value}
 				{effect.value === 1 ? "Action" : "Actions"}
 			</div>
 		{:else if effect.type === "buy"}
-			<div class="text-center text-sm">
+			<div class="text-center">
 				+{effect.value}
 				{effect.value === 1 ? "Buy" : "Buyss"}
 			</div>
 		{:else if effect.type === "coin"}
-			<div class="text-center text-sm">
+			<div class="text-center">
 				+{coinEmoji}{effect.value}
 			</div>
 		{:else if effect.type === "line"}
@@ -47,9 +47,6 @@
 			<div class="text-center text-xs">{effect.description}</div>
 		{/if}
 	{/each}
-	{#if card.coins}
-		<div>+{coinEmoji}{card.coins}</div>
-	{/if}
 	{#if card.victoryPoints}
 		<div>{victoryPointEmoji}{card.victoryPoints}</div>
 	{/if}

@@ -49,7 +49,7 @@ export function shuffle<T>(deck: T[], seed: number): T[] {
 	return shuffledDeck.map(({ card }) => card);
 }
 
-export function getTurnSeed(gameState: GameState): number {
+export function getTurnSeed(gameState: GameState, adjustment?: number): number {
 	const playerStates = Object.values(gameState.playerStates);
 
 	let cardsInPlay = 0;
@@ -57,7 +57,7 @@ export function getTurnSeed(gameState: GameState): number {
 		cardsInPlay += playerStates[i].inPlay.length;
 	}
 
-	const temp = `${gameState.turn}${cardsInPlay}${gameState.gameSeed}`;
+	const temp = `${adjustment || 0}${gameState.turn}${cardsInPlay}${gameState.gameSeed}`;
 
 	return parseInt(temp, 10);
 }

@@ -14,3 +14,12 @@ export type Card = z.infer<typeof cardSchema>;
 
 export type GameState = z.infer<typeof gameStateSchema>;
 export type Player = z.infer<typeof playerSchema>;
+
+export type ActionResult =
+	| {
+			success: true;
+			reason?: string;
+	  }
+	| { success: false; reason: string };
+
+export type Coordinates = { x: number; y: number };

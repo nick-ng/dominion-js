@@ -13,7 +13,7 @@ export const playerStateSchema = z.object({
 });
 
 export const effectSchema = z.object({
-	// "buy", "action", "coin", "card", "custom-<name-of-card>"
+	// "buy", "action", "coin", "card", "<name-of-card>-<number>"
 	type: z.string(),
 	value: z.number().optional(),
 	description: z.string().optional(),
@@ -29,7 +29,6 @@ export const cardSchema = z.object({
 	fullImage: z.boolean().optional(),
 	cost: z.number(),
 	victoryPoints: z.number().optional(),
-	coins: z.number().optional(),
 });
 
 export const playerSchema = z.object({
@@ -39,6 +38,7 @@ export const playerSchema = z.object({
 });
 
 export const gameStateSchema = z.object({
+	gameId: z.string(),
 	supply: z.record(z.string(), z.string().array()), // { [cardName]: cardIds[] }
 	trash: z.string().array(), // cardId[]
 	playerStates: z.record(z.string(), playerStateSchema), // { [playerId]: playerState }
@@ -48,4 +48,5 @@ export const gameStateSchema = z.object({
 	turn: z.number(),
 	gameSeed: z.number(),
 	turnAdjustment: z.number(),
+	turnPhase: z.enum(["action", "buy-0", "buy-1", "cleanup", "over", "lobby"]),
 });

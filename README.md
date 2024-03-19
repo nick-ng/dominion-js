@@ -8,7 +8,9 @@ Dominion in JavaScript (TypeScript)
 - [x] Smooth transition from hand to in-play
 - [ ] Cards with "standard" effects (+action, +card, etc.)
 - [ ] Cards with "custom" effects (text descriptions)
-- [ ] Options
+- [x] Options
+   - [ ] Options menu
+   - [ ] Control "wiggle"
 - [ ] Websocket Server
 - [ ] Svelte Store for Websockets on front-end
 - [ ] Update local state immediately as you play and handle updating as remote state arrives
@@ -16,10 +18,10 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src\lib\stores\game-state.ts:18: // @todo(nick-ng): connect to websocket here
-- src\lib\stores\game-state.ts:19: // @todo(nick-ng): should websocket stuff be in a .svelte file instead?
-- src\lib\components\symbols\victory-point.svelte:5:<!-- @todo(nick-ng): draw your own victory point symbol? -->
-- src\lib\components\symbols\coin.svelte:5:<!-- @todo(nick-ng): draw your own coin symbol? -->
-- src\lib\components\play-area.svelte:74: <!-- @todo(nick-ng): figure out how to animate cards going from discard pile to deck -->
-- src\lib\components\card.svelte:197: // @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
-- src\lib\components\card.svelte:247: // @todo(nick-ng): add tooltip to cards for extra rules
+- src\lib\stores\game-state.ts: @todo(nick-ng): connect to websocket here
+- src\lib\stores\game-state.ts: @todo(nick-ng): should websocket stuff be in a .svelte file instead?
+- src\lib\components\symbols\victory-point.svelte: @todo(nick-ng): draw your own victory point symbol? 
+- src\lib\components\symbols\coin.svelte: @todo(nick-ng): draw your own coin symbol? 
+- src\lib\components\play-area.svelte: @todo(nick-ng): make an array of centers then make discard cards for each one
+- src\lib\components\card.svelte: @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
+- src\lib\components\card.svelte: @todo(nick-ng): add tooltip to cards for extra rules

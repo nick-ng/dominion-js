@@ -5,6 +5,7 @@ import { shuffle, getTurnSeed } from "../../utils";
 export function shuffleDiscard(
 	prevGameState: GameState,
 	playerId: string,
+	adjustment?: number,
 ): GameState {
 	const prevDiscardPile = prevGameState.playerStates[playerId]?.discardPile;
 	const prevDeck = prevGameState.playerStates[playerId]?.deck;
@@ -15,7 +16,7 @@ export function shuffleDiscard(
 
 	const shuffledDiscardPile = shuffle(
 		prevDiscardPile,
-		getTurnSeed(prevGameState),
+		getTurnSeed(prevGameState, adjustment),
 	);
 
 	prevGameState.playerStates[playerId].discardPile = [];
@@ -25,10 +26,11 @@ export function shuffleDiscard(
 	return prevGameState;
 }
 
-export function applyPlusSomething(
+export function applyPlusEffect(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
+	adjustment?: number,
 ): GameState {
 	if (
 		!prevGameState.playerStates[playerId] ||
@@ -41,7 +43,7 @@ export function applyPlusSomething(
 		case "card": {
 			for (let i = 0; i < cardEffect.value; i++) {
 				if (prevGameState.playerStates[playerId].deck.length === 0) {
-					shuffleDiscard(prevGameState, playerId);
+					shuffleDiscard(prevGameState, playerId, adjustment);
 				}
 
 				const cardId = prevGameState.playerStates[playerId].deck.shift();

@@ -2,7 +2,7 @@ import type { Card } from "$lib/schemas/types";
 
 import { coinEmoji } from "../emojis";
 
-export const BASE_GAME_CARDS: { [key: string]: Card } = {
+export const DOMINION_CARDS: { [key: string]: Card } = {
 	cellar: {
 		types: ["action"],
 		name: "cellar",
