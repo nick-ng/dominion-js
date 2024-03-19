@@ -6,8 +6,12 @@ Dominion in JavaScript (TypeScript)
 - [x] Drag cards to play
 - [x] Drag cards on mobile
 - [x] Smooth transition from hand to in-play
-- [ ] Cards with "standard" effects (+action, +card, etc.)
-- [ ] Cards with "custom" effects (text descriptions)
+- [x] "standard" effects (+action, +card, etc.)
+- [x] Play Treasure cards
+- [ ] Buy cards
+- [ ] "complicated" effects (text descriptions)
+- [ ] Clean-up cards
+   - Choose which card you want to be the top of your discard pile
 - [x] Options
    - [ ] Options menu
    - [ ] Control "wiggle"
@@ -15,6 +19,9 @@ Dominion in JavaScript (TypeScript)
 - [ ] Svelte Store for Websockets on front-end
 - [ ] Update local state immediately as you play and handle updating as remote state arrives
    - Hash the state after each action and store hashes in an array. If you receive a state with the hash that is in the array, you know you're still in-sync with the server. If you get a hash you haven't seen before, you need to overwrite whatever game state you think you have
+   - +Card effects need to wait for the server
+- [ ] Animate buying cards
+- [ ] Animate clean-up phase
 
 ### ToDo Comments
 
