@@ -18,10 +18,12 @@ Dominion in JavaScript (TypeScript)
 
 ### ToDo Comments
 
-- src\lib\stores\game-state.ts: @todo(nick-ng): connect to websocket here
-- src\lib\stores\game-state.ts: @todo(nick-ng): should websocket stuff be in a .svelte file instead?
-- src\lib\components\symbols\victory-point.svelte: @todo(nick-ng): draw your own victory point symbol? 
-- src\lib\components\symbols\coin.svelte: @todo(nick-ng): draw your own coin symbol? 
-- src\lib\components\play-area.svelte: @todo(nick-ng): make an array of centers then make discard cards for each one
-- src\lib\components\card.svelte: @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
-- src\lib\components\card.svelte: @todo(nick-ng): add tooltip to cards for extra rules
+File | ToDo
+:- | :-
+`src\lib\stores\game-state.ts` | (@nick-ng): connect to websocket here
+`src\lib\stores\game-state.ts` | (@nick-ng): should websocket stuff be in a .svelte file instead?
+`src\lib\components\symbols\victory-point.svelte` | (@nick-ng): draw your own victory point symbol? 
+`src\lib\components\symbols\coin.svelte` | (@nick-ng): draw your own coin symbol? 
+`src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
+`src\lib\components\card.svelte` | (@nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
+`src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
