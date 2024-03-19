@@ -1,6 +1,6 @@
 import type { Card } from "$lib/schemas/types";
 
-import { BASE_GAME_CARDS } from "./base-game-card-list";
+import { DOMINION_CARDS } from "./dominion-card-list";
 
 export const CARD_HEIGHT_PX = 210;
 export const CARD_WIDTH_PX = Math.ceil((CARD_HEIGHT_PX / 3) * 2);
@@ -11,31 +11,28 @@ export const BASE_CARDS: { [key: string]: Card } = {
 		types: ["treasure"],
 		name: "copper",
 		displayNames: ["Copper", "Coppers"],
-		effects: [],
+		effects: [{ type: "coin", value: 1 }],
 		imageUrl: "copper.png",
 		fullImage: true,
 		cost: 0,
-		coins: 1,
 	},
 	silver: {
 		types: ["treasure"],
 		name: "silver",
 		displayNames: ["Silver", "Silvers"],
-		effects: [],
+		effects: [{ type: "coin", value: 2 }],
 		imageUrl: "silver.png",
 		fullImage: true,
 		cost: 3,
-		coins: 2,
 	},
 	gold: {
 		types: ["treasure"],
 		name: "gold",
 		displayNames: ["Gold", "Golds"],
-		effects: [],
+		effects: [{ type: "coin", value: 3 }],
 		imageUrl: "gold.png",
 		fullImage: true,
 		cost: 6,
-		coins: 3,
 	},
 	estate: {
 		types: ["victory"],
@@ -125,11 +122,16 @@ export const SPECIAL_CARDS: { [key: string]: Card } = {
 export const ALL_CARDS: { [key: string]: Card } = {
 	...BASE_CARDS,
 	...SPECIAL_CARDS,
-	...BASE_GAME_CARDS,
+	...DOMINION_CARDS,
 };
 
-export const BASE_GAME_CARD_LIST = Object.keys(BASE_GAME_CARDS);
-export const KINGDOM_CARD_LIST = [...BASE_GAME_CARD_LIST];
+export const BASE_CARD_LIST = Object.keys(BASE_CARDS);
+export const DOMINION_CARD_LIST = Object.keys(DOMINION_CARDS).sort((a, b) =>
+	a.localeCompare(b),
+);
+export const KINGDOM_CARD_LIST = [...DOMINION_CARD_LIST].sort((a, b) =>
+	a.localeCompare(b),
+);
 
 export function getCardFromId(cardId: string): Card | null {
 	const [cardName] = cardId.split(":");
@@ -137,4 +139,52 @@ export function getCardFromId(cardId: string): Card | null {
 	const card = ALL_CARDS[cardName];
 
 	return card || null;
+}
+
+const PILE_SIZES = [
+	{ victory: 8, curse: 10, copper: 60, silver: 40, gold: 30 }, // 0
+	{ victory: 8, curse: 10, copper: 60, silver: 40, gold: 30 }, // 1
+	{ victory: 8, curse: 10, copper: 60, silver: 40, gold: 30 }, // 2
+	{ victory: 12, curse: 20, copper: 60, silver: 40, gold: 30 }, // 3
+	{ victory: 12, curse: 30, copper: 60, silver: 40, gold: 30 }, // 4
+	{ victory: 12, curse: 40, copper: 120, silver: 80, gold: 60 }, // 5
+	{ victory: 12, curse: 50, copper: 120, silver: 80, gold: 60 }, // 6
+];
+export function getCardPile(cardName: string, playerCount: number): string[] {
+	const card = ALL_CARDS[cardName];
+
+	if (!card) {
+		return [];
+	}
+
+	let pileSize = 10;
+	const usedCoppers = playerCount * 7;
+
+	if (card.types.includes("victory")) {
+		pileSize = PILE_SIZES[playerCount]?.victory || 12;
+
+		if (cardName === "province") {
+			if (playerCount === 5) {
+				pileSize = 15;
+			} else if (playerCount === 6) {
+				pileSize = 18;
+			}
+		}
+	} else if (card.types.includes("curse")) {
+		pileSize = PILE_SIZES[playerCount]?.curse || 10;
+	} else if (cardName === "copper") {
+		pileSize = (PILE_SIZES[playerCount]?.copper || 60) - usedCoppers;
+	} else if (cardName === "silver") {
+		pileSize = PILE_SIZES[playerCount]?.silver || 40;
+	} else if (cardName === "gold") {
+		pileSize = PILE_SIZES[playerCount]?.gold || 30;
+	}
+
+	const pile = [];
+
+	for (let i = 0; i < pileSize; i++) {
+		pile.push(`${cardName}:${i}`);
+	}
+
+	return pile;
 }

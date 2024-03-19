@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Coordinates } from "$lib/schemas/types";
+
 	import { onMount } from "svelte";
 	import { getCardFromId } from "$lib/engine/card-list";
 	import { optionsStore } from "$lib/stores/options";
@@ -7,24 +9,29 @@
 
 	const DRAG_BORDER_X_PX = 30;
 	const DRAG_BORDER_Y_PX = 30;
+	const WIGGLE_PX = Math.floor(Math.random() * 5) - 2;
 
 	let className = "";
 	export { className as class };
 	export let cardId: string;
 	export let hoverGrow = false;
-	export let hoverUp = false;
 	export let hoverFront = false;
 	export let draggable = false;
 	export let dragTarget: HTMLElement | null = null;
-	export let initialCenter: { x: number; y: number } = { x: -1, y: -1 };
-	export let onClick: (cardId: string) => void | Promise<void> = () => {};
+	export let initialCenter: Coordinates = { x: -1, y: -1 };
+	export let wiggle = false;
+	export let onClick: (
+		cardId: string,
+		cardCenter: Coordinates,
+	) => void | Promise<void> = () => {};
 	export let onDragThresholdChange: (
 		cardId: string,
 		isThreshold: boolean,
+		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
 	export let onDrag: (
 		cardId: string,
-		cardCenter: { x: number; y: number },
+		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
 
 	const checkThreshold = (
@@ -80,6 +87,12 @@
 		};
 	};
 
+	const getCardCenter = (): Coordinates => {
+		const rect = cardButtonEl.getBoundingClientRect();
+
+		return { x: (rect.left + rect.right) / 2, y: (rect.top + rect.bottom) / 2 };
+	};
+
 	let isMouseDown = false;
 	let startX = 0;
 	let startY = 0;
@@ -94,7 +107,9 @@
 	$: card = getCardFromId(cardId);
 	$: buttonStyle = [
 		draggable && isMouseDown && `left: ${currentX}px`,
-		draggable && isMouseDown && `bottom: ${currentY}px`,
+		draggable && isMouseDown
+			? `bottom: ${currentY}px`
+			: wiggle && `bottom: ${WIGGLE_PX}px`,
 	]
 		.filter((a) => a)
 		.join(";");
@@ -105,13 +120,6 @@
 				hoverClass = `${hoverClass} scale-110`;
 			} else {
 				hoverClass = `${hoverClass} can-hover:hover:scale-110`;
-			}
-		}
-		if (hoverUp) {
-			if (isMouseDown) {
-				hoverClass = `${hoverClass} bottom-2`;
-			} else {
-				hoverClass = `${hoverClass} can-hover:hover:bottom-2`;
 			}
 		}
 		if (hoverFront) {
@@ -146,7 +154,7 @@
 		}
 
 		currentX = 0;
-		currentY = hoverUp ? 10 : 0;
+		currentY = 0;
 
 		isMouseDown = true;
 	}
@@ -161,7 +169,7 @@
 			let newIsThreshold = checkThreshold(cardButtonEl, dragTarget);
 
 			if (isThreshold !== newIsThreshold) {
-				onDragThresholdChange(cardId, newIsThreshold);
+				onDragThresholdChange(cardId, newIsThreshold, getCardCenter());
 			}
 
 			isThreshold = newIsThreshold;
@@ -175,19 +183,14 @@
 		const isThreshold = checkThreshold(cardButtonEl, dragTarget);
 
 		if (isThreshold) {
-			const rect = cardButtonEl.getBoundingClientRect();
-
-			const x = (rect.left + rect.right) / 2;
-			const y = (rect.top + rect.bottom) / 2;
-
 			if (deliberate) {
-				onDrag(cardId, { x, y });
+				onDrag(cardId, getCardCenter());
 			}
-			onDragThresholdChange(cardId, false);
+			onDragThresholdChange(cardId, false, getCardCenter());
 		}
 
 		currentX = 0;
-		currentY = hoverUp ? 10 : 0;
+		currentY = 0;
 		isMouseDown = false;
 	}
 
@@ -253,7 +256,7 @@
 		style={`${buttonStyle};${buttonStyle2};`}
 		bind:this={cardButtonEl}
 		on:click={() => {
-			onClick(cardId);
+			onClick(cardId, getCardCenter());
 		}}
 		on:mousedown={startHandler}
 		on:mousemove={moveHandler}

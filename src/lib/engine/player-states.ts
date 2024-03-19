@@ -42,7 +42,7 @@ export function getTest0PlayerState(playerId: string): PlayerState {
 		actions: 1,
 		coins: 0,
 		buys: 0,
-		deck: ["moat:0", "mine:0", "remodel:0", "cellar:0"],
+		deck: ["copper:7"],
 		discardPile: [
 			"estate:1",
 			"estate:2",
@@ -53,9 +53,15 @@ export function getTest0PlayerState(playerId: string): PlayerState {
 			"copper:4",
 			"copper:5",
 			"copper:6",
-			"copper:7",
 		],
-		hand: ["village:0", "merchant:0", "smithy:0", "market:0", "militia:0"],
+		hand: [
+			"village:0",
+			"merchant:0",
+			"smithy:0",
+			"smithy:1",
+			"market:0",
+			"militia:0",
+		],
 		inPlay: [],
 	};
 
@@ -66,7 +72,7 @@ export function getTest0PlayerState(playerId: string): PlayerState {
 			...tempState.discardPile,
 			...tempState.hand,
 			...tempState.inPlay,
-		],
+		].sort((a, b) => a.localeCompare(b)),
 	};
 }
 
@@ -106,7 +112,7 @@ export function getTest1PlayerState(playerId: string): PlayerState {
 			...tempState.discardPile,
 			...tempState.hand,
 			...tempState.inPlay,
-		],
+		].sort((a, b) => a.localeCompare(b)),
 	};
 }
 
@@ -146,6 +152,6 @@ export function getTest2PlayerState(playerId: string): PlayerState {
 			...tempState.discardPile,
 			...tempState.hand,
 			...tempState.inPlay,
-		],
+		].sort((a, b) => a.localeCompare(b)),
 	};
 }
