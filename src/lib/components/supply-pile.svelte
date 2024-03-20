@@ -6,6 +6,7 @@
 
 	export let cardName: string;
 	export let count: number;
+	export let sortByCost = false;
 	export let onClick: (
 		cardName: string,
 		cardCenter: Coordinates,
@@ -15,7 +16,7 @@
 </script>
 
 {#if count > 0 && card}
-	<div class="hover:z-10">
+	<div class="hover:z-10" style={sortByCost ? `order: ${card.cost}` : ""}>
 		<div class="text-center">
 			{count === 1 ? card.displayNames[0] : card.displayNames[1]}: {count}
 		</div>

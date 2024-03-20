@@ -4,9 +4,10 @@
 	import { CARD_WIDTH_OVERLAP_PX, CARD_WIDTH_PX } from "$lib/engine/card-list";
 
 	import Card from "./card.svelte";
-	import ResourceDisplay from "./resource-display.svelte";
 	import { onMount } from "svelte";
 
+	let className = "";
+	export { className as class };
 	export let gameState: GameState;
 	export let playerId: string;
 	export let onPlayCard: (
@@ -17,6 +18,7 @@
 		phaseName: GameState["turnPhase"],
 	) => void | Promise<void> = () => {};
 	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
+	export let opponent = false;
 
 	let isThreshold = false;
 	let playedCardCenters: { [cardId: string]: Coordinates } = {};
@@ -58,7 +60,7 @@
 	});
 </script>
 
-<div class="border-subtle">
+<div class={`${className} border-subtle bg-gray-800 transition-all`}>
 	<!-- In Play -->
 	<div class="mb-2">
 		<div class="flex flex-row items-stretch justify-start px-2">
@@ -119,7 +121,10 @@
 									{cardId}
 									hoverFront
 									hoverGrow
-									initialCenter={playedCardCenters[cardId] ?? { x: -1, y: -1 }}
+									initialCenter={playedCardCenters[cardId] ?? {
+										x: -1,
+										y: -1,
+									}}
 								/>
 							</div>
 						{/each}
@@ -131,11 +136,6 @@
 	<!-- Hand -->
 	<div class="mb-2 flex flex-row justify-between">
 		<div class="grid grid-cols-1 gap-2 px-2">
-			<ResourceDisplay
-				actions={playerState.actions}
-				coins={playerState.coins}
-				buys={playerState.buys}
-			/>
 			<button
 				disabled={gameState.turnPhase !== "action"}
 				on:click={() => {
@@ -158,11 +158,11 @@
 				>
 					<Card
 						class="absolute left-0"
-						{cardId}
+						cardId={opponent ? `back:h${i}` : cardId}
 						initialCenter={deckCenter}
 						hoverFront
 						hoverGrow
-						draggable
+						draggable={!opponent}
 						dragTarget={playZoneEl}
 						wiggle
 						onDragThresholdChange={(_cardId, newIsThreshold) => {

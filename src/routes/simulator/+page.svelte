@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PlayArea from "$lib/components/play-area.svelte";
 	import { gameStateStore } from "$lib/stores/game-state";
 	import { optionsStore } from "$lib/stores/options";
 	import {
@@ -7,8 +6,8 @@
 		getTest1PlayerState,
 		getTest2PlayerState,
 	} from "$lib/engine/player-states";
+	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
-	import Supply from "$lib/components/supply.svelte";
 
 	let name = "player 1";
 	let playerId = "aaaaaa";
@@ -24,7 +23,22 @@
 	$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 </script>
 
-<div class="relative">
+<FullDisplay
+	{playerId}
+	onBuy={() => {}}
+	onPlayCard={(cardId) => {
+		const result = game.playCard(playerId, cardId);
+		success = result.success;
+		reason = result.reason || "";
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	}}
+	onEndPhase={(phaseName) => {
+		const result = game.endPhase(playerId, phaseName);
+		success = result.success;
+		reason = result.reason || "";
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	}}
+>
 	<div class="flex flex-row items-start">
 		<button
 			class="button-default"
@@ -105,45 +119,26 @@
 		{/if}
 		<div class="grow" />
 	</div>
-	{#if $gameStateStore.gameState}
-		<Supply gameState={$gameStateStore.gameState} />
-		<PlayArea
-			gameState={$gameStateStore.gameState}
-			{playerId}
-			onPlayCard={(cardId) => {
-				const result = game.playCard(playerId, cardId);
-				success = result.success;
-				reason = result.reason || "";
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}
-			onEndPhase={(phaseName) => {
-				const result = game.endPhase(playerId, phaseName);
-				success = result.success;
-				reason = result.reason || "";
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}
-		/>
-	{/if}
-	<div class="absolute right-0 top-0 border bg-gray-800 px-2">
-		<details>
-			<summary>Debug: Full Game</summary>
-			<pre>{JSON.stringify(game, null, "  ")}</pre>
-		</details>
-		<details>
-			<summary>Debug: Visible Game</summary>
-			<pre>{JSON.stringify(
-					game.getGameStateForPlayer(playerId),
-					null,
-					"  ",
-				)}</pre>
-		</details>
-		<details>
-			<summary>Debug: Player State</summary>
-			<pre>{JSON.stringify(
-					$gameStateStore.gameState?.playerStates[playerId],
-					null,
-					"  ",
-				)}</pre>
-		</details>
-	</div>
+</FullDisplay>
+<div class="absolute right-0 top-0 border bg-gray-800 px-2">
+	<details>
+		<summary>Debug: Full Game</summary>
+		<pre>{JSON.stringify(game, null, "  ")}</pre>
+	</details>
+	<details>
+		<summary>Debug: Visible Game</summary>
+		<pre>{JSON.stringify(
+				game.getGameStateForPlayer(playerId),
+				null,
+				"  ",
+			)}</pre>
+	</details>
+	<details>
+		<summary>Debug: Player State</summary>
+		<pre>{JSON.stringify(
+				$gameStateStore.gameState?.playerStates[playerId],
+				null,
+				"  ",
+			)}</pre>
+	</details>
 </div>

@@ -16,6 +16,10 @@
 		cardName: string,
 		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
+
+	// @todo(nick-ng): show buy confirmation
+	// @todo(nick-ng): show your remaining buys and coins
+	// @todo(nick-ng): show coins after you buy selected card?
 </script>
 
 {#if gameState}
@@ -38,6 +42,7 @@
 					<SupplyPile
 						{cardName}
 						count={gameState.supply[cardName]?.length || 0}
+						sortByCost
 						onClick={(cardName, cardCenter) => {
 							onClick(cardName, cardCenter);
 							console.log("buying", cardName);
