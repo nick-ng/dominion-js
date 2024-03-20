@@ -22,3 +22,52 @@ if (browser) {
 		}
 	});
 }
+
+export function getActivePlayerId(
+	gameState?: GameState,
+	adjustment: number = 0,
+): string {
+	if (!gameState) {
+		return "";
+	}
+
+	const temp = gameState.turn + gameState.turnAdjustment + adjustment;
+
+	let i = temp % gameState.turnOrder.length;
+
+	while (i < 0) {
+		i += gameState.turnOrder.length;
+	}
+
+	return gameState.turnOrder[i];
+}
+
+export function getOpponentOrder(
+	playerId: string,
+	gameState?: GameState,
+): string[] {
+	if (!gameState) {
+		return [];
+	}
+
+	const temp = [...gameState.turnOrder, ...gameState.turnOrder];
+
+	const result = [];
+	let found = false;
+	let i = 0;
+
+	while (result.length < gameState.turnOrder.length - 1) {
+		const id = temp[i];
+		if (found) {
+			result.push(id);
+		} else if (id === playerId) {
+			found = true;
+		}
+
+		console.log(result, found);
+
+		i++;
+	}
+
+	return result;
+}
