@@ -39,6 +39,7 @@ export const playerSchema = z.object({
 
 export const gameStateSchema = z.object({
 	gameId: z.string(),
+	supplyList: z.string().array(),
 	supply: z.record(z.string(), z.string().array()), // { [cardName]: cardIds[] }
 	trash: z.string().array(), // cardId[]
 	playerStates: z.record(z.string(), playerStateSchema), // { [playerId]: playerState }

@@ -14,9 +14,6 @@
 		cardName: string,
 		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
-	export let onEndPhase: (
-		phaseName: GameState["turnPhase"],
-	) => void | Promise<void> = () => {};
 	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	export let opponent = false;
 
@@ -60,9 +57,11 @@
 	});
 </script>
 
-<div class={`${className} border-subtle bg-gray-800 transition-all`}>
+<div
+	class={`${className} border-subtle flex flex-col items-stretch gap-2 bg-gray-800 transition-all`}
+>
 	<!-- In Play -->
-	<div class="mb-2">
+	<div class={`${opponent ? "order-2" : ""}`}>
 		<div class="flex flex-row items-stretch justify-start px-2">
 			<div class="pr-1">
 				<div class="text-center">Discard</div>
@@ -134,18 +133,9 @@
 		</div>
 	</div>
 	<!-- Hand -->
-	<div class="mb-2 flex flex-row justify-between">
-		<div class="grid grid-cols-1 gap-2 px-2">
-			<button
-				disabled={gameState.turnPhase !== "action"}
-				on:click={() => {
-					if (gameState.turnPhase !== "action") {
-						return;
-					}
-
-					onEndPhase("action");
-				}}>End Action Phase</button
-			>
+	<div class={`${opponent ? "order-1" : ""} flex flex-row justify-between`}>
+		<div>
+			<!-- @todo(nick-ng): put "set-aside" cards here -->
 		</div>
 		<div
 			class="flex h-card flex-shrink flex-row"
@@ -176,9 +166,8 @@
 				</div>
 			{/each}
 		</div>
-		<div class="grid grid-cols-1 gap-2 px-2">
-			<button>Buy Cards</button>
-			<button>End Turn</button>
+		<div>
+			<!-- hack to center cards in hand -->
 		</div>
 	</div>
 </div>
