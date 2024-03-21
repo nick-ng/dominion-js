@@ -5,6 +5,7 @@
 
 	import Card from "./card.svelte";
 	import { onMount } from "svelte";
+	import { optionsStore } from "$lib/stores/options";
 
 	let className = "";
 	export { className as class };
@@ -13,9 +14,6 @@
 	export let onPlayCard: (
 		cardName: string,
 		cardCenter: Coordinates,
-	) => void | Promise<void> = () => {};
-	export let onEndPhase: (
-		phaseName: GameState["turnPhase"],
 	) => void | Promise<void> = () => {};
 	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	export let opponent = false;
@@ -60,9 +58,11 @@
 	});
 </script>
 
-<div class={`${className} border-subtle bg-gray-800 transition-all`}>
+<div
+	class={`${className} border-subtle flex flex-col items-stretch gap-2 bg-gray-800 transition-all`}
+>
 	<!-- In Play -->
-	<div class="mb-2">
+	<div class={`${opponent ? "order-2" : ""}`}>
 		<div class="flex flex-row items-stretch justify-start px-2">
 			<div class="pr-1">
 				<div class="text-center">Discard</div>
@@ -76,6 +76,7 @@
 								playerState.discardPile.length - 1
 							]}
 							initialCenter={boughtCardCenter}
+							upsideDown={opponent && $optionsStore.opponentAllUpsideDown}
 						/>
 					{/if}
 				</div>
@@ -91,6 +92,7 @@
 							class="absolute bottom-0 left-0"
 							cardId="back:0"
 							initialCenter={discardCenter}
+							upsideDown={opponent}
 						/>
 					{/each}
 				</div>
@@ -125,6 +127,7 @@
 										x: -1,
 										y: -1,
 									}}
+									upsideDown={opponent && $optionsStore.opponentAllUpsideDown}
 								/>
 							</div>
 						{/each}
@@ -134,23 +137,15 @@
 		</div>
 	</div>
 	<!-- Hand -->
-	<div class="mb-2 flex flex-row justify-between">
-		<div class="grid grid-cols-1 gap-2 px-2">
-			<button
-				disabled={gameState.turnPhase !== "action"}
-				on:click={() => {
-					if (gameState.turnPhase !== "action") {
-						return;
-					}
-
-					onEndPhase("action");
-				}}>End Action Phase</button
-			>
+	<div class={`${opponent ? "order-1" : ""} flex flex-row justify-between`}>
+		<div>
+			<!-- @todo(nick-ng): put "set-aside" cards here -->
 		</div>
 		<div
-			class="flex h-card flex-shrink flex-row"
+			class={`flex h-card flex-shrink ${opponent ? "flex-row-reverse" : "flex-row"}`}
 			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.hand.length}px`}
 		>
+			<!-- @todo(nick-ng): indicate cards you can't play -->
 			{#each playerState.hand as cardId, i (cardId)}
 				<div
 					class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
@@ -164,6 +159,7 @@
 						hoverGrow
 						draggable={!opponent}
 						dragTarget={playZoneEl}
+						upsideDown={opponent}
 						wiggle
 						onDragThresholdChange={(_cardId, newIsThreshold) => {
 							isThreshold = newIsThreshold;
@@ -176,9 +172,8 @@
 				</div>
 			{/each}
 		</div>
-		<div class="grid grid-cols-1 gap-2 px-2">
-			<button>Buy Cards</button>
-			<button>End Turn</button>
+		<div>
+			<!-- hack to center cards in hand -->
 		</div>
 	</div>
 </div>

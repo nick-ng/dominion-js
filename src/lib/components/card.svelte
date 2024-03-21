@@ -13,6 +13,7 @@
 
 	let className = "";
 	export { className as class };
+	export let upsideDown = false;
 	export let cardId: string;
 	export let hoverGrow = false;
 	export let hoverFront = false;
@@ -198,7 +199,8 @@
 		// It's possible to have the mouse move off the card while dragging
 		// Listen for a global "mouseup" event as a fallback
 		// @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
-		window.addEventListener("mouseup", () => endHandler(false));
+		const windowEndHandler = () => endHandler(false);
+		window.addEventListener("mouseup", windowEndHandler);
 
 		if (
 			$optionsStore.animationSpeed < 11 &&
@@ -236,15 +238,23 @@
 			}, animationSpeedMs + 2);
 		}
 
-		cardButtonEl.addEventListener(
-			"touchmove",
-			(e) => {
-				if (isMouseDown) {
+		const bounceStopper = (e: TouchEvent) => {
+			if (isMouseDown) {
+				if (draggable) {
 					e.preventDefault();
+					e.stopPropagation();
 				}
-			},
-			{ passive: false },
-		);
+			}
+		};
+
+		cardButtonEl.addEventListener("touchmove", bounceStopper, {
+			passive: false,
+		});
+
+		return () => {
+			cardButtonEl.removeEventListener("touchmove", bounceStopper);
+			window.removeEventListener("mouseup", windowEndHandler);
+		};
 	});
 
 	// @todo(nick-ng): add tooltip to cards for extra rules
@@ -252,7 +262,7 @@
 
 {#if card}
 	<button
-		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 align-top ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
+		class={`${upsideDown ? "rotate-180" : ""} ${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 align-top ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
 		style={`${buttonStyle};${buttonStyle2};`}
 		bind:this={cardButtonEl}
 		on:click={() => {

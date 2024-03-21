@@ -15,18 +15,23 @@
 	$: card = ALL_CARDS[cardName];
 </script>
 
-{#if count > 0 && card}
+{#if card}
 	<div class="hover:z-10" style={sortByCost ? `order: ${card.cost}` : ""}>
 		<div class="text-center">
 			{count === 1 ? card.displayNames[0] : card.displayNames[1]}: {count}
 		</div>
-		<Card
-			cardId={`${cardName}:s`}
-			hoverGrow
-			onClick={(cardId, cardCenter) => {
-				const [cardNameB] = cardId.split(":");
-				onClick(cardNameB, cardCenter);
-			}}
-		/>
+		{#if count > 0}
+			<Card
+				cardId={`${cardName}:s`}
+				onClick={(cardId, cardCenter) => {
+					const [cardNameB] = cardId.split(":");
+					onClick(cardNameB, cardCenter);
+				}}
+			/>
+		{:else}
+			<div
+				class="border-subtle font flex h-card w-card items-center justify-center rounded-xl border-2 border-dashed"
+			/>
+		{/if}
 	</div>
 {/if}

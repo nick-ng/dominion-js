@@ -37,6 +37,7 @@ export default class Game {
 	hostId: GameState["hostId"];
 	// kingdomCards: string[] = [];
 	playerStates: GameState["playerStates"] = {};
+	supplyList: GameState["supplyList"] = [];
 	supply: GameState["supply"] = {};
 	trash: GameState["trash"] = [];
 	turnOrder: GameState["turnOrder"] = [];
@@ -58,6 +59,26 @@ export default class Game {
 				player.playerId,
 			);
 		});
+
+		this.supplyList = [
+			"copper",
+			"silver",
+			"gold",
+			"estate",
+			"duchy",
+			"province",
+			"curse",
+			"cellar",
+			"moat",
+			"village",
+			"merchant",
+			"workshop",
+			"smithy",
+			"remodel",
+			"militia",
+			"market",
+			"mine",
+		];
 
 		this.turn = 0;
 		this.turnAdjustment = 0;
@@ -99,11 +120,13 @@ export default class Game {
 			};
 		}
 
+		this.supplyList = [];
 		this.supply = {};
 
 		[...BASE_CARD_LIST, ...validKingdomCards].forEach((cardName) => {
 			const cardPile = getCardPile(cardName, Object.keys(this.players).length);
 
+			this.supplyList.push(cardName);
 			this.supply[cardName] = cardPile;
 		});
 
@@ -301,6 +324,7 @@ export default class Game {
 	getGameState(): GameState {
 		return {
 			gameId: this.gameId,
+			supplyList: this.supplyList,
 			supply: this.supply,
 			trash: this.trash,
 			playerStates: this.playerStates,
@@ -335,6 +359,7 @@ export default class Game {
 
 		return structuredClone({
 			gameId: this.gameId,
+			supplyList: this.supplyList,
 			supply: this.supply,
 			trash: this.trash,
 			playerStates: tempPlayerStates,
