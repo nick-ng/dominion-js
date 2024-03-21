@@ -35,6 +35,7 @@ File | ToDo
 `src\lib\components\supply.svelte` | (@nick-ng): show coins after you buy selected card?
 `src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
 `src\lib\components\play-area.svelte` | (@nick-ng): put "set-aside" cards here 
+`src\lib\components\play-area.svelte` | (@nick-ng): indicate cards you can't play 
 `src\lib\components\full-display.svelte` | (@nick-ng): option to invert direction
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
 `src\lib\components\card.svelte` | (@nick-ng): use global mousemove so your mouse cursor doesn't fall off cards

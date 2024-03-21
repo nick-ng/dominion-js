@@ -31,7 +31,7 @@
 	let vignetteState = 0; // 0: not there, 1: faded out, 2: visible
 	let vignetteClass = "";
 
-	$: transitionDurationMs = Math.pow(11 - $optionsStore.animationSpeed, 2) * 20;
+	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
 	$: showStyle = `${transitionDurationStyle}flex-grow: 100; flex-shrink: 0.001;`;
 	$: hideStyle = `${transitionDurationStyle}flex-grow: 0.001; flex-shrink: 100;`;

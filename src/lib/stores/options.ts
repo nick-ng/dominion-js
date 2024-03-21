@@ -3,9 +3,12 @@ import { browser } from "$app/environment";
 
 const OPTIONS_LOCAL_STORAGE_KEY = "PUX_JURISDICTION_OPTIONS";
 
-type Options = { animationSpeed: number };
+type Options = { animationSpeed: number; opponentAllUpsideDown: boolean };
 
-let storedOptions: Options = { animationSpeed: 5 };
+let storedOptions: Options = {
+	animationSpeed: 5,
+	opponentAllUpsideDown: false,
+};
 
 if (browser) {
 	try {

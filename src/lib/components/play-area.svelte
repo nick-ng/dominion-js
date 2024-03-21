@@ -5,6 +5,7 @@
 
 	import Card from "./card.svelte";
 	import { onMount } from "svelte";
+	import { optionsStore } from "$lib/stores/options";
 
 	let className = "";
 	export { className as class };
@@ -75,6 +76,7 @@
 								playerState.discardPile.length - 1
 							]}
 							initialCenter={boughtCardCenter}
+							upsideDown={opponent && $optionsStore.opponentAllUpsideDown}
 						/>
 					{/if}
 				</div>
@@ -90,6 +92,7 @@
 							class="absolute bottom-0 left-0"
 							cardId="back:0"
 							initialCenter={discardCenter}
+							upsideDown={opponent}
 						/>
 					{/each}
 				</div>
@@ -124,6 +127,7 @@
 										x: -1,
 										y: -1,
 									}}
+									upsideDown={opponent && $optionsStore.opponentAllUpsideDown}
 								/>
 							</div>
 						{/each}
@@ -138,9 +142,10 @@
 			<!-- @todo(nick-ng): put "set-aside" cards here -->
 		</div>
 		<div
-			class="flex h-card flex-shrink flex-row"
+			class={`flex h-card flex-shrink ${opponent ? "flex-row-reverse" : "flex-row"}`}
 			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.hand.length}px`}
 		>
+			<!-- @todo(nick-ng): indicate cards you can't play -->
 			{#each playerState.hand as cardId, i (cardId)}
 				<div
 					class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
@@ -154,6 +159,7 @@
 						hoverGrow
 						draggable={!opponent}
 						dragTarget={playZoneEl}
+						upsideDown={opponent}
 						wiggle
 						onDragThresholdChange={(_cardId, newIsThreshold) => {
 							isThreshold = newIsThreshold;

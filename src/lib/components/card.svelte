@@ -13,6 +13,7 @@
 
 	let className = "";
 	export { className as class };
+	export let upsideDown = false;
 	export let cardId: string;
 	export let hoverGrow = false;
 	export let hoverFront = false;
@@ -261,7 +262,7 @@
 
 {#if card}
 	<button
-		class={`${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 align-top ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
+		class={`${upsideDown ? "rotate-180" : ""} ${className} ${hoverClass} ${hoverFront && isMouseDown ? "z-10" : ""} bottom-0 border-0 p-0 align-top ${(draggable && isMouseDown) || skipTransition ? "" : "transition-all"}`}
 		style={`${buttonStyle};${buttonStyle2};`}
 		bind:this={cardButtonEl}
 		on:click={() => {
