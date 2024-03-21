@@ -187,12 +187,14 @@
 		<button
 			class={`${vignetteClass} transition-some absolute bottom-0 top-0 m-0 h-full w-full border-none p-0`}
 			style={transitionDurationStyle}
-			on:click={() => {
-				showSupply = false;
-				vignetteState = 1;
-				setTimeout(() => {
-					vignetteState = 0;
-				}, transitionDurationMs);
+			on:click={(e) => {
+				if (e.target === e.currentTarget) {
+					showSupply = false;
+					vignetteState = 1;
+					setTimeout(() => {
+						vignetteState = 0;
+					}, transitionDurationMs);
+				}
 			}}
 		>
 			<div
