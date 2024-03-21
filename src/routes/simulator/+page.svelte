@@ -102,9 +102,7 @@
 		>
 		<div>
 			<label class="ml-4 flex flex-col items-center">
-				<div>
-					Animation Speed: {$optionsStore.animationSpeed}
-				</div>
+				<div>Animation Speed</div>
 				<input
 					type="range"
 					bind:value={$optionsStore.animationSpeed}

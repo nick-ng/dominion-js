@@ -109,7 +109,7 @@
 </script>
 
 <div
-	class="flex shrink grow flex-col items-stretch justify-start overflow-hidden"
+	class="flex shrink grow flex-col items-stretch justify-start gap-2 overflow-hidden"
 >
 	<slot />
 	{#if $gameStateStore.gameState}
@@ -127,12 +127,13 @@
 				opponent
 			/>
 		</div>
-		<h2 class="text-center">{activePlayer?.name}</h2>
-		<div>
+		<div class="flex flex-row justify-between">
+			<h2 class="text-center">{activePlayer?.name}</h2>
 			<!-- @todo(nick-ng): show various opponent info like deck size, hand size, active player, etc. -->
 			{getOpponentOrder(playerId, $gameStateStore.gameState)
 				.map((p) => $gameStateStore.gameState?.players[p].name)
 				.join(", ")}
+			<ResourceDisplay actions={0} buys={0} coins={0} horizontal />
 		</div>
 		<button
 			on:click={() => {
@@ -144,7 +145,7 @@
 				class="overflow-hidden transition-all"
 				style={showMyBoard ? showStyle : hideStyle}
 			>
-				<div class="relative my-2 flex flex-row items-stretch gap-2">
+				<div class="relative mb-2 flex flex-row items-stretch gap-2">
 					<button
 						on:click={() => {
 							showSupply = true;
