@@ -10,7 +10,8 @@ Dominion in JavaScript (TypeScript)
 - [x] Play Treasure cards
 - [x] Buy cards
 - [ ] Clean-up cards
-   - Choose which card you want to be the top of your discard pile
+   - [ ] Put your hand under your in-play cards
+   - [ ] Choose which card you want to be the top of your discard pile
 - [ ] "complicated" effects (text descriptions)
 - [x] Options
    - [ ] Options menu
@@ -22,6 +23,8 @@ Dominion in JavaScript (TypeScript)
    - +Card effects need to wait for the server
 - [ ] Animate buying cards
 - [ ] Animate clean-up phase
+- [ ] Skip directly to phases when there are no actions to perform
+   - Perform intermediate actions
 
 ### ToDo Comments
 
