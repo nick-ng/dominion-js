@@ -42,13 +42,16 @@
 			return getCardFromId(cardId)?.types.includes("action");
 		}).length || 0;
 	$: actionCardClass =
-		actionCardCount === 0 ? "button-nothing-to-do" : "button-something-to-do";
+		actionCardCount === 0 || myPlayerState?.actions === 0
+			? "button-nothing-to-do"
+			: "button-something-to-do";
 	$: treasureCardCount =
 		myPlayerState?.hand.filter((cardId) => {
 			return getCardFromId(cardId)?.types.includes("treasure");
 		}).length || 0;
 	$: treasureCardClass =
 		treasureCardCount === 0 ? "button-nothing-to-do" : "button-something-to-do";
+	// @todo(nick-ng): highlight end turn button
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
 	$: {
@@ -105,6 +108,11 @@
 					endTurnHint = false;
 				}
 			}
+		}
+	}
+	$: {
+		if (showSupply === true) {
+			vignetteState = 2;
 		}
 	}
 
@@ -197,7 +205,6 @@
 					<button
 						on:click={() => {
 							showSupply = true;
-							vignetteState = 2;
 						}}>Show Supply</button
 					>
 					<div class="grow" />
@@ -216,7 +223,6 @@
 								$gameStateStore.gameState?.turnPhase === "buy-0"
 							) {
 								showSupply = true;
-								vignetteState = 2;
 							}
 
 							onEndPhase("buy-0");
@@ -246,6 +252,13 @@
 					{boughtCardCenter}
 					{playerId}
 					{onPlayCard}
+					onPlayAllTreasures={() => {
+						onEndPhase("buy-0");
+
+						if (myPlayerState && myPlayerState.buys > 0) {
+							showSupply = true;
+						}
+					}}
 				/>
 			</div>
 		{/if}

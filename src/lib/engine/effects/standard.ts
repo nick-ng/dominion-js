@@ -31,7 +31,7 @@ export function applyPlusEffect(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
-	adjustment?: number,
+	seedAdjustment?: number,
 ): { success: boolean; nextGameState: GameState } {
 	if (
 		!prevGameState.playerStates[playerId] ||
@@ -44,10 +44,10 @@ export function applyPlusEffect(
 		case "card": {
 			for (let i = 0; i < cardEffect.value; i++) {
 				if (prevGameState.playerStates[playerId].deck.length === 0) {
-					shuffleDiscard(prevGameState, playerId, adjustment);
+					shuffleDiscard(prevGameState, playerId, seedAdjustment);
 				}
 
-				const cardId = prevGameState.playerStates[playerId].deck.shift();
+				const cardId = prevGameState.playerStates[playerId].deck.pop();
 				if (!cardId) {
 					// discard pile has been shuffled into the deck. if there are still no cards, shuffling won't do anything
 					break;
@@ -102,11 +102,11 @@ export function applyGainEffect(
 	switch (destination) {
 		case "deck":
 		case "deck-top": {
-			prevGameState.playerStates[playerId].deck.unshift(gainedCardId);
+			prevGameState.playerStates[playerId].deck.push(gainedCardId);
 			break;
 		}
 		case "deck-bottom": {
-			prevGameState.playerStates[playerId].deck.push(gainedCardId);
+			prevGameState.playerStates[playerId].deck.unshift(gainedCardId);
 			break;
 		}
 		case "hand": {

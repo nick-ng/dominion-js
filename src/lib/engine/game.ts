@@ -369,7 +369,10 @@ export default class Game {
 	/**
 	 * Ends the specified phase, performing any actions necessary.
 	 */
-	endPhase(playerId: string, phaseName: GameState["turnPhase"]): ActionResult {
+	endPhase(
+		playerId: string,
+		currentPhaseName: GameState["turnPhase"],
+	): ActionResult {
 		if (this.getActivePlayerId() !== playerId) {
 			return {
 				success: false,
@@ -377,17 +380,17 @@ export default class Game {
 			};
 		}
 
-		const [f, ...rest] = this.turnPhase.split("");
+		const [f, ...rest] = currentPhaseName.split("");
 		const properPhaseName = [f.toUpperCase(), ...rest].join("");
 
-		if (this.turnPhase !== phaseName) {
+		if (this.turnPhase !== currentPhaseName) {
 			return {
 				success: false,
 				reason: `It's not the ${properPhaseName} phase`,
 			};
 		}
 
-		switch (this.turnPhase) {
+		switch (currentPhaseName) {
 			case "action": {
 				this.turnPhase = "buy-0";
 				break;
@@ -397,7 +400,34 @@ export default class Game {
 				break;
 			}
 			case "buy-1": {
-				this.turnPhase = "cleanup";
+				// @todo(nick-ng): extra step to let players choose which card goes on top of their discard pile?
+				this.turnPhase = "action";
+
+				// 10: put cards in hand "under" cards previously in-play
+				const temp = this.playerStates[playerId].hand.concat(
+					this.playerStates[playerId].inPlay,
+				);
+				this.playerStates[playerId].hand = [];
+				this.playerStates[playerId].inPlay = [];
+
+				// 20: put those cards on top of discard pile
+				this.playerStates[playerId].discardPile.push(...temp);
+
+				// 30: draw 5 cards
+				this.applyEffect(playerId, { type: "card", value: 5 });
+
+				// 40: set actions, buys and coins to 0
+				this.playerStates[playerId].actions = 0;
+				this.playerStates[playerId].buys = 0;
+				this.playerStates[playerId].coins = 0;
+
+				// 50: advance turn
+				this.turn = this.turn + 1;
+
+				// 60: set new active player's actions and buys to 1 each
+				const newActivePlayerId = this.getActivePlayerId();
+				this.playerStates[newActivePlayerId].actions = 1;
+				this.playerStates[newActivePlayerId].buys = 1;
 
 				break;
 			}

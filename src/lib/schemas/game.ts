@@ -6,8 +6,8 @@ export const playerStateSchema = z.object({
 	coins: z.number(),
 	buys: z.number(),
 	ownedCards: z.string().array(),
-	deck: z.string().array(),
-	discardPile: z.string().array(),
+	deck: z.string().array(), // top card is last in array
+	discardPile: z.string().array(), // top card is last in array
 	hand: z.string().array(),
 	inPlay: z.string().array(),
 });
