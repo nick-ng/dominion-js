@@ -31,6 +31,7 @@
 	let endActionsHint = false;
 	let buyCardsHint = false;
 	let endTurnHint = false;
+	let callToAction = "";
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
@@ -51,6 +52,10 @@
 		}).length || 0;
 	$: treasureCardClass =
 		treasureCardCount === 0 ? "button-nothing-to-do" : "button-something-to-do";
+	$: endTurnClass =
+		myPlayerState?.buys === 0
+			? "button-nothing-to-do"
+			: "button-something-to-do";
 	// @todo(nick-ng): highlight end turn button
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
@@ -88,24 +93,28 @@
 					endActionsHint = true;
 					buyCardsHint = false;
 					endTurnHint = false;
+					callToAction = "Action Phase";
 					break;
 				}
 				case "buy-0": {
 					endActionsHint = false;
 					buyCardsHint = true;
 					endTurnHint = false;
+					callToAction = "Buy Phase";
 					break;
 				}
 				case "buy-1": {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = true;
+					callToAction = "Buy Phase";
 					break;
 				}
 				default: {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = false;
+					callToAction = "Clean-up Phase";
 				}
 			}
 		}
@@ -208,6 +217,7 @@
 						}}>Show Supply</button
 					>
 					<div class="grow" />
+					<div class="self-center text-xl">{callToAction}</div>
 					<button
 						class={endActionsHint ? actionCardClass : ""}
 						on:click={() => {
@@ -230,6 +240,7 @@
 						disabled={!buyCardsHint}>Buy Cards</button
 					>
 					<button
+						class={endTurnHint ? endTurnClass : ""}
 						on:click={() => {
 							onEndPhase("buy-1");
 						}}
