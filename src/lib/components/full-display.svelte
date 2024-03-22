@@ -226,7 +226,8 @@
 					<button
 						on:click={() => {
 							onEndPhase("buy-1");
-						}}>End Turn</button
+						}}
+						disabled={!endTurnHint}>End Turn</button
 					>
 					<ResourceDisplay
 						actions={myPlayerState.actions}
