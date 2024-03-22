@@ -14,7 +14,8 @@ import {
 } from "$lib/engine/card-list";
 import { getRandomGameSeed, shuffle } from "$lib/utils";
 import { getStartingPlayerState } from "./player-states";
-import { applyPlusEffect } from "./effects/standard";
+import { applyGainEffect, applyPlusEffect } from "./effects/standard";
+import { getActivePlayerId } from "$lib/helpers";
 
 export default class Game {
 	constructor(host: Player, gameId?: string) {
@@ -143,7 +144,6 @@ export default class Game {
 
 		this.playerStates = {};
 		Object.keys(this.players).forEach((playerId, i) => {
-			console.log("playerId", playerId);
 			this.playerStates[playerId] = getStartingPlayerState(playerId);
 			this.applyEffect(playerId, { type: "card", value: 5 }, i);
 		});
@@ -153,13 +153,13 @@ export default class Game {
 		// resolve effects here
 		switch (effect.type) {
 			default: {
-				const { playerStates } = applyPlusEffect(
+				const { nextGameState } = applyPlusEffect(
 					this.getGameState(),
 					effect,
 					playerId,
 					adjustment,
 				);
-
+				const { playerStates } = nextGameState;
 				this.playerStates = playerStates;
 
 				break;
@@ -270,6 +270,105 @@ export default class Game {
 		};
 	}
 
+	buyCard(playerId: string, cardName: string): ActionResult {
+		if (this.getActivePlayerId() !== playerId) {
+			return {
+				success: false,
+				reason: "It's not your turn.",
+			};
+		}
+
+		switch (this.turnPhase) {
+			case "action": {
+				return {
+					success: false,
+					reason: "You cannot buy cards in the Action phase.",
+				};
+			}
+			case "buy-0": {
+				return {
+					success: false,
+					reason: "You cannot buy cards until you finish playing Treasures.",
+				};
+			}
+			case "buy-1": {
+				// you can buy cards now
+				break;
+			}
+			case "cleanup": {
+				return {
+					success: false,
+					reason: "You cannot buy cards during the Clean-up phase.",
+				};
+			}
+			case "lobby": {
+				return {
+					success: false,
+					reason: "The game hasn't started yet.",
+				};
+			}
+			case "over": {
+				return {
+					success: false,
+					reason: "The game is over.",
+				};
+			}
+		}
+
+		if (this.playerStates[playerId].buys === 0) {
+			return {
+				success: false,
+				reason: "You don't have any more Buys.",
+			};
+		}
+
+		const card = getCardFromId(cardName);
+
+		if (!card) {
+			return {
+				success: false,
+				reason: `${cardName} is not a valid card name.`,
+			};
+		}
+
+		if (!this.supplyList.includes(cardName)) {
+			return {
+				success: false,
+				reason: `${card.displayNames[0]} isn't in this game.`,
+			};
+		}
+
+		if (this.playerStates[playerId].coins < card.cost) {
+			return {
+				success: false,
+				reason: `You cannot afford ${card.displayNames[0]}.`,
+			};
+		}
+
+		const { success } = applyGainEffect(
+			this.getGameState(),
+			playerId,
+			cardName,
+			"discard",
+		);
+
+		if (!success) {
+			return {
+				success: false,
+				reason: `No ${card.displayNames[1]} in the supply.`,
+			};
+		}
+
+		this.playerStates[playerId].coins =
+			this.playerStates[playerId].coins - card.cost;
+		this.playerStates[playerId].buys = this.playerStates[playerId].buys - 1;
+
+		return { success: true };
+	}
+
+	/**
+	 * Ends the specified phase, performing any actions necessary.
+	 */
 	endPhase(playerId: string, phaseName: GameState["turnPhase"]): ActionResult {
 		if (this.getActivePlayerId() !== playerId) {
 			return {
@@ -297,6 +396,11 @@ export default class Game {
 				this.turnPhase = "buy-1";
 				break;
 			}
+			case "buy-1": {
+				this.turnPhase = "cleanup";
+
+				break;
+			}
 			case "cleanup": {
 				this.turnPhase = "action";
 				break;
@@ -314,11 +418,8 @@ export default class Game {
 		};
 	}
 
-	getActivePlayerId(): string {
-		const playerIndex =
-			(this.turn - this.turnAdjustment) % this.turnOrder.length;
-
-		return this.turnOrder[playerIndex];
+	getActivePlayerId(adjustment = 0): string {
+		return getActivePlayerId(this, adjustment);
 	}
 
 	getGameState(): GameState {

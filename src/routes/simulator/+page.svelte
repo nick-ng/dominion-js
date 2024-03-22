@@ -25,7 +25,12 @@
 
 <FullDisplay
 	{playerId}
-	onBuy={() => {}}
+	onBuy={(cardName) => {
+		const result = game.buyCard(playerId, cardName);
+		success = result.success;
+		reason = result.reason || "";
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	}}
 	onPlayCard={(cardId) => {
 		const result = game.playCard(playerId, cardId);
 		success = result.success;
@@ -69,6 +74,31 @@
 				game.playerStates[playerId] = getTest2PlayerState(playerId);
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 			}}>Many In-Play</button
+		>
+		<button
+			class="button-default"
+			on:click={() => {
+				game = new Game(getPlayer());
+				const result = game.setSupply([
+					"cellar",
+					"moat",
+					"village",
+					"merchant",
+					"workshop",
+					"smithy",
+					"remodel",
+					"militia",
+					"market",
+					"mine",
+				]);
+
+				success = result.success;
+				reason = result.reason || "";
+
+				game.start();
+
+				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+			}}>Solo</button
 		>
 		<button
 			class="button-default"

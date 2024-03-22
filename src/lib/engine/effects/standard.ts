@@ -1,6 +1,7 @@
 import type { GameState, Effect } from "../../schemas/types";
 
-import { shuffle, getTurnSeed } from "../../utils";
+import { shuffle } from "../../utils";
+import { getTurnSeed } from "../../helpers";
 
 export function shuffleDiscard(
 	prevGameState: GameState,
@@ -31,12 +32,12 @@ export function applyPlusEffect(
 	cardEffect: Effect,
 	playerId: string,
 	adjustment?: number,
-): GameState {
+): { success: boolean; nextGameState: GameState } {
 	if (
 		!prevGameState.playerStates[playerId] ||
 		typeof cardEffect.value !== "number"
 	) {
-		return prevGameState;
+		return { success: false, nextGameState: prevGameState };
 	}
 
 	switch (cardEffect.type) {
@@ -73,5 +74,49 @@ export function applyPlusEffect(
 		}
 	}
 
-	return prevGameState;
+	return { success: true, nextGameState: prevGameState };
+}
+
+export function applyGainEffect(
+	prevGameState: GameState,
+	playerId: string,
+	cardName: string,
+	destination: string = "discard",
+): { success: boolean; nextGameState: GameState } {
+	if (!prevGameState.supply[cardName]) {
+		return { success: false, nextGameState: prevGameState };
+	}
+
+	if (!prevGameState.playerStates[playerId]) {
+		return { success: false, nextGameState: prevGameState };
+	}
+
+	const gainedCardId = prevGameState.supply[cardName].pop();
+
+	if (!gainedCardId) {
+		return { success: false, nextGameState: prevGameState };
+	}
+
+	prevGameState.playerStates[playerId].ownedCards.push(gainedCardId);
+
+	switch (destination) {
+		case "deck":
+		case "deck-top": {
+			prevGameState.playerStates[playerId].deck.unshift(gainedCardId);
+			break;
+		}
+		case "deck-bottom": {
+			prevGameState.playerStates[playerId].deck.push(gainedCardId);
+			break;
+		}
+		case "hand": {
+			prevGameState.playerStates[playerId].hand.push(gainedCardId);
+			break;
+		}
+		default: {
+			prevGameState.playerStates[playerId].discardPile.push(gainedCardId);
+		}
+	}
+
+	return { success: true, nextGameState: prevGameState };
 }

@@ -21,6 +21,7 @@
 	export let dragTarget: HTMLElement | null = null;
 	export let initialCenter: Coordinates = { x: -1, y: -1 };
 	export let wiggle = false;
+	export let disabled = false;
 	export let onClick: (
 		cardId: string,
 		cardCenter: Coordinates,
@@ -183,7 +184,7 @@
 	function endHandler(deliberate: boolean) {
 		const isThreshold = checkThreshold(cardButtonEl, dragTarget);
 
-		if (isThreshold) {
+		if (!disabled && isThreshold) {
 			if (deliberate) {
 				onDrag(cardId, getCardCenter());
 			}
@@ -282,6 +283,6 @@
 			endHandler(false);
 		}}
 	>
-		<CardContents {card} />
+		<CardContents {disabled} {card} />
 	</button>
 {/if}
