@@ -4,6 +4,7 @@
 	import CardFrame from "./card-frame.svelte";
 
 	export let card: Card;
+	export let disabled = false;
 
 	$: isFullImage = card.fullImage && card?.imageUrl;
 	$: imageStyle = card.imageUrl
@@ -14,6 +15,7 @@
 <CardFrame
 	fullImageUrl={card?.fullImage && card?.imageUrl}
 	class={`relative ${isFullImage ? "text-lg" : "text-sm"} leading-tight`}
+	{disabled}
 >
 	<h4 class="mb-1 leading-none">{card.displayNames[0]}</h4>
 	{#if isFullImage || !card.imageUrl}

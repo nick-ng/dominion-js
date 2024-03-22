@@ -1,16 +1,14 @@
 <script lang="ts">
 	import type { GameState, Coordinates } from "$lib/schemas/types";
 
-	import {
-		gameStateStore,
-		getActivePlayerId,
-		getOpponentOrder,
-	} from "$lib/stores/game-state";
+	import { gameStateStore } from "$lib/stores/game-state";
+	import { getActivePlayerId, getOpponentOrder } from "$lib/helpers";
 	import { optionsStore } from "$lib/stores/options";
 	import ResourceDisplay from "./resource-display.svelte";
 	import PlayArea from "./play-area.svelte";
 	import Supply from "./supply.svelte";
 	import { onMount } from "svelte";
+	import { getCardFromId } from "$lib/engine/card-list";
 
 	export let playerId: string;
 	export let onBuy: (
@@ -30,12 +28,27 @@
 	let showSupply = false;
 	let vignetteState = 0; // 0: not there, 1: faded out, 2: visible
 	let vignetteClass = "";
+	let endActionsHint = false;
+	let buyCardsHint = false;
+	let endTurnHint = false;
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
 	$: showStyle = `${transitionDurationStyle}flex-grow: 100; flex-shrink: 0.001;`;
 	$: hideStyle = `${transitionDurationStyle}flex-grow: 0.001; flex-shrink: 100;`;
 	$: myPlayerState = $gameStateStore.gameState?.playerStates[playerId];
+	$: actionCardCount =
+		myPlayerState?.hand.filter((cardId) => {
+			return getCardFromId(cardId)?.types.includes("action");
+		}).length || 0;
+	$: actionCardClass =
+		actionCardCount === 0 ? "button-nothing-to-do" : "button-something-to-do";
+	$: treasureCardCount =
+		myPlayerState?.hand.filter((cardId) => {
+			return getCardFromId(cardId)?.types.includes("treasure");
+		}).length || 0;
+	$: treasureCardClass =
+		treasureCardCount === 0 ? "button-nothing-to-do" : "button-something-to-do";
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
 	$: {
@@ -58,6 +71,39 @@
 			}
 			default: {
 				vignetteClass = "";
+			}
+		}
+	}
+	$: {
+		if (activePlayerId !== playerId) {
+			endActionsHint = false;
+			buyCardsHint = false;
+			endTurnHint = false;
+		} else {
+			switch ($gameStateStore.gameState?.turnPhase) {
+				case "action": {
+					endActionsHint = true;
+					buyCardsHint = false;
+					endTurnHint = false;
+					break;
+				}
+				case "buy-0": {
+					endActionsHint = false;
+					buyCardsHint = true;
+					endTurnHint = false;
+					break;
+				}
+				case "buy-1": {
+					endActionsHint = false;
+					buyCardsHint = false;
+					endTurnHint = true;
+					break;
+				}
+				default: {
+					endActionsHint = false;
+					buyCardsHint = false;
+					endTurnHint = false;
+				}
 			}
 		}
 	}
@@ -106,6 +152,8 @@
 			window.removeEventListener("touchmove", touchHandler);
 		};
 	});
+
+	// @todo(nick-ng): active player indicator
 </script>
 
 <div
@@ -154,16 +202,32 @@
 					>
 					<div class="grow" />
 					<button
+						class={endActionsHint ? actionCardClass : ""}
 						on:click={() => {
+							onEndPhase("action");
+						}}
+						disabled={!endActionsHint}>End Actions</button
+					>
+					<button
+						class={buyCardsHint ? treasureCardClass : ""}
+						on:click={() => {
+							if (
+								activePlayerId === playerId &&
+								$gameStateStore.gameState?.turnPhase === "buy-0"
+							) {
+								showSupply = true;
+								vignetteState = 2;
+							}
+
 							onEndPhase("buy-0");
-						}}>End Actions</button
+						}}
+						disabled={!buyCardsHint}>Buy Cards</button
 					>
 					<button
 						on:click={() => {
 							onEndPhase("buy-1");
-						}}>Buy Cards</button
+						}}>End Turn</button
 					>
-					<button>End Turn</button>
 					<ResourceDisplay
 						actions={myPlayerState.actions}
 						buys={myPlayerState.buys}
@@ -201,31 +265,23 @@
 				class={`${showSupply ? "left-4 right-4" : "-left-full right-full-2"} absolute bottom-0 top-0 my-auto flex h-min w-auto flex-col justify-center overflow-hidden bg-gray-800`}
 				style={transitionDurationStyle}
 			>
-				<Supply
-					gameState={$gameStateStore.gameState}
-					onBuy={(cardName, cardCenter) => {
-						boughtCardCenter = cardCenter;
-						onBuy(cardName, cardCenter);
-					}}
-					onHide={() => {
-						showSupply = false;
-						vignetteState = 1;
-						setTimeout(() => {
-							vignetteState = 0;
-						}, transitionDurationMs);
-					}}
-				>
-					<svelte:fragment slot="resource-display">
-						{#if myPlayerState}
-							<ResourceDisplay
-								actions={myPlayerState.actions}
-								buys={myPlayerState.buys}
-								coins={myPlayerState.coins}
-								horizontal
-							/>
-						{/if}
-					</svelte:fragment>
-				</Supply>
+				{#if showSupply}
+					<Supply
+						playerState={myPlayerState}
+						gameState={$gameStateStore.gameState}
+						onBuy={(cardName, cardCenter) => {
+							boughtCardCenter = cardCenter;
+							onBuy(cardName, cardCenter);
+						}}
+						onHide={() => {
+							showSupply = false;
+							vignetteState = 1;
+							setTimeout(() => {
+								vignetteState = 0;
+							}, transitionDurationMs);
+						}}
+					/>
+				{/if}
 			</div>
 		</button>
 	{/if}

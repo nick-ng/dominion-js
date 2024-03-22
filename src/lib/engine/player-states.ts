@@ -3,9 +3,9 @@ import type { PlayerState } from "$lib/schemas/types";
 export function getStartingPlayerState(playerId: string): PlayerState {
 	return {
 		playerId,
-		actions: 0,
+		actions: 1,
 		coins: 0,
-		buys: 0,
+		buys: 1,
 		ownedCards: [
 			"estate:1",
 			"estate:2",
