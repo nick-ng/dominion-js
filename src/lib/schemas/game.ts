@@ -2,9 +2,18 @@ import z from "zod";
 
 export const queuedEffect = z.object({
 	type: z.string(),
-	autoExpire: z.boolean(),
-	expiryTurn: z.number(),
+	blocksPlayer: z.boolean().optional(),
+	blocksEveryone: z.boolean().optional(),
+	expiryTurn: z.number().optional(),
 });
+
+export const doCellar1Effect = z.object({
+	type: z.literal("cellar-1"),
+	playerId: z.string(),
+	payloadArray: z.string().array(),
+});
+
+export const doQueueEffect = z.discriminatedUnion("type", [doCellar1Effect]);
 
 export const playerStateSchema = z.object({
 	playerId: z.string(),

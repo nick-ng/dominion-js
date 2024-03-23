@@ -169,14 +169,16 @@
 		<div class="grow" />
 	</div>
 </FullDisplay>
-<div class="absolute right-0 top-0 border bg-gray-800 px-2">
-	<details>
+<div
+	class="absolute right-0 top-0 max-h-screen w-max overflow-y-auto border bg-gray-800 px-2"
+>
+	<details class="w-max">
 		<summary>Debug: Full Game</summary>
-		<pre>{JSON.stringify(game, null, "  ")}</pre>
+		<pre class="w-max">{JSON.stringify(game, null, "  ")}</pre>
 	</details>
 	<details>
 		<summary>Debug: Visible Game</summary>
-		<pre>{JSON.stringify(
+		<pre class="w-max">{JSON.stringify(
 				game.getGameStateForPlayer(playerId),
 				null,
 				"  ",
@@ -184,7 +186,7 @@
 	</details>
 	<details>
 		<summary>Debug: Player State</summary>
-		<pre>{JSON.stringify(
+		<pre class="w-max">{JSON.stringify(
 				$gameStateStore.gameState?.playerStates[playerId],
 				null,
 				"  ",

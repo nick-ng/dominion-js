@@ -31,14 +31,30 @@ export function applyMerchant0(
 
 	prevGameState.playerStates[playerId].queuedEffects.push({
 		type: "merchant-1",
-		autoExpire: true,
 		expiryTurn: -1,
 	});
 
 	return { success: true, nextGameState: prevGameState };
 }
 
-export function applyDominionQueuedEffects(
+export function applyCellar0(
+	prevGameState: GameState,
+	cardEffect: Effect,
+	playerId: string,
+): { success: boolean; nextGameState: GameState } {
+	if (!prevGameState.playerStates[playerId] || cardEffect.type !== "cellar-0") {
+		return { success: false, nextGameState: prevGameState };
+	}
+
+	prevGameState.playerStates[playerId].queuedEffects.push({
+		type: "cellar-1",
+		expiryTurn: -1,
+	});
+
+	return { success: true, nextGameState: prevGameState };
+}
+
+export function applyDominionTriggeredEffects(
 	prevGameState: GameState,
 	playerId: string,
 ): { success: boolean; nextGameState: GameState } {

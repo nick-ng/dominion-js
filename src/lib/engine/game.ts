@@ -4,6 +4,7 @@ import type {
 	Player,
 	Effect,
 	ActionResult,
+	DoQueueEffect,
 } from "$lib/schemas/types";
 
 import {
@@ -18,7 +19,7 @@ import { applyGainEffect, applyPlusEffect } from "./effects/standard";
 import { getActivePlayerId } from "$lib/helpers";
 import {
 	applyDominionEffect,
-	applyDominionQueuedEffects,
+	applyDominionTriggeredEffects,
 } from "./effects/dominion";
 
 export default class Game {
@@ -260,7 +261,7 @@ export default class Game {
 			this.applyEffect(playerId, card.effects[i]);
 		}
 
-		applyDominionQueuedEffects(this.getGameState(), playerId);
+		applyDominionTriggeredEffects(this.getGameState(), playerId);
 
 		return {
 			success: true,
@@ -418,6 +419,14 @@ export default class Game {
 				this.playerStates[playerId].buys = 0;
 				this.playerStates[playerId].coins = 0;
 
+				// 45: remove any effects that need to expire
+				this.playerStates[playerId].queuedEffects = this.playerStates[
+					playerId
+				].queuedEffects.filter(
+					({ expiryTurn }) =>
+						typeof expiryTurn !== "number" || this.turn < expiryTurn,
+				);
+
 				// 50: advance turn
 				this.turn = this.turn + 1;
 
@@ -443,6 +452,22 @@ export default class Game {
 		return {
 			success: true,
 		};
+	}
+
+	doQueuedEffect(queuedEffect: DoQueueEffect): ActionResult {
+		// 10: check if effect is in the player's queue
+		const { playerId } = queuedEffect;
+
+		if (
+			!this.playerStates[playerId].queuedEffects
+				.map((e) => e.type)
+				.includes(queuedEffect.type)
+		) {
+			return {
+				success: false,
+				reason: `There's no queued effect for you to do. (${queuedEffect.type})`,
+			};
+		}
 	}
 
 	getActivePlayerId(adjustment = 0): string {
