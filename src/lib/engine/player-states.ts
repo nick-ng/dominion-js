@@ -1,68 +1,52 @@
 import type { PlayerState } from "$lib/schemas/types";
 
-export function getStartingPlayerState(playerId: string): PlayerState {
+export function getStartingPlayerState(
+	playerId: string,
+	playerNumber = 0,
+): PlayerState {
+	const coppers = [];
+	for (let i = 0; i < 7; i++) {
+		coppers.push(`copper:${i}p${playerNumber}`);
+	}
+	const estates = [];
+	for (let i = 0; i < 3; i++) {
+		estates.push(`estate:${i}p${playerNumber}`);
+	}
+
 	return {
 		playerId,
 		actions: 1,
 		coins: 0,
 		buys: 1,
-		ownedCards: [
-			"estate:1",
-			"estate:2",
-			"estate:3",
-			"copper:1",
-			"copper:2",
-			"copper:3",
-			"copper:4",
-			"copper:5",
-			"copper:6",
-			"copper:7",
-		],
+		ownedCards: [...estates, ...coppers],
 		deck: [],
-		discardPile: [
-			"estate:1",
-			"estate:2",
-			"estate:3",
-			"copper:1",
-			"copper:2",
-			"copper:3",
-			"copper:4",
-			"copper:5",
-			"copper:6",
-			"copper:7",
-		],
+		discardPile: [...estates, ...coppers],
 		hand: [],
 		inPlay: [],
+		queuedEffects: [],
 	};
 }
 
 export function getTest0PlayerState(playerId: string): PlayerState {
+	const coppers = [];
+	for (let i = 0; i < 7; i++) {
+		coppers.push(`copper:${i}t0`);
+	}
+	const estates = [];
+	for (let i = 0; i < 3; i++) {
+		estates.push(`estate:${i}t0`);
+	}
+
 	const tempState: Omit<PlayerState, "ownedCards"> = {
 		playerId,
 		actions: 1,
 		coins: 0,
-		buys: 0,
-		deck: ["copper:7"],
-		discardPile: [
-			"estate:1",
-			"estate:2",
-			"estate:3",
-			"copper:1",
-			"copper:2",
-			"copper:3",
-			"copper:4",
-			"copper:5",
-			"copper:6",
-		],
-		hand: [
-			"village:0",
-			"merchant:0",
-			"smithy:0",
-			"smithy:1",
-			"market:0",
-			"militia:0",
-		],
+		buys: 1,
+		deck: ["smithy:0"],
+		discardPile: [...estates, ...coppers],
+		hand: ["merchant:0", "merchant:1", "silver:0", "silver:1", "militia:0"],
 		inPlay: [],
+		queuedEffects: [],
 	};
 
 	return {
@@ -81,7 +65,7 @@ export function getTest1PlayerState(playerId: string): PlayerState {
 		playerId,
 		actions: 1,
 		coins: 0,
-		buys: 0,
+		buys: 1,
 		deck: [],
 		discardPile: [
 			"village:1",
@@ -103,6 +87,7 @@ export function getTest1PlayerState(playerId: string): PlayerState {
 		],
 		hand: ["village:0", "merchant:0", "smithy:0", "market:0", "militia:0"],
 		inPlay: [],
+		queuedEffects: [],
 	};
 
 	return {
@@ -143,6 +128,7 @@ export function getTest2PlayerState(playerId: string): PlayerState {
 			"smithy:4",
 			"market:4",
 		],
+		queuedEffects: [],
 	};
 
 	return {

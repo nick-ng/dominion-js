@@ -8,6 +8,7 @@
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
+	import { onMount } from "svelte";
 
 	let name = "player 1";
 	let playerId = "aaaaaa";
@@ -16,11 +17,31 @@
 	let success = true;
 	let reason = "";
 	let game = new Game(getPlayer());
-	game.test();
-	game.turnPhase = "action";
-	game.playerStates[playerId] = getTest0PlayerState(playerId);
 
 	$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+
+	onMount(() => {
+		game = new Game(getPlayer());
+		const result = game.setSupply([
+			"cellar",
+			"moat",
+			"village",
+			"merchant",
+			"workshop",
+			"smithy",
+			"remodel",
+			"militia",
+			"market",
+			"mine",
+		]);
+
+		success = result.success;
+		reason = result.reason || "";
+
+		game.start();
+
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	});
 </script>
 
 <FullDisplay
@@ -49,11 +70,36 @@
 			class="button-default"
 			on:click={() => {
 				game = new Game(getPlayer());
+				const result = game.setSupply([
+					"cellar",
+					"moat",
+					"village",
+					"merchant",
+					"workshop",
+					"smithy",
+					"remodel",
+					"militia",
+					"market",
+					"mine",
+				]);
+
+				success = result.success;
+				reason = result.reason || "";
+
+				game.start();
+
+				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+			}}>Reset</button
+		>
+		<button
+			class="button-default"
+			on:click={() => {
+				game = new Game(getPlayer());
 				game.test();
 				game.turnPhase = "action";
 				game.playerStates[playerId] = getTest0PlayerState(playerId);
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Reset</button
+			}}>Test0</button
 		>
 		<button
 			class="button-default"
@@ -74,31 +120,6 @@
 				game.playerStates[playerId] = getTest2PlayerState(playerId);
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 			}}>Many In-Play</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				const result = game.setSupply([
-					"cellar",
-					"moat",
-					"village",
-					"merchant",
-					"workshop",
-					"smithy",
-					"remodel",
-					"militia",
-					"market",
-					"mine",
-				]);
-
-				success = result.success;
-				reason = result.reason || "";
-
-				game.start();
-
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Solo</button
 		>
 		<button
 			class="button-default"

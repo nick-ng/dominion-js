@@ -32,6 +32,7 @@ Dominion in JavaScript (TypeScript)
    - Perform intermediate actions
 - [ ] Handle disconnected players
 - [ ] Sound effects
+   - Your turn
 
 ### ToDo Comments
 
@@ -45,7 +46,7 @@ File | ToDo
 `src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
 `src\lib\components\play-area.svelte` | (@nick-ng): put "set-aside" cards here 
 `src\lib\components\play-area.svelte` | (@nick-ng): indicate cards you can't play 
-`src\lib\components\full-display.svelte` | (@nick-ng): highlight end turn button
+`src\lib\components\full-display.svelte` | (@nick-ng): move button highlight class stuff here
 `src\lib\components\full-display.svelte` | (@nick-ng): option to invert direction
 `src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 

@@ -47,16 +47,23 @@
 			const card = getCardFromId(cardId);
 			if (card && card.types.includes("treasure")) {
 				const cardEl = handEls[i] || handEls[0];
-				const cardRect = cardEl.getBoundingClientRect();
-				const cardCenter = {
-					x: (cardRect.left + cardRect.right) / 2,
-					y: (cardRect.top + cardRect.bottom) / 2,
-				};
+				if (cardEl) {
+					const cardRect = cardEl.getBoundingClientRect();
+					const cardCenter = {
+						x: (cardRect.left + cardRect.right) / 2,
+						y: (cardRect.top + cardRect.bottom) / 2,
+					};
 
+					return {
+						cardId,
+						card,
+						cardCenter,
+					};
+				}
 				return {
 					cardId,
 					card,
-					cardCenter,
+					cardCenter: { x: -1, y: -1 },
 				};
 			}
 

@@ -31,7 +31,7 @@
 	let endActionsHint = false;
 	let buyCardsHint = false;
 	let endTurnHint = false;
-	let callToAction = "";
+	let gamePhaseMessage = "";
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
@@ -56,7 +56,6 @@
 		myPlayerState?.buys === 0
 			? "button-nothing-to-do"
 			: "button-something-to-do";
-	// @todo(nick-ng): highlight end turn button
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
 	$: {
@@ -87,34 +86,41 @@
 			endActionsHint = false;
 			buyCardsHint = false;
 			endTurnHint = false;
+
+			gamePhaseMessage = `${activePlayer?.name}'s turn`;
 		} else {
+			// @todo(nick-ng): move button highlight class stuff here
 			switch ($gameStateStore.gameState?.turnPhase) {
 				case "action": {
 					endActionsHint = true;
 					buyCardsHint = false;
 					endTurnHint = false;
-					callToAction = "Action Phase";
+
+					gamePhaseMessage = "Action Phase";
 					break;
 				}
 				case "buy-0": {
 					endActionsHint = false;
 					buyCardsHint = true;
 					endTurnHint = false;
-					callToAction = "Buy Phase";
+
+					gamePhaseMessage = "Buy Phase";
 					break;
 				}
 				case "buy-1": {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = true;
-					callToAction = "Buy Phase";
+
+					gamePhaseMessage = "Buy Phase";
 					break;
 				}
 				default: {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = false;
-					callToAction = "Clean-up Phase";
+
+					gamePhaseMessage = "Clean-up Phase";
 				}
 			}
 		}
@@ -177,7 +183,7 @@
 	class="flex shrink grow flex-col items-stretch justify-start gap-2 overflow-hidden"
 >
 	<slot />
-	{#if $gameStateStore.gameState}
+	{#if $gameStateStore.gameState?.playerStates[activePlayerId]}
 		<div
 			class="relative overflow-hidden border-b border-b-gray-600 transition-all"
 			style={showMyBoard ? hideStyle : showStyle}
@@ -217,7 +223,7 @@
 						}}>Show Supply</button
 					>
 					<div class="grow" />
-					<div class="self-center text-xl">{callToAction}</div>
+					<div class="self-center text-xl">{gamePhaseMessage}</div>
 					<button
 						class={endActionsHint ? actionCardClass : ""}
 						on:click={() => {

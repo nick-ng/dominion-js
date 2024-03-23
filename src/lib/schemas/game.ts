@@ -1,5 +1,11 @@
 import z from "zod";
 
+export const queuedEffect = z.object({
+	type: z.string(),
+	autoExpire: z.boolean(),
+	expiryTurn: z.number(),
+});
+
 export const playerStateSchema = z.object({
 	playerId: z.string(),
 	actions: z.number(),
@@ -10,6 +16,7 @@ export const playerStateSchema = z.object({
 	discardPile: z.string().array(), // top card is last in array
 	hand: z.string().array(),
 	inPlay: z.string().array(),
+	queuedEffects: queuedEffect.array(),
 });
 
 export const effectSchema = z.object({
