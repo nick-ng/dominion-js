@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { GameState, Coordinates } from "$lib/schemas/types";
 
-	import { CARD_WIDTH_OVERLAP_PX, CARD_WIDTH_PX } from "$lib/engine/card-list";
+	import {
+		CARD_WIDTH_OVERLAP_PX,
+		CARD_WIDTH_PX,
+		getCardFromId,
+	} from "$lib/engine/card-list";
 
 	import Card from "./card.svelte";
 	import { onMount } from "svelte";
@@ -12,9 +16,10 @@
 	export let gameState: GameState;
 	export let playerId: string;
 	export let onPlayCard: (
-		cardName: string,
+		cardId: string,
 		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
+	export let onPlayAllTreasures: () => void | Promise<void> = () => {};
 	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	export let opponent = false;
 
@@ -37,6 +42,27 @@
 		CARD_WIDTH_OVERLAP_PX * playerState.inPlay.length,
 		playZoneWidthPx - CARD_WIDTH_PX,
 	);
+	$: allTreasureCards = playerState.hand
+		.map((cardId, i) => {
+			const card = getCardFromId(cardId);
+			if (card && card.types.includes("treasure")) {
+				const cardEl = handEls[i] || handEls[0];
+				const cardRect = cardEl.getBoundingClientRect();
+				const cardCenter = {
+					x: (cardRect.left + cardRect.right) / 2,
+					y: (cardRect.top + cardRect.bottom) / 2,
+				};
+
+				return {
+					cardId,
+					card,
+					cardCenter,
+				};
+			}
+
+			return null;
+		})
+		.filter((c) => c);
 
 	onMount(() => {
 		if (deckEl) {
@@ -173,7 +199,24 @@
 			{/each}
 		</div>
 		<div>
-			<!-- hack to center cards in hand -->
+			{#if gameState.turnPhase === "buy-0"}
+				<button
+					on:click={() => {
+						let playedACard = false;
+						allTreasureCards.forEach((c) => {
+							if (c) {
+								const { cardId, cardCenter } = c;
+								onPlayCard(cardId, cardCenter);
+								playedACard = true;
+							}
+						});
+
+						if (playedACard) {
+							onPlayAllTreasures();
+						}
+					}}>Play all Treasures</button
+				>
+			{/if}
 		</div>
 	</div>
 </div>
