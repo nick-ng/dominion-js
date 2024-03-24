@@ -48,6 +48,7 @@
 		confirmText: string;
 	} | null = null;
 	let selectedCards: string[] = [];
+	let selectedCard = "";
 
 	// @todo(nick-ng): make an array of centers then make discard cards for each one
 	let inPlayEls: Record<number, HTMLElement> = {};
@@ -227,19 +228,23 @@
 						<label
 							class="button-default absolute bottom-full-2 left-0 right-0 mx-auto w-[90%] cursor-pointer select-none rounded-lg bg-main-bg-1 text-center has-[:checked]:bg-blue-300 can-hover:py-2"
 						>
-							<input
-								class="cursor-pointer"
-								type="checkbox"
-								value={cardId}
-								bind:group={selectedCards}
-								disabled={blockingEffect.selectCount !== 0 &&
-									blockingEffect.selectCount <= selectedCards.length &&
-									!selectedCards.includes(cardId)}
-							/>
-							{#if blockingEffect.selectCount !== 0}
-								<span
-									>: {selectedCards.length}/{blockingEffect.selectCount}</span
-								>
+							{#if blockingEffect.selectCount === 1}
+								<input
+									class="cursor-pointer"
+									type="radio"
+									value={cardId}
+									bind:group={selectedCard}
+								/>
+							{:else}
+								<input
+									class="cursor-pointer"
+									type="checkbox"
+									value={cardId}
+									bind:group={selectedCards}
+									disabled={blockingEffect.selectCount !== 0 &&
+										blockingEffect.selectCount <= selectedCards.length &&
+										!selectedCards.includes(cardId)}
+								/>
 							{/if}
 						</label>
 					{/if}
@@ -291,26 +296,34 @@
 		>
 			{blockingEffect?.message}
 			<div class="grow" />
-			{#if blockingEffect.selectCount !== 0 && blockingEffect.selectCount > selectedCards.length}
+			{#if blockingEffect.selectCount > 1 && blockingEffect.selectCount > selectedCards.length}
 				{@const remainingSelect =
 					blockingEffect.selectCount - selectedCards.length}
 				<div>
-					Select {remainingSelect} more {remainingSelect === 1
+					Choose {remainingSelect} more {remainingSelect === 1
 						? "card"
 						: "cards"}.
 				</div>
+			{:else if blockingEffect.selectCount === 1 && !selectedCard}
+				<div>Choose a card</div>
 			{/if}
 			<button
 				class="button-default"
-				disabled={blockingEffect.selectCount !== 0 &&
-					blockingEffect.selectCount > selectedCards.length}
+				disabled={(blockingEffect.selectCount > 1 &&
+					blockingEffect.selectCount > selectedCards.length) ||
+					(blockingEffect.selectCount === 1 && !selectedCard)}
 				on:click={() => {
 					if (blockingEffect) {
 						onPlayEffect({
 							type: blockingEffect.type,
 							playerId,
-							payloadArray: selectedCards,
+							payloadArray:
+								blockingEffect.selectCount === 1
+									? [selectedCard]
+									: selectedCards,
 						});
+						selectedCard = "";
+						selectedCards = [];
 					}
 				}}>{blockingEffect.confirmText}</button
 			>
