@@ -1,19 +1,32 @@
 import z from "zod";
 
-export const queuedEffect = z.object({
-	type: z.string(),
+const queuedEffectTypes = z.enum(["cellar-1", "merchant-1"]);
+
+export const queuedEffectSchema = z.object({
+	type: queuedEffectTypes,
 	blocksPlayer: z.boolean().optional(),
 	blocksEveryone: z.boolean().optional(),
 	expiryTurn: z.number().optional(),
+	message: z.string().optional(),
 });
 
-export const doCellar1Effect = z.object({
-	type: z.literal("cellar-1"),
+export const cellarEffect1ActionSchema = z.object({
+	type: queuedEffectTypes,
 	playerId: z.string(),
 	payloadArray: z.string().array(),
 });
 
-export const doQueueEffect = z.discriminatedUnion("type", [doCellar1Effect]);
+/**
+ * The payload array will be an array of cardIds and/or cardNames.
+ * The effect handler will know how to interpret the array.
+ *
+ * Examples:
+ * Cellar: cardIds of cards in hand to discard
+ * Mine: cardId of treasure in hand to trash and cardName of treasure to gain
+ */
+export const queueEffectActionSchema = z.discriminatedUnion("type", [
+	cellarEffect1ActionSchema,
+]);
 
 export const playerStateSchema = z.object({
 	playerId: z.string(),
@@ -25,7 +38,7 @@ export const playerStateSchema = z.object({
 	discardPile: z.string().array(), // top card is last in array
 	hand: z.string().array(),
 	inPlay: z.string().array(),
-	queuedEffects: queuedEffect.array(),
+	queuedEffects: queuedEffectSchema.array(),
 });
 
 export const effectSchema = z.object({

@@ -75,13 +75,13 @@
 		<div class="relative">
 			<h3 class="text-center">Supply</h3>
 			<button
-				class={`${playerState?.buys === 0 ? "button-nothing-to-do" : "bg-gray-800 text-gray-100"} absolute left-0 top-0 transition-all`}
+				class={`${playerState?.buys === 0 ? "button-nothing-to-do" : "bg-main-bg text-gray-100"} absolute left-0 top-0 transition-all`}
 				on:click={() => {
 					onHide();
 				}}>Hide Supply</button
 			>
 			<button
-				class={`${playerState?.buys === 0 ? "button-nothing-to-do" : "bg-gray-800 text-gray-100"} absolute right-0 top-0 transition-all`}
+				class={`${playerState?.buys === 0 ? "button-nothing-to-do" : "bg-main-bg text-gray-100"} absolute right-0 top-0 transition-all`}
 				on:click={() => {
 					onHide();
 				}}>Hide Supply</button

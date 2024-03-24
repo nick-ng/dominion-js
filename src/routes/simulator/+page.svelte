@@ -2,14 +2,21 @@
 	import { gameStateStore } from "$lib/stores/game-state";
 	import { optionsStore } from "$lib/stores/options";
 	import {
-		getTest0PlayerState,
-		getTest1PlayerState,
-		getTest2PlayerState,
+		getTestMerchantState,
+		getTestInPlayState,
+		getTestActionsState,
+		getTestCellarState,
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 
+	const testCases: { [key: string]: Function | undefined } = {
+		["Merchant Test"]: getTestMerchantState,
+		["Cellar Test"]: getTestCellarState,
+		["Many Actions"]: getTestActionsState,
+		["Many In-Play"]: getTestInPlayState,
+	};
 	let name = "player 1";
 	let playerId = "aaaaaa";
 	let token = "a12345";
@@ -17,6 +24,7 @@
 	let success = true;
 	let reason = "";
 	let game = new Game(getPlayer());
+	let chosenTestCase = "";
 
 	$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 
@@ -89,37 +97,7 @@
 				game.start();
 
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Reset</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest0PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Test0</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest1PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Many Actions</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest2PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Many In-Play</button
+			}}>Default</button
 		>
 		<button
 			class="button-default"
@@ -151,6 +129,31 @@
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 			}}>2 Players</button
 		>
+		<select
+			class="button-default block"
+			bind:value={chosenTestCase}
+			on:change={(e) => {
+				const value = e.currentTarget.value;
+				const func = testCases[value];
+				if (func) {
+					game = new Game(getPlayer());
+					game.test();
+					game.turnPhase = "action";
+
+					game.playerStates[playerId] = func(playerId);
+				}
+
+				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+
+				chosenTestCase = "";
+			}}
+		>
+			<option value="">Choose a test case</option>
+			{#each Object.entries(testCases) as t}
+				<option value={t[0]}>{t[0]}</option>
+			{/each}
+		</select>
+		<div>{chosenTestCase}</div>
 		<div>
 			<label class="ml-4 flex flex-col items-center">
 				<div>Animation Speed</div>
@@ -170,7 +173,7 @@
 	</div>
 </FullDisplay>
 <div
-	class="absolute right-0 top-0 max-h-screen w-max overflow-y-auto border bg-gray-800 px-2"
+	class="bg-main-bg absolute right-0 top-0 max-h-screen w-max overflow-y-auto border px-2"
 >
 	<details class="w-max">
 		<summary>Debug: Full Game</summary>

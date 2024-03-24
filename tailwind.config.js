@@ -9,6 +9,10 @@ export default {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	theme: {
 		extend: {
+			colors: {
+				"main-bg": "#182018",
+				"main-bg-1": "#202820",
+			},
 			screens: {
 				"can-hover": { raw: "(hover: hover)" },
 				"cannot-hover": { raw: "(hover: none)" },

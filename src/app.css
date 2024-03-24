@@ -18,7 +18,7 @@
 	select,
 	textarea,
 	.opaque {
-		@apply bg-gray-800;
+		@apply bg-main-bg;
 	}
 
 	input[type="text"],
@@ -58,15 +58,15 @@
 	}
 
 	.odd-rows {
-		@apply odd:bg-gray-700;
+		@apply odd:bg-main-bg-1;
 	}
 
 	.even-rows {
-		@apply even:bg-gray-700;
+		@apply even:bg-main-bg-1;
 	}
 
 	.odd-bg {
-		@apply bg-gray-700;
+		@apply bg-main-bg-1;
 	}
 
 	button:disabled {
@@ -80,7 +80,7 @@
 
 	/* @todo(nick-ng): animate nothing-to-do style */
 	.button-nothing-to-do {
-		@apply border-black bg-green-600 text-black;
+		@apply border-black bg-green-500 text-black;
 	}
 
 	.button-something-to-do {

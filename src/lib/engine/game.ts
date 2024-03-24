@@ -4,7 +4,7 @@ import type {
 	Player,
 	Effect,
 	ActionResult,
-	DoQueueEffect,
+	QueueEffectAction,
 } from "$lib/schemas/types";
 
 import {
@@ -454,7 +454,7 @@ export default class Game {
 		};
 	}
 
-	doQueuedEffect(queuedEffect: DoQueueEffect): ActionResult {
+	doQueuedEffect(queuedEffect: QueueEffectAction): ActionResult {
 		// 10: check if effect is in the player's queue
 		const { playerId } = queuedEffect;
 

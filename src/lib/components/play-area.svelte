@@ -1,5 +1,9 @@
 <script lang="ts">
-	import type { GameState, Coordinates } from "$lib/schemas/types";
+	import type {
+		GameState,
+		Coordinates,
+		QueueEffectAction,
+	} from "$lib/schemas/types";
 
 	import {
 		CARD_WIDTH_OVERLAP_PX,
@@ -15,13 +19,16 @@
 	export { className as class };
 	export let gameState: GameState;
 	export let playerId: string;
+	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
+	export let opponent = false;
 	export let onPlayCard: (
 		cardId: string,
 		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
 	export let onPlayAllTreasures: () => void | Promise<void> = () => {};
-	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
-	export let opponent = false;
+	export let onPlayEffect: (
+		queueEffectAction: QueueEffectAction,
+	) => void | Promise<void> = () => {};
 
 	let isThreshold = false;
 	let playedCardCenters: { [cardId: string]: Coordinates } = {};
@@ -32,6 +39,15 @@
 	let deckCenter = { x: -1, y: -1 };
 	let discardCenter = { x: -1, y: -1 };
 	let playZoneWidthPx = 0;
+
+	let blockingEffect: {
+		message: string;
+		type: QueueEffectAction["type"];
+		selectSource: "hand" | "discard";
+		selectCount: number;
+		confirmText: string;
+	} | null = null;
+	let selectedCards: string[] = [];
 
 	// @todo(nick-ng): make an array of centers then make discard cards for each one
 	let inPlayEls: Record<number, HTMLElement> = {};
@@ -70,6 +86,29 @@
 			return null;
 		})
 		.filter((c) => c);
+	$: {
+		if (playerState.queuedEffects.length > 0) {
+			blockingEffect = null;
+			for (let i = 0; i < playerState.queuedEffects.length; i++) {
+				const tempEffect = playerState.queuedEffects[i];
+				if (tempEffect.blocksPlayer || tempEffect.blocksEveryone) {
+					switch (tempEffect.type) {
+						case "cellar-1": {
+							blockingEffect = {
+								type: "cellar-1",
+								message: tempEffect.message || "",
+								selectCount: 0,
+								selectSource: "hand",
+								confirmText: "Discard",
+							};
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 
 	onMount(() => {
 		if (deckEl) {
@@ -92,7 +131,7 @@
 </script>
 
 <div
-	class={`${className} border-subtle flex flex-col items-stretch gap-2 bg-gray-800 transition-all`}
+	class={`${className} border-subtle relative flex flex-col items-stretch gap-2 bg-main-bg transition-all`}
 >
 	<!-- In Play -->
 	<div class={`${opponent ? "order-2" : ""}`}>
@@ -176,7 +215,7 @@
 		</div>
 		<div
 			class={`flex h-card flex-shrink ${opponent ? "flex-row-reverse" : "flex-row"}`}
-			style={`flex-basis: ${CARD_WIDTH_OVERLAP_PX * playerState.hand.length}px`}
+			style={`flex-basis: ${(!opponent && blockingEffect?.selectSource === "hand" ? CARD_WIDTH_PX : CARD_WIDTH_OVERLAP_PX) * playerState.hand.length}px`}
 		>
 			<!-- @todo(nick-ng): indicate cards you can't play -->
 			{#each playerState.hand as cardId, i (cardId)}
@@ -184,6 +223,26 @@
 					class="relative h-card flex-shrink-0 flex-grow basis-card-overlap"
 					bind:this={handEls[i]}
 				>
+					{#if !opponent && blockingEffect?.selectSource === "hand"}
+						<label
+							class="button-default absolute bottom-full-2 left-0 right-0 mx-auto w-[90%] cursor-pointer select-none rounded-lg bg-main-bg-1 text-center has-[:checked]:bg-blue-300 can-hover:py-2"
+						>
+							<input
+								class="cursor-pointer"
+								type="checkbox"
+								value={cardId}
+								bind:group={selectedCards}
+								disabled={blockingEffect.selectCount !== 0 &&
+									blockingEffect.selectCount <= selectedCards.length &&
+									!selectedCards.includes(cardId)}
+							/>
+							{#if blockingEffect.selectCount !== 0}
+								<span
+									>: {selectedCards.length}/{blockingEffect.selectCount}</span
+								>
+							{/if}
+						</label>
+					{/if}
 					<Card
 						class="absolute left-0"
 						cardId={opponent ? `back:h${i}` : cardId}
@@ -226,4 +285,35 @@
 			{/if}
 		</div>
 	</div>
+	{#if !opponent && blockingEffect?.message}
+		<div
+			class="border-subtle absolute left-0 right-0 top-10 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
+		>
+			{blockingEffect?.message}
+			<div class="grow" />
+			{#if blockingEffect.selectCount !== 0 && blockingEffect.selectCount > selectedCards.length}
+				{@const remainingSelect =
+					blockingEffect.selectCount - selectedCards.length}
+				<div>
+					Select {remainingSelect} more {remainingSelect === 1
+						? "card"
+						: "cards"}.
+				</div>
+			{/if}
+			<button
+				class="button-default"
+				disabled={blockingEffect.selectCount !== 0 &&
+					blockingEffect.selectCount > selectedCards.length}
+				on:click={() => {
+					if (blockingEffect) {
+						onPlayEffect({
+							type: blockingEffect.type,
+							playerId,
+							payloadArray: selectedCards,
+						});
+					}
+				}}>{blockingEffect.confirmText}</button
+			>
+		</div>
+	{/if}
 </div>

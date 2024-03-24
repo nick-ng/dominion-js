@@ -11,6 +11,9 @@ export function applyDominionEffect(
 		case "merchant-0": {
 			return applyMerchant0(prevGameState, cardEffect, playerId);
 		}
+		case "cellar-0": {
+			return applyCellar0(prevGameState, cardEffect, playerId);
+		}
 		default: {
 			return { success: false, nextGameState: prevGameState };
 		}
@@ -48,7 +51,8 @@ export function applyCellar0(
 
 	prevGameState.playerStates[playerId].queuedEffects.push({
 		type: "cellar-1",
-		expiryTurn: -1,
+		blocksPlayer: true,
+		message: "Cellar: Choose cards to discard.",
 	});
 
 	return { success: true, nextGameState: prevGameState };
@@ -109,3 +113,8 @@ export function applyMerchant1(
 
 	return { success: true, nextGameState: prevGameState };
 }
+
+export function applyDominionChoiceEffects(): {
+	success: boolean;
+	nextGameState: GameState;
+} {}

@@ -276,6 +276,9 @@
 							showSupply = true;
 						}
 					}}
+					onPlayEffect={(e) => {
+						console.log("onPlayEffect", e);
+					}}
 				/>
 			</div>
 		{/if}
@@ -293,7 +296,7 @@
 			}}
 		>
 			<div
-				class={`${showSupply ? "left-4 right-4" : "-left-full right-full-2"} absolute bottom-0 top-0 my-auto flex h-min w-auto flex-col justify-center overflow-hidden bg-gray-800`}
+				class={`${showSupply ? "left-4 right-4" : "-left-full right-full-2"} absolute bottom-0 top-0 my-auto flex h-min w-auto flex-col justify-center overflow-hidden bg-main-bg`}
 				style={transitionDurationStyle}
 			>
 				{#if showSupply}

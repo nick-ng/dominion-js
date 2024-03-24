@@ -27,7 +27,7 @@ export function getStartingPlayerState(
 	};
 }
 
-export function getTest0PlayerState(playerId: string): PlayerState {
+export function getTestMerchantState(playerId: string): PlayerState {
 	const coppers = [];
 	for (let i = 0; i < 7; i++) {
 		coppers.push(`copper:${i}t0`);
@@ -60,7 +60,40 @@ export function getTest0PlayerState(playerId: string): PlayerState {
 	};
 }
 
-export function getTest1PlayerState(playerId: string): PlayerState {
+export function getTestCellarState(playerId: string): PlayerState {
+	const coppers = [];
+	for (let i = 0; i < 7; i++) {
+		coppers.push(`copper:${i}t0`);
+	}
+	const estates = [];
+	for (let i = 0; i < 3; i++) {
+		estates.push(`estate:${i}t0`);
+	}
+
+	const tempState: Omit<PlayerState, "ownedCards"> = {
+		playerId,
+		actions: 1,
+		coins: 0,
+		buys: 1,
+		deck: ["smithy:0"],
+		hand: ["cellar:0t0", ...estates, coppers.pop()!],
+		discardPile: [...estates, ...coppers],
+		inPlay: [],
+		queuedEffects: [],
+	};
+
+	return {
+		...tempState,
+		ownedCards: [
+			...tempState.deck,
+			...tempState.discardPile,
+			...tempState.hand,
+			...tempState.inPlay,
+		].sort((a, b) => a.localeCompare(b)),
+	};
+}
+
+export function getTestActionsState(playerId: string): PlayerState {
 	const tempState: Omit<PlayerState, "ownedCards"> = {
 		playerId,
 		actions: 1,
@@ -101,7 +134,7 @@ export function getTest1PlayerState(playerId: string): PlayerState {
 	};
 }
 
-export function getTest2PlayerState(playerId: string): PlayerState {
+export function getTestInPlayState(playerId: string): PlayerState {
 	const tempState: Omit<PlayerState, "ownedCards"> = {
 		playerId,
 		actions: 1,
