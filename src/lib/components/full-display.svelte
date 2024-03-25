@@ -1,5 +1,10 @@
 <script lang="ts">
-	import type { GameState, Coordinates } from "$lib/schemas/types";
+	import type {
+		GameState,
+		Coordinates,
+		QueueEffectAction,
+		BlockingEffect,
+	} from "$lib/schemas/types";
 
 	import { gameStateStore } from "$lib/stores/game-state";
 	import { getActivePlayerId, getOpponentOrder } from "$lib/helpers";
@@ -22,6 +27,9 @@
 	export let onEndPhase: (
 		phaseName: GameState["turnPhase"],
 	) => void | Promise<void> = () => {};
+	export let onPlayEffect: (
+		queueEffectAction: QueueEffectAction,
+	) => void | Promise<void> = () => {};
 
 	let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	let showMyBoard = true;
@@ -31,7 +39,8 @@
 	let endActionsHint = false;
 	let buyCardsHint = false;
 	let endTurnHint = false;
-	let callToAction = "";
+	let gamePhaseMessage = "";
+	let blockingEffect: BlockingEffect | null = null;
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
@@ -56,7 +65,6 @@
 		myPlayerState?.buys === 0
 			? "button-nothing-to-do"
 			: "button-something-to-do";
-	// @todo(nick-ng): highlight end turn button
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
 	$: {
@@ -87,34 +95,47 @@
 			endActionsHint = false;
 			buyCardsHint = false;
 			endTurnHint = false;
+
+			gamePhaseMessage = `${activePlayer?.name}'s turn`;
+		} else if (blockingEffect) {
+			endActionsHint = false;
+			buyCardsHint = false;
+			endTurnHint = false;
+
+			gamePhaseMessage = blockingEffect.message;
 		} else {
+			// @todo(nick-ng): move button highlight class stuff here
 			switch ($gameStateStore.gameState?.turnPhase) {
 				case "action": {
 					endActionsHint = true;
 					buyCardsHint = false;
 					endTurnHint = false;
-					callToAction = "Action Phase";
+
+					gamePhaseMessage = "Action Phase";
 					break;
 				}
 				case "buy-0": {
 					endActionsHint = false;
 					buyCardsHint = true;
 					endTurnHint = false;
-					callToAction = "Buy Phase";
+
+					gamePhaseMessage = "Buy Phase";
 					break;
 				}
 				case "buy-1": {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = true;
-					callToAction = "Buy Phase";
+
+					gamePhaseMessage = "Buy Phase";
 					break;
 				}
 				default: {
 					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = false;
-					callToAction = "Clean-up Phase";
+
+					gamePhaseMessage = "Clean-up Phase";
 				}
 			}
 		}
@@ -122,6 +143,29 @@
 	$: {
 		if (showSupply === true) {
 			vignetteState = 2;
+		}
+	}
+	$: {
+		blockingEffect = null;
+		if (myPlayerState && myPlayerState.queuedEffects.length > 0) {
+			for (let i = 0; i < myPlayerState.queuedEffects.length; i++) {
+				const tempEffect = myPlayerState.queuedEffects[i];
+				if (tempEffect.blocksPlayer || tempEffect.blocksEveryone) {
+					switch (tempEffect.type) {
+						case "cellar-1": {
+							blockingEffect = {
+								type: "cellar-1",
+								message: tempEffect.message || "",
+								selectCount: 0,
+								selectSource: "hand",
+								confirmText: "Discard",
+							};
+							break;
+						}
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -177,7 +221,7 @@
 	class="flex shrink grow flex-col items-stretch justify-start gap-2 overflow-hidden"
 >
 	<slot />
-	{#if $gameStateStore.gameState}
+	{#if $gameStateStore.gameState?.playerStates[activePlayerId]}
 		<div
 			class="relative overflow-hidden border-b border-b-gray-600 transition-all"
 			style={showMyBoard ? hideStyle : showStyle}
@@ -217,7 +261,7 @@
 						}}>Show Supply</button
 					>
 					<div class="grow" />
-					<div class="self-center text-xl">{callToAction}</div>
+					<div class="self-center text-xl">{gamePhaseMessage}</div>
 					<button
 						class={endActionsHint ? actionCardClass : ""}
 						on:click={() => {
@@ -258,6 +302,7 @@
 						You
 					</h2>
 				</div>
+				<!-- Player's Play Area -->
 				<PlayArea
 					gameState={$gameStateStore.gameState}
 					{boughtCardCenter}
@@ -270,6 +315,7 @@
 							showSupply = true;
 						}
 					}}
+					{onPlayEffect}
 				/>
 			</div>
 		{/if}
@@ -287,7 +333,7 @@
 			}}
 		>
 			<div
-				class={`${showSupply ? "left-4 right-4" : "-left-full right-full-2"} absolute bottom-0 top-0 my-auto flex h-min w-auto flex-col justify-center overflow-hidden bg-gray-800`}
+				class={`${showSupply ? "left-4 right-4" : "-left-full right-full-2"} absolute bottom-0 top-0 my-auto flex h-min w-auto flex-col justify-center overflow-hidden bg-main-bg`}
 				style={transitionDurationStyle}
 			>
 				{#if showSupply}

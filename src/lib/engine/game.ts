@@ -4,6 +4,7 @@ import type {
 	Player,
 	Effect,
 	ActionResult,
+	QueueEffectAction,
 } from "$lib/schemas/types";
 
 import {
@@ -16,6 +17,11 @@ import { getRandomGameSeed, shuffle } from "$lib/utils";
 import { getStartingPlayerState } from "./player-states";
 import { applyGainEffect, applyPlusEffect } from "./effects/standard";
 import { getActivePlayerId } from "$lib/helpers";
+import {
+	applyDominionChoiceEffects,
+	applyDominionEffect,
+	applyDominionTriggeredEffects,
+} from "./effects/dominion";
 
 export default class Game {
 	constructor(host: Player, gameId?: string) {
@@ -61,25 +67,20 @@ export default class Game {
 			);
 		});
 
-		this.supplyList = [
-			"copper",
-			"silver",
-			"gold",
-			"estate",
-			"duchy",
-			"province",
-			"curse",
-			"cellar",
-			"moat",
-			"village",
-			"merchant",
-			"workshop",
-			"smithy",
-			"remodel",
-			"militia",
-			"market",
-			"mine",
-		];
+		if (this.supplyList.length === 0) {
+			this.setSupply([
+				"cellar",
+				"moat",
+				"village",
+				"merchant",
+				"workshop",
+				"smithy",
+				"remodel",
+				"militia",
+				"market",
+				"mine",
+			]);
+		}
 
 		this.turn = 0;
 		this.turnAdjustment = 0;
@@ -144,27 +145,23 @@ export default class Game {
 
 		this.playerStates = {};
 		Object.keys(this.players).forEach((playerId, i) => {
-			this.playerStates[playerId] = getStartingPlayerState(playerId);
+			this.playerStates[playerId] = getStartingPlayerState(playerId, i);
 			this.applyEffect(playerId, { type: "card", value: 5 }, i);
 		});
 	}
 
 	applyEffect(playerId: string, effect: Effect, adjustment?: number) {
-		// resolve effects here
-		switch (effect.type) {
-			default: {
-				const { nextGameState } = applyPlusEffect(
-					this.getGameState(),
-					effect,
-					playerId,
-					adjustment,
-				);
-				const { playerStates } = nextGameState;
-				this.playerStates = playerStates;
+		// standard card effects (+card, +action, +buy, +coin)
+		let result = applyPlusEffect(
+			this.getGameState(),
+			effect,
+			playerId,
+			adjustment,
+		);
+		this.playerStates = result.nextGameState.playerStates;
 
-				break;
-			}
-		}
+		result = applyDominionEffect(this.getGameState(), effect, playerId);
+		this.playerStates = result.nextGameState.playerStates;
 	}
 
 	playCard(playerId: string, cardId: string): ActionResult {
@@ -264,6 +261,8 @@ export default class Game {
 		for (let i = 0; i < card.effects.length; i++) {
 			this.applyEffect(playerId, card.effects[i]);
 		}
+
+		applyDominionTriggeredEffects(this.getGameState(), playerId);
 
 		return {
 			success: true,
@@ -421,6 +420,14 @@ export default class Game {
 				this.playerStates[playerId].buys = 0;
 				this.playerStates[playerId].coins = 0;
 
+				// 45: remove any effects that need to expire
+				this.playerStates[playerId].queuedEffects = this.playerStates[
+					playerId
+				].queuedEffects.filter(
+					({ expiryTurn }) =>
+						typeof expiryTurn !== "number" || this.turn < expiryTurn,
+				);
+
 				// 50: advance turn
 				this.turn = this.turn + 1;
 
@@ -446,6 +453,33 @@ export default class Game {
 		return {
 			success: true,
 		};
+	}
+
+	doQueuedEffect(queuedEffect: QueueEffectAction): ActionResult {
+		// 10: check if effect is in the player's queue
+		const { playerId } = queuedEffect;
+
+		if (
+			!this.playerStates[playerId].queuedEffects
+				.map((e) => e.type)
+				.includes(queuedEffect.type)
+		) {
+			return {
+				success: false,
+				reason: `There's no queued effect for you to do. (${queuedEffect.type})`,
+			};
+		}
+
+		const result = applyDominionChoiceEffects(
+			this.getGameState(),
+			queuedEffect,
+		);
+
+		if (result.success) {
+			return { success: true };
+		}
+
+		return { success: false, reason: "Couldn't perform effect." };
 	}
 
 	getActivePlayerId(adjustment = 0): string {

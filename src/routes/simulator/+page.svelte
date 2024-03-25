@@ -2,13 +2,24 @@
 	import { gameStateStore } from "$lib/stores/game-state";
 	import { optionsStore } from "$lib/stores/options";
 	import {
-		getTest0PlayerState,
-		getTest1PlayerState,
-		getTest2PlayerState,
+		getTestMerchantState,
+		getTestInPlayState,
+		getTestActionsState,
+		getTestCellarState,
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
+	import { onMount } from "svelte";
+	import type { PlayerState } from "$lib/schemas/types";
 
+	const testCases: {
+		[key: string]: ((playerId: string) => PlayerState) | undefined;
+	} = {
+		["Merchant Test"]: getTestMerchantState,
+		["Cellar Test"]: getTestCellarState,
+		["Many Actions"]: getTestActionsState,
+		["Many In-Play"]: getTestInPlayState,
+	};
 	let name = "player 1";
 	let playerId = "aaaaaa";
 	let token = "a12345";
@@ -16,11 +27,32 @@
 	let success = true;
 	let reason = "";
 	let game = new Game(getPlayer());
-	game.test();
-	game.turnPhase = "action";
-	game.playerStates[playerId] = getTest0PlayerState(playerId);
+	let chosenTestCase = "";
 
 	$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+
+	onMount(() => {
+		game = new Game(getPlayer());
+		const result = game.setSupply([
+			"cellar",
+			"moat",
+			"village",
+			"merchant",
+			"workshop",
+			"smithy",
+			"remodel",
+			"militia",
+			"market",
+			"mine",
+		]);
+
+		success = result.success;
+		reason = result.reason || "";
+
+		game.start();
+
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	});
 </script>
 
 <FullDisplay
@@ -43,38 +75,14 @@
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 	}}
+	onPlayEffect={(effect) => {
+		const result = game.doQueuedEffect(effect);
+		success = result.success;
+		reason = result.reason || "";
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	}}
 >
 	<div class="flex flex-row items-start">
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest0PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Reset</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest1PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Many Actions</button
-		>
-		<button
-			class="button-default"
-			on:click={() => {
-				game = new Game(getPlayer());
-				game.test();
-				game.turnPhase = "action";
-				game.playerStates[playerId] = getTest2PlayerState(playerId);
-				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Many In-Play</button
-		>
 		<button
 			class="button-default"
 			on:click={() => {
@@ -98,7 +106,7 @@
 				game.start();
 
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
-			}}>Solo</button
+			}}>Default</button
 		>
 		<button
 			class="button-default"
@@ -130,6 +138,31 @@
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 			}}>2 Players</button
 		>
+		<select
+			class="button-default block"
+			bind:value={chosenTestCase}
+			on:change={(e) => {
+				const value = e.currentTarget.value;
+				const func = testCases[value];
+				if (func) {
+					game = new Game(getPlayer());
+					game.test();
+					game.turnPhase = "action";
+
+					game.playerStates[playerId] = func(playerId);
+				}
+
+				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+
+				chosenTestCase = "";
+			}}
+		>
+			<option value="">Choose a test case</option>
+			{#each Object.entries(testCases) as t}
+				<option value={t[0]}>{t[0]}</option>
+			{/each}
+		</select>
+		<div>{chosenTestCase}</div>
 		<div>
 			<label class="ml-4 flex flex-col items-center">
 				<div>Animation Speed</div>
@@ -148,14 +181,16 @@
 		<div class="grow" />
 	</div>
 </FullDisplay>
-<div class="absolute right-0 top-0 border bg-gray-800 px-2">
-	<details>
+<div
+	class="absolute right-0 top-0 max-h-screen w-max overflow-y-auto border bg-main-bg px-2"
+>
+	<details class="w-max">
 		<summary>Debug: Full Game</summary>
-		<pre>{JSON.stringify(game, null, "  ")}</pre>
+		<pre class="w-max">{JSON.stringify(game, null, "  ")}</pre>
 	</details>
 	<details>
 		<summary>Debug: Visible Game</summary>
-		<pre>{JSON.stringify(
+		<pre class="w-max">{JSON.stringify(
 				game.getGameStateForPlayer(playerId),
 				null,
 				"  ",
@@ -163,7 +198,7 @@
 	</details>
 	<details>
 		<summary>Debug: Player State</summary>
-		<pre>{JSON.stringify(
+		<pre class="w-max">{JSON.stringify(
 				$gameStateStore.gameState?.playerStates[playerId],
 				null,
 				"  ",
