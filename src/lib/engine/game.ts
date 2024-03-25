@@ -18,6 +18,7 @@ import { getStartingPlayerState } from "./player-states";
 import { applyGainEffect, applyPlusEffect } from "./effects/standard";
 import { getActivePlayerId } from "$lib/helpers";
 import {
+	applyDominionChoiceEffects,
 	applyDominionEffect,
 	applyDominionTriggeredEffects,
 } from "./effects/dominion";
@@ -468,6 +469,17 @@ export default class Game {
 				reason: `There's no queued effect for you to do. (${queuedEffect.type})`,
 			};
 		}
+
+		const result = applyDominionChoiceEffects(
+			this.getGameState(),
+			queuedEffect,
+		);
+
+		if (result.success) {
+			return { success: true };
+		}
+
+		return { success: false, reason: "Couldn't perform effect." };
 	}
 
 	getActivePlayerId(adjustment = 0): string {

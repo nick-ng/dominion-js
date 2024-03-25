@@ -9,9 +9,12 @@
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
-	import { onMount, tick } from "svelte";
+	import { onMount } from "svelte";
+	import type { PlayerState } from "$lib/schemas/types";
 
-	const testCases: { [key: string]: Function | undefined } = {
+	const testCases: {
+		[key: string]: ((playerId: string) => PlayerState) | undefined;
+	} = {
 		["Merchant Test"]: getTestMerchantState,
 		["Cellar Test"]: getTestCellarState,
 		["Many Actions"]: getTestActionsState,
@@ -68,6 +71,12 @@
 	}}
 	onEndPhase={(phaseName) => {
 		const result = game.endPhase(playerId, phaseName);
+		success = result.success;
+		reason = result.reason || "";
+		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+	}}
+	onPlayEffect={(effect) => {
+		const result = game.doQueuedEffect(effect);
 		success = result.success;
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
@@ -173,7 +182,7 @@
 	</div>
 </FullDisplay>
 <div
-	class="bg-main-bg absolute right-0 top-0 max-h-screen w-max overflow-y-auto border px-2"
+	class="absolute right-0 top-0 max-h-screen w-max overflow-y-auto border bg-main-bg px-2"
 >
 	<details class="w-max">
 		<summary>Debug: Full Game</summary>

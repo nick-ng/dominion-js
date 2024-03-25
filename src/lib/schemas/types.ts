@@ -25,3 +25,11 @@ export type ActionResult =
 	| { success: false; reason: string };
 
 export type Coordinates = { x: number; y: number };
+
+export type BlockingEffect = {
+	message: string;
+	type: QueueEffectAction["type"];
+	selectSource: "hand" | "discard";
+	selectCount: number;
+	confirmText: string;
+};

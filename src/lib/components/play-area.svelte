@@ -3,6 +3,7 @@
 		GameState,
 		Coordinates,
 		QueueEffectAction,
+		BlockingEffect,
 	} from "$lib/schemas/types";
 
 	import {
@@ -40,13 +41,7 @@
 	let discardCenter = { x: -1, y: -1 };
 	let playZoneWidthPx = 0;
 
-	let blockingEffect: {
-		message: string;
-		type: QueueEffectAction["type"];
-		selectSource: "hand" | "discard";
-		selectCount: number;
-		confirmText: string;
-	} | null = null;
+	let blockingEffect: BlockingEffect | null = null;
 	let selectedCards: string[] = [];
 	let selectedCard = "";
 
@@ -77,6 +72,7 @@
 						cardCenter,
 					};
 				}
+
 				return {
 					cardId,
 					card,
@@ -88,8 +84,8 @@
 		})
 		.filter((c) => c);
 	$: {
+		blockingEffect = null;
 		if (playerState.queuedEffects.length > 0) {
-			blockingEffect = null;
 			for (let i = 0; i < playerState.queuedEffects.length; i++) {
 				const tempEffect = playerState.queuedEffects[i];
 				if (tempEffect.blocksPlayer || tempEffect.blocksEveryone) {
@@ -226,7 +222,7 @@
 				>
 					{#if !opponent && blockingEffect?.selectSource === "hand"}
 						<label
-							class="button-default absolute bottom-full-2 left-0 right-0 mx-auto w-[90%] cursor-pointer select-none rounded-lg bg-main-bg-1 text-center has-[:checked]:bg-blue-300 can-hover:py-2"
+							class="button-default absolute bottom-full-2 left-0 right-0 z-50 mx-auto w-[90%] cursor-pointer select-none rounded-lg bg-main-bg-1 text-center has-[:checked]:bg-blue-300 can-hover:py-2"
 						>
 							{#if blockingEffect.selectCount === 1}
 								<input
@@ -292,7 +288,7 @@
 	</div>
 	{#if !opponent && blockingEffect?.message}
 		<div
-			class="border-subtle absolute left-0 right-0 top-10 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
+			class="border-subtle absolute left-0 right-0 top-10 z-50 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
 		>
 			{blockingEffect?.message}
 			<div class="grow" />

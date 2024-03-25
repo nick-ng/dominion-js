@@ -1,4 +1,4 @@
-import type { GameState, Effect } from "$lib/schemas/types";
+import type { GameState, Effect, QueueEffectAction } from "$lib/schemas/types";
 
 import { applyPlusEffect } from "./standard";
 
@@ -114,7 +114,96 @@ export function applyMerchant1(
 	return { success: true, nextGameState: prevGameState };
 }
 
-export function applyDominionChoiceEffects(): {
+// @todo(nick-ng): use this return signature more
+export function applyDominionChoiceEffects(
+	prevGameState: GameState,
+	effect: QueueEffectAction,
+): {
 	success: boolean;
 	nextGameState: GameState;
-} {}
+	reason?: string;
+	continue: boolean;
+} {
+	switch (effect.type) {
+		case "cellar-1": {
+			return applyCellar1(prevGameState, effect);
+		}
+	}
+
+	return {
+		success: false,
+		nextGameState: prevGameState,
+		reason: "not an effect from the dominion set",
+		continue: true,
+	};
+}
+
+export function applyCellar1(
+	prevGameState: GameState,
+	effect: QueueEffectAction,
+): {
+	success: boolean;
+	nextGameState: GameState;
+	reason?: string;
+	continue: boolean;
+} {
+	const { playerId, payloadArray } = effect;
+
+	if (
+		prevGameState.playerStates[playerId].queuedEffects.filter(
+			(q) => q.type === "cellar-1",
+		).length === 0
+	) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "effect not queued",
+			continue: true,
+		};
+	}
+
+	const handAfterDiscard = prevGameState.playerStates[playerId].hand.filter(
+		(cardId) => !payloadArray.includes(cardId),
+	);
+
+	const cardsDiscarded =
+		prevGameState.playerStates[playerId].hand.length - handAfterDiscard.length;
+
+	if (cardsDiscarded !== payloadArray.length) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "You don't have some of those cards.",
+			continue: false,
+		};
+	}
+
+	prevGameState.playerStates[playerId].hand = handAfterDiscard;
+	prevGameState.playerStates[playerId].discardPile =
+		prevGameState.playerStates[playerId].discardPile.concat(payloadArray);
+	prevGameState.playerStates[playerId].queuedEffects =
+		prevGameState.playerStates[playerId].queuedEffects.filter(
+			(q) => q.type !== "cellar-1",
+		);
+
+	const result = applyPlusEffect(
+		prevGameState,
+		{ type: "card", value: cardsDiscarded },
+		playerId,
+	);
+
+	if (result.success) {
+		return {
+			success: true,
+			nextGameState: result.nextGameState,
+			continue: false,
+		};
+	}
+
+	return {
+		success: false,
+		nextGameState: result.nextGameState,
+		reason: "Something went wrong",
+		continue: false,
+	};
+}

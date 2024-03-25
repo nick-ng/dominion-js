@@ -1,5 +1,10 @@
 <script lang="ts">
-	import type { GameState, Coordinates } from "$lib/schemas/types";
+	import type {
+		GameState,
+		Coordinates,
+		QueueEffectAction,
+		BlockingEffect,
+	} from "$lib/schemas/types";
 
 	import { gameStateStore } from "$lib/stores/game-state";
 	import { getActivePlayerId, getOpponentOrder } from "$lib/helpers";
@@ -22,6 +27,9 @@
 	export let onEndPhase: (
 		phaseName: GameState["turnPhase"],
 	) => void | Promise<void> = () => {};
+	export let onPlayEffect: (
+		queueEffectAction: QueueEffectAction,
+	) => void | Promise<void> = () => {};
 
 	let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	let showMyBoard = true;
@@ -32,6 +40,7 @@
 	let buyCardsHint = false;
 	let endTurnHint = false;
 	let gamePhaseMessage = "";
+	let blockingEffect: BlockingEffect | null = null;
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
@@ -88,6 +97,12 @@
 			endTurnHint = false;
 
 			gamePhaseMessage = `${activePlayer?.name}'s turn`;
+		} else if (blockingEffect) {
+			endActionsHint = false;
+			buyCardsHint = false;
+			endTurnHint = false;
+
+			gamePhaseMessage = blockingEffect.message;
 		} else {
 			// @todo(nick-ng): move button highlight class stuff here
 			switch ($gameStateStore.gameState?.turnPhase) {
@@ -128,6 +143,29 @@
 	$: {
 		if (showSupply === true) {
 			vignetteState = 2;
+		}
+	}
+	$: {
+		blockingEffect = null;
+		if (myPlayerState && myPlayerState.queuedEffects.length > 0) {
+			for (let i = 0; i < myPlayerState.queuedEffects.length; i++) {
+				const tempEffect = myPlayerState.queuedEffects[i];
+				if (tempEffect.blocksPlayer || tempEffect.blocksEveryone) {
+					switch (tempEffect.type) {
+						case "cellar-1": {
+							blockingEffect = {
+								type: "cellar-1",
+								message: tempEffect.message || "",
+								selectCount: 0,
+								selectSource: "hand",
+								confirmText: "Discard",
+							};
+							break;
+						}
+					}
+					break;
+				}
+			}
 		}
 	}
 
@@ -264,6 +302,7 @@
 						You
 					</h2>
 				</div>
+				<!-- Player's Play Area -->
 				<PlayArea
 					gameState={$gameStateStore.gameState}
 					{boughtCardCenter}
@@ -276,9 +315,7 @@
 							showSupply = true;
 						}
 					}}
-					onPlayEffect={(e) => {
-						console.log("onPlayEffect", e);
-					}}
+					{onPlayEffect}
 				/>
 			</div>
 		{/if}
