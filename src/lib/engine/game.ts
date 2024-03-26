@@ -19,9 +19,11 @@ import { applyGainEffect, applyPlusEffect } from "./effects/standard";
 import { getActivePlayerId } from "$lib/helpers";
 import {
 	applyDominionChoiceEffects,
-	applyDominionEffect,
 	applyDominionTriggeredEffects,
+	dominionCardEffectFunctions,
 } from "./effects/dominion";
+
+const cardEffectFunctions = [...dominionCardEffectFunctions];
 
 export default class Game {
 	constructor(host: Player, gameId?: string) {
@@ -152,7 +154,7 @@ export default class Game {
 
 	applyEffect(playerId: string, effect: Effect, adjustment?: number) {
 		// standard card effects (+card, +action, +buy, +coin)
-		let result = applyPlusEffect(
+		const result = applyPlusEffect(
 			this.getGameState(),
 			effect,
 			playerId,
@@ -160,8 +162,18 @@ export default class Game {
 		);
 		this.playerStates = result.nextGameState.playerStates;
 
-		result = applyDominionEffect(this.getGameState(), effect, playerId);
-		this.playerStates = result.nextGameState.playerStates;
+		for (let i = 0; i < cardEffectFunctions.length; i++) {
+			const result = dominionCardEffectFunctions[i](
+				this.getGameState(),
+				effect,
+				playerId,
+			);
+
+			if (!result.continue) {
+				this.playerStates = result.nextGameState.playerStates;
+				return;
+			}
+		}
 	}
 
 	playCard(playerId: string, cardId: string): ActionResult {

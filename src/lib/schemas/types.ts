@@ -33,3 +33,10 @@ export type BlockingEffect = {
 	selectCount: number;
 	confirmText: string;
 };
+
+export type ChainResult = {
+	success: boolean;
+	nextGameState: GameState;
+	reason?: string; // can be shown to the user
+	continue: boolean;
+};

@@ -1,35 +1,24 @@
-import type { GameState, Effect, QueueEffectAction } from "$lib/schemas/types";
+import type {
+	GameState,
+	Effect,
+	QueueEffectAction,
+	ChainResult,
+} from "$lib/schemas/types";
 
 import { applyPlusEffect } from "./standard";
 
-export function applyDominionEffect(
-	prevGameState: GameState,
-	cardEffect: Effect,
-	playerId: string,
-): { success: boolean; nextGameState: GameState } {
-	switch (cardEffect.type) {
-		case "merchant-0": {
-			return applyMerchant0(prevGameState, cardEffect, playerId);
-		}
-		case "cellar-0": {
-			return applyCellar0(prevGameState, cardEffect, playerId);
-		}
-		default: {
-			return { success: false, nextGameState: prevGameState };
-		}
-	}
-}
+export const dominionCardEffectFunctions = [applyMerchant0, applyCellar0];
 
 export function applyMerchant0(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
-): { success: boolean; nextGameState: GameState } {
+): ChainResult {
 	if (
 		!prevGameState.playerStates[playerId] ||
 		cardEffect.type !== "merchant-0"
 	) {
-		return { success: false, nextGameState: prevGameState };
+		return { success: false, nextGameState: prevGameState, continue: true };
 	}
 
 	prevGameState.playerStates[playerId].queuedEffects.push({
@@ -37,16 +26,16 @@ export function applyMerchant0(
 		expiryTurn: -1,
 	});
 
-	return { success: true, nextGameState: prevGameState };
+	return { success: true, nextGameState: prevGameState, continue: false };
 }
 
 export function applyCellar0(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
-): { success: boolean; nextGameState: GameState } {
+): ChainResult {
 	if (!prevGameState.playerStates[playerId] || cardEffect.type !== "cellar-0") {
-		return { success: false, nextGameState: prevGameState };
+		return { success: false, nextGameState: prevGameState, continue: true };
 	}
 
 	prevGameState.playerStates[playerId].queuedEffects.push({
@@ -55,35 +44,30 @@ export function applyCellar0(
 		message: "Cellar: Choose cards to discard.",
 	});
 
-	return { success: true, nextGameState: prevGameState };
+	return { success: true, nextGameState: prevGameState, continue: false };
 }
 
 export function applyDominionTriggeredEffects(
 	prevGameState: GameState,
 	playerId: string,
-): { success: boolean; nextGameState: GameState } {
-	let success = false;
+): ChainResult {
 	const result = applyMerchant1(prevGameState, playerId);
-	if (result.success) {
-		success = true;
-	}
-	const nextGameState = result.nextGameState;
 
-	return { success, nextGameState };
+	return result;
 }
 
 export function applyMerchant1(
 	prevGameState: GameState,
 	playerId: string,
-): { success: boolean; nextGameState: GameState } {
+): ChainResult {
 	if (!prevGameState.playerStates[playerId]) {
-		return { success: false, nextGameState: prevGameState };
+		return { success: false, nextGameState: prevGameState, continue: true };
 	}
 
 	const lastPlayedCard = prevGameState.playerStates[playerId].inPlay.slice(-1);
 
 	if (!lastPlayedCard) {
-		return { success: false, nextGameState: prevGameState };
+		return { success: false, nextGameState: prevGameState, continue: true };
 	}
 
 	const silversPlayed = prevGameState.playerStates[playerId].inPlay.filter(
@@ -95,7 +79,7 @@ export function applyMerchant1(
 	);
 
 	if (silversPlayed.length !== 1) {
-		return { success: false, nextGameState: prevGameState };
+		return { success: false, nextGameState: prevGameState, continue: true };
 	}
 
 	const merchant1Effects = prevGameState.playerStates[
@@ -111,19 +95,14 @@ export function applyMerchant1(
 			(e) => e.type !== "merchant-1",
 		);
 
-	return { success: true, nextGameState: prevGameState };
+	return { success: true, nextGameState: prevGameState, continue: false };
 }
 
 // @todo(nick-ng): use this return signature more
 export function applyDominionChoiceEffects(
 	prevGameState: GameState,
 	effect: QueueEffectAction,
-): {
-	success: boolean;
-	nextGameState: GameState;
-	reason?: string;
-	continue: boolean;
-} {
+): ChainResult {
 	switch (effect.type) {
 		case "cellar-1": {
 			return applyCellar1(prevGameState, effect);
@@ -141,12 +120,7 @@ export function applyDominionChoiceEffects(
 export function applyCellar1(
 	prevGameState: GameState,
 	effect: QueueEffectAction,
-): {
-	success: boolean;
-	nextGameState: GameState;
-	reason?: string;
-	continue: boolean;
-} {
+): ChainResult {
 	const { playerId, payloadArray } = effect;
 
 	if (
