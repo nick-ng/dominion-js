@@ -33,6 +33,7 @@ Dominion in JavaScript (TypeScript)
 - [ ] Handle disconnected players
 - [ ] Sound effects
    - Your turn
+- [ ] Swap Buy Cards and "Play Treasure and Buy Cards" buttons
 
 ### ToDo Comments
 
