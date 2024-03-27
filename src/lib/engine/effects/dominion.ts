@@ -1,15 +1,21 @@
+import { coinEmoji } from "$lib/emojis";
 import type {
 	GameState,
 	Effect,
 	QueueEffectAction,
 	ChainResult,
 } from "$lib/schemas/types";
+import { getCardFromId } from "../card-list";
 
-import { applyPlusEffect } from "./standard";
+import { applyGainEffect, applyPlusEffect } from "./standard";
 
-export const dominionCardEffectFunctions = [applyMerchant0, applyCellar0];
+export const dominionCardEffectFunctions = [
+	applyMerchant0,
+	applyCellar0,
+	applyWorkshop0,
+];
 
-export function applyMerchant0(
+function applyMerchant0(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
@@ -29,7 +35,7 @@ export function applyMerchant0(
 	return { success: true, nextGameState: prevGameState, continue: false };
 }
 
-export function applyCellar0(
+function applyCellar0(
 	prevGameState: GameState,
 	cardEffect: Effect,
 	playerId: string,
@@ -42,6 +48,27 @@ export function applyCellar0(
 		type: "cellar-1",
 		blocksPlayer: true,
 		message: "Cellar: Choose cards to discard.",
+	});
+
+	return { success: true, nextGameState: prevGameState, continue: false };
+}
+
+function applyWorkshop0(
+	prevGameState: GameState,
+	cardEffect: Effect,
+	playerId: string,
+): ChainResult {
+	if (
+		!prevGameState.playerStates[playerId] ||
+		cardEffect.type !== "workshop-0"
+	) {
+		return { success: false, nextGameState: prevGameState, continue: true };
+	}
+
+	prevGameState.playerStates[playerId].queuedEffects.push({
+		type: "workshop-1",
+		blocksPlayer: true,
+		message: `Workshop: Gain a card costing up to ${coinEmoji}4.`,
 	});
 
 	return { success: true, nextGameState: prevGameState, continue: false };
@@ -178,6 +205,96 @@ export function applyCellar1(
 		success: false,
 		nextGameState: result.nextGameState,
 		reason: "Something went wrong",
+		continue: false,
+	};
+}
+
+export function applyWorkshop1(
+	prevGameState: GameState,
+	effect: QueueEffectAction,
+): ChainResult {
+	const { playerId, payloadArray } = effect;
+
+	if (
+		prevGameState.playerStates[playerId].queuedEffects.filter(
+			(q) => q.type === "workshop-1",
+		).length === 0
+	) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "effect not queued",
+			continue: true,
+		};
+	}
+
+	const chosenCardName = payloadArray.pop();
+
+	if (!chosenCardName) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "You have to choose a card.",
+			continue: false,
+		};
+	}
+
+	if (payloadArray.length !== 0) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "You can only choose 1 card.",
+			continue: false,
+		};
+	}
+
+	const chosenCard = getCardFromId(chosenCardName);
+	if (!chosenCard) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: `There is no such card.`,
+			continue: false,
+		};
+	}
+
+	if (prevGameState.supply[chosenCardName].length < 1) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: `There aren't anymore ${chosenCard.displayNames[1]} in the supply.`,
+			continue: false,
+		};
+	}
+
+	if (chosenCard.cost > 4) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: `You can only gain a card that costs up to ${coinEmoji}4 with a Workshop.`,
+			continue: false,
+		};
+	}
+
+	const result = applyGainEffect(prevGameState, playerId, chosenCardName);
+
+	if (!result.success) {
+		return {
+			success: true,
+			nextGameState: result.nextGameState,
+			reason: "Something went wrong",
+			continue: false,
+		};
+	}
+
+	prevGameState.playerStates[playerId].queuedEffects =
+		prevGameState.playerStates[playerId].queuedEffects.filter(
+			(q) => q.type !== "workshop-1",
+		);
+
+	return {
+		success: true,
+		nextGameState: result.nextGameState,
 		continue: false,
 	};
 }

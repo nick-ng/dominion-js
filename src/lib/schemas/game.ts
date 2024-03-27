@@ -1,6 +1,6 @@
 import z from "zod";
 
-const queuedEffectTypes = z.enum(["cellar-1", "merchant-1"]);
+const queuedEffectTypes = z.enum(["cellar-1", "merchant-1", "workshop-1"]);
 
 export const queuedEffectSchema = z.object({
 	type: queuedEffectTypes,

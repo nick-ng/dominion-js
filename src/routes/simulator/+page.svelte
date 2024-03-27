@@ -6,6 +6,7 @@
 		getTestInPlayState,
 		getTestActionsState,
 		getTestCellarState,
+		getTestWorkshopState,
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
@@ -15,15 +16,17 @@
 	const testCases: {
 		[key: string]: ((playerId: string) => PlayerState) | undefined;
 	} = {
+		["Workshop Test"]: getTestWorkshopState,
 		["Merchant Test"]: getTestMerchantState,
 		["Cellar Test"]: getTestCellarState,
 		["Many Actions"]: getTestActionsState,
 		["Many In-Play"]: getTestInPlayState,
 	};
-	let name = "player 1";
-	let playerId = "aaaaaa";
-	let token = "a12345";
-	let getPlayer = () => ({ name, playerId, token });
+	const name = "player 1";
+	const playerId = "aaaaaa";
+	const token = "a12345";
+	const getPlayer = () => ({ name, playerId, token });
+
 	let success = true;
 	let reason = "";
 	let game = new Game(getPlayer());
