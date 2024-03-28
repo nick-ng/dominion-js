@@ -22,6 +22,15 @@
 	export let playerId: string;
 	export let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	export let opponent = false;
+	export let blockingEffect: BlockingEffect | null = null;
+	export let overrideBlocker: {
+		message: string;
+		buttons?: {
+			text: string;
+			disabled: boolean;
+			onClick: () => void | Promise<void>;
+		}[];
+	} | null = null;
 	export let onPlayCard: (
 		cardId: string,
 		cardCenter: Coordinates,
@@ -41,7 +50,6 @@
 	let discardCenter = { x: -1, y: -1 };
 	let playZoneWidthPx = 0;
 
-	let blockingEffect: BlockingEffect | null = null;
 	let selectedCards: string[] = [];
 	let selectedCard = "";
 
@@ -83,29 +91,6 @@
 			return null;
 		})
 		.filter((c) => c);
-	$: {
-		blockingEffect = null;
-		if (playerState.queuedEffects.length > 0) {
-			for (let i = 0; i < playerState.queuedEffects.length; i++) {
-				const tempEffect = playerState.queuedEffects[i];
-				if (tempEffect.blocksPlayer || tempEffect.blocksEveryone) {
-					switch (tempEffect.type) {
-						case "cellar-1": {
-							blockingEffect = {
-								type: "cellar-1",
-								message: tempEffect.message || "",
-								selectCount: 0,
-								selectSource: "hand",
-								confirmText: "Discard",
-							};
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
 
 	onMount(() => {
 		if (deckEl) {
@@ -286,9 +271,28 @@
 			{/if}
 		</div>
 	</div>
-	{#if !opponent && blockingEffect?.message}
+	{#if !opponent && overrideBlocker}
 		<div
 			class="border-subtle absolute left-0 right-0 top-10 z-50 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
+		>
+			{overrideBlocker?.message}
+			<div class="grow" />
+			{#if overrideBlocker?.buttons}
+				{#each overrideBlocker.buttons as overrideButton}
+					<button
+						class="button-default"
+						disabled={overrideButton.disabled}
+						on:click={() => {
+							overrideButton.onClick();
+						}}>{overrideButton.text}</button
+					>
+				{/each}
+			{/if}
+		</div>
+	{/if}
+	{#if !opponent && blockingEffect?.message}
+		<div
+			class="border-subtle absolute left-0 right-0 top-10 z-30 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
 		>
 			{blockingEffect?.message}
 			<div class="grow" />
@@ -303,26 +307,36 @@
 			{:else if blockingEffect.selectCount === 1 && !selectedCard}
 				<div>Choose a card</div>
 			{/if}
-			<button
-				class="button-default"
-				disabled={(blockingEffect.selectCount > 1 &&
-					blockingEffect.selectCount > selectedCards.length) ||
+			{#if blockingEffect?.buttons}
+				{@const canSubmit =
+					(blockingEffect.selectCount > 1 &&
+						blockingEffect.selectCount > selectedCards.length) ||
 					(blockingEffect.selectCount === 1 && !selectedCard)}
-				on:click={() => {
-					if (blockingEffect) {
-						onPlayEffect({
-							type: blockingEffect.type,
-							playerId,
-							payloadArray:
-								blockingEffect.selectCount === 1
-									? [selectedCard]
-									: selectedCards,
-						});
-						selectedCard = "";
-						selectedCards = [];
-					}
-				}}>{blockingEffect.confirmText}</button
-			>
+				{#each blockingEffect.buttons as blockingButton}
+					<button
+						class="button-default"
+						disabled={blockingButton.onClick
+							? blockingButton.disabled
+							: canSubmit}
+						on:click={() => {
+							if (blockingButton.onClick) {
+								blockingButton.onClick();
+							} else if (blockingEffect) {
+								onPlayEffect({
+									type: blockingEffect.type,
+									playerId,
+									payloadArray:
+										blockingEffect.selectCount === 1
+											? [selectedCard]
+											: selectedCards,
+								});
+								selectedCard = "";
+								selectedCards = [];
+							}
+						}}>{blockingButton.text}</button
+					>
+				{/each}
+			{/if}
 		</div>
 	{/if}
 </div>
