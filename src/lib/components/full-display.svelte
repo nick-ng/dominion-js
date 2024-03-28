@@ -158,7 +158,34 @@
 								message: tempEffect.message || "",
 								selectCount: 0,
 								selectSource: "hand",
-								confirmText: "Discard",
+								minCost: -Infinity,
+								maxCost: Infinity,
+								buttons: [
+									{
+										text: "Discard",
+									},
+								],
+							};
+							break;
+						}
+						case "workshop-1": {
+							showSupply = true;
+
+							blockingEffect = {
+								type: "workshop-1",
+								message: tempEffect.message || "",
+								selectCount: 0,
+								selectSource: "supply",
+								minCost: -Infinity,
+								maxCost: 4,
+								buttons: [
+									{
+										text: "Open Supply",
+										onClick: () => {
+											showSupply = true;
+										},
+									},
+								],
 							};
 							break;
 						}
@@ -307,6 +334,7 @@
 					gameState={$gameStateStore.gameState}
 					{boughtCardCenter}
 					{playerId}
+					{blockingEffect}
 					{onPlayCard}
 					onPlayAllTreasures={() => {
 						onEndPhase("buy-0");
@@ -320,7 +348,7 @@
 			</div>
 		{/if}
 		<button
-			class={`${vignetteClass} transition-some absolute bottom-0 top-0 m-0 h-full w-full border-none p-0`}
+			class={`${vignetteClass} transition-some absolute bottom-0 top-0 z-50 m-0 h-full w-full border-none p-0`}
 			style={transitionDurationStyle}
 			on:click={(e) => {
 				if (e.target === e.currentTarget) {
