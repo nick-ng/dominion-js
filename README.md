@@ -39,10 +39,10 @@ Dominion in JavaScript (TypeScript)
 
 File | ToDo
 :- | :-
-`src\app.css` | (@nick-ng): animate nothing-to-do style */
 `src\lib\stores\game-state.ts` | (@nick-ng): connect to websocket here
 `src\lib\stores\game-state.ts` | (@nick-ng): should websocket stuff be in a .svelte file instead?
 `src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?
+`src\lib\engine\effects\dominion.ts` | (@nick-ng): use this return signature more
 `src\lib\components\symbols\victory-point.svelte` | (@nick-ng): draw your own victory point symbol? 
 `src\lib\components\symbols\coin.svelte` | (@nick-ng): draw your own coin symbol? 
 `src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
@@ -52,6 +52,6 @@ File | ToDo
 `src\lib\components\full-display.svelte` | (@nick-ng): option to invert direction
 `src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
-`src\lib\components\card.svelte` | (@nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
+`src\lib\components\card.svelte` | (@nick-ng): if you change dragCardFromCenter, existing cards won't change where they get dragged
 `src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
-`src\lib\engine\effects\dominion.ts` | (@nick-ng): use this return signature more
+`src\app.css` | (@nick-ng): animate nothing-to-do style */

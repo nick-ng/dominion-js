@@ -25,6 +25,7 @@ export type ActionResult =
 	| { success: false; reason: string };
 
 export type Coordinates = { x: number; y: number };
+export type Dimensions = { width: number; height: number };
 
 export type BlockingEffect = {
 	message: string;
