@@ -29,9 +29,16 @@ export type Coordinates = { x: number; y: number };
 export type BlockingEffect = {
 	message: string;
 	type: QueueEffectAction["type"];
-	selectSource: "hand" | "discard";
+	selectSource: "hand" | "discard" | "supply";
 	selectCount: number;
-	confirmText: string;
+	minCost: number;
+	maxCost: number;
+	buttons?: {
+		text: string;
+		args?: (string | number)[];
+		onClick?: () => void | Promise<void>;
+		disabled?: boolean;
+	}[];
 };
 
 export type ChainResult = {
