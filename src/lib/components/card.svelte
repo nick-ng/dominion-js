@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Coordinates } from "$lib/schemas/types";
+	import type { Coordinates, Dimensions } from "$lib/schemas/types";
 
 	import { onMount } from "svelte";
 	import { getCardFromId } from "$lib/engine/card-list";
@@ -7,10 +7,10 @@
 
 	import CardContents from "./card-contents.svelte";
 
-	const DRAG_BORDER_X_PX = 30;
-	const DRAG_BORDER_Y_PX = 30;
 	const WIGGLE_PX = Math.floor(Math.random() * 5) - 2;
 
+	let dragBorderXPx = 0;
+	let dragBorderYPx = 0;
 	let className = "";
 	export { className as class };
 	export let upsideDown = false;
@@ -89,17 +89,22 @@
 		};
 	};
 
-	const getCardCenter = (): Coordinates => {
+	const getCardCenter = (): Coordinates & Dimensions => {
 		const rect = cardButtonEl.getBoundingClientRect();
 
-		return { x: (rect.left + rect.right) / 2, y: (rect.top + rect.bottom) / 2 };
+		return {
+			x: (rect.left + rect.right) / 2,
+			y: (rect.top + rect.bottom) / 2,
+			width: rect.right - rect.left,
+			height: rect.bottom - rect.top,
+		};
 	};
 
 	let isMouseDown = false;
 	let startX = 0;
 	let startY = 0;
 	let currentX = 0;
-	let currentY = 0;
+	let currentY = WIGGLE_PX;
 	let isThreshold = false;
 	let hoverClass = "";
 	let cardButtonEl: HTMLElement;
@@ -138,8 +143,8 @@
 		const rect = cardButtonEl.getBoundingClientRect();
 
 		startX = x;
-		const l0 = rect.left + DRAG_BORDER_X_PX;
-		const r0 = rect.right - DRAG_BORDER_X_PX;
+		const l0 = rect.left + dragBorderXPx;
+		const r0 = rect.right - dragBorderXPx;
 		if (l0 > clientX) {
 			startX = x + (l0 - clientX);
 		} else if (r0 < clientX) {
@@ -147,8 +152,8 @@
 		}
 
 		startY = y;
-		const t0 = rect.top + DRAG_BORDER_Y_PX;
-		const b0 = rect.bottom - DRAG_BORDER_Y_PX;
+		const t0 = rect.top + dragBorderYPx;
+		const b0 = rect.bottom - dragBorderYPx;
 		if (t0 > clientY) {
 			startY = y + (t0 - clientY);
 		} else if (b0 < clientY) {
@@ -156,9 +161,20 @@
 		}
 
 		currentX = 0;
-		currentY = 0;
+		currentY = WIGGLE_PX;
 
 		isMouseDown = true;
+
+		if (e instanceof MouseEvent) {
+			document.addEventListener("mousemove", moveHandler);
+			document.addEventListener("mouseup", documentEndHandler);
+		}
+	}
+
+	function documentEndHandler() {
+		endHandler(true);
+		document.removeEventListener("mousemove", moveHandler);
+		document.removeEventListener("mouseup", documentEndHandler);
 	}
 
 	function moveHandler(e: TouchEvent | MouseEvent) {
@@ -192,16 +208,18 @@
 		}
 
 		currentX = 0;
-		currentY = 0;
+		currentY = WIGGLE_PX;
 		isMouseDown = false;
 	}
 
 	onMount(() => {
-		// It's possible to have the mouse move off the card while dragging
-		// Listen for a global "mouseup" event as a fallback
-		// @todo(nick-ng): use global mousemove so your mouse cursor doesn't fall off cards
-		const windowEndHandler = () => endHandler(false);
-		window.addEventListener("mouseup", windowEndHandler);
+		const cardCoords = getCardCenter();
+
+		// @todo(nick-ng): if you change dragCardFromCenter, existing cards won't change where they get dragged
+		if ($optionsStore.dragCardFromCenter) {
+			dragBorderXPx = cardCoords.width / 2 - 1;
+			dragBorderYPx = cardCoords.height / 2 - 1;
+		}
 
 		if (
 			$optionsStore.animationSpeed < 11 &&
@@ -210,12 +228,8 @@
 		) {
 			skipTransition = true;
 
-			const rect = cardButtonEl.getBoundingClientRect();
-			const centerX = (rect.left + rect.right) / 2;
-			const centerY = (rect.top + rect.bottom) / 2;
-
-			const adjustX = initialCenter.x - centerX;
-			const adjustY = centerY - initialCenter.y;
+			const adjustX = initialCenter.x - cardCoords.x;
+			const adjustY = cardCoords.y - initialCenter.y;
 
 			buttonStyle2 = `left: ${adjustX}px;bottom: ${adjustY}px;`;
 
@@ -254,7 +268,6 @@
 
 		return () => {
 			cardButtonEl.removeEventListener("touchmove", bounceStopper);
-			window.removeEventListener("mouseup", windowEndHandler);
 		};
 	});
 
@@ -270,17 +283,10 @@
 			onClick(cardId, getCardCenter());
 		}}
 		on:mousedown={startHandler}
-		on:mousemove={moveHandler}
-		on:mouseup={() => {
-			endHandler(true);
-		}}
 		on:touchstart={startHandler}
 		on:touchmove={moveHandler}
 		on:touchend={() => {
 			endHandler(true);
-		}}
-		on:mouseleave={() => {
-			endHandler(false);
 		}}
 	>
 		<CardContents {disabled} {card} />
