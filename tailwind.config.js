@@ -4,14 +4,17 @@ import {
 	CARD_WIDTH_OVERLAP_PX,
 } from "./src/lib/engine/card-list";
 
+const mainBgHex = "#182018";
+const mainBg1Hex = "#202820";
+
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	theme: {
 		extend: {
 			colors: {
-				"main-bg": "#182018",
-				"main-bg-1": "#202820",
+				"main-bg": mainBgHex,
+				"main-bg-1": mainBg1Hex,
 			},
 			screens: {
 				"can-hover": { raw: "(hover: hover)" },
@@ -39,6 +42,30 @@ export default {
 			},
 			border: {
 				outset: "outset",
+			},
+			keyframes: {
+				"next-action-here-keyframes": {
+					"0%, 35%, 65%, 100%": {
+						backgroundColor: "#a5f3fc",
+					},
+					"50%": {
+						backgroundColor: mainBgHex,
+						color: "#f3f4f6",
+						borderColor: "#d1d5db",
+					},
+				},
+				"nothing-to-do-keyframes": {
+					"0%, 45%, 55%, 100%": {
+						backgroundColor: "#22c55e",
+					},
+					"50%": {
+						backgroundColor: "#166534",
+					},
+				},
+			},
+			animation: {
+				"next-action-here": "next-action-here-keyframes 1.5s linear infinite",
+				"nothing-to-do": "nothing-to-do-keyframes 3s linear infinite",
 			},
 		},
 	},

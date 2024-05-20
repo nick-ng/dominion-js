@@ -78,13 +78,20 @@
 		@apply rounded border border-gray-300 px-2 py-0 cannot-hover:py-2;
 	}
 
-	/* @todo(nick-ng): animate nothing-to-do style */
 	.button-nothing-to-do {
-		@apply border-black bg-green-500 text-black;
+		@apply animate-nothing-to-do border-black bg-green-500 text-black;
 	}
 
 	.button-something-to-do {
 		@apply border-black bg-yellow-400 text-black;
+	}
+
+	.button-lots-to-do {
+		@apply border-black bg-orange-300 text-black;
+	}
+
+	.button-next-action-here {
+		@apply animate-next-action-here border-black bg-cyan-200 text-black;
 	}
 
 	.border-default {
