@@ -283,6 +283,9 @@
 			>
 				<div class="relative mb-2 flex flex-row items-stretch gap-2">
 					<button
+						class={$gameStateStore.gameState.turnPhase === "buy-1"
+							? "button-next-action-here"
+							: ""}
 						on:click={() => {
 							showSupply = true;
 						}}>Show Supply</button
