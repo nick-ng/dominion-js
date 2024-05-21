@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { gameStateStore } from "$lib/stores/game-state";
-	import { optionsStore } from "$lib/stores/options";
 	import {
 		getTestMerchantState,
 		getTestInPlayState,
@@ -22,7 +21,7 @@
 		["Many Actions"]: getTestActionsState,
 		["Many In-Play"]: getTestInPlayState,
 	};
-	const name = "player 1";
+	const name = "Player 1";
 	const playerId = "aaaaaa";
 	const token = "a12345";
 	const getPlayer = () => ({ name, playerId, token });
@@ -166,18 +165,6 @@
 			{/each}
 		</select>
 		<div>{chosenTestCase}</div>
-		<div>
-			<label class="ml-4 flex flex-col items-center">
-				<div>Animation Speed</div>
-				<input
-					type="range"
-					bind:value={$optionsStore.animationSpeed}
-					min={1}
-					max={11}
-					step={1}
-				/></label
-			>
-		</div>
 		{#if !success}
 			<div>{reason}</div>
 		{/if}
@@ -185,7 +172,7 @@
 	</div>
 </FullDisplay>
 <div
-	class="absolute right-0 top-0 max-h-screen w-max overflow-y-auto border bg-main-bg px-2"
+	class="absolute right-0 max-h-screen w-max overflow-y-auto border bg-main-bg px-2 can-hover:top-10 cannot-hover:top-14"
 >
 	<details class="w-max">
 		<summary>Debug: Full Game</summary>

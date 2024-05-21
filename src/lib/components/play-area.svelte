@@ -113,7 +113,7 @@
 </script>
 
 <div
-	class={`${className} border-subtle relative flex flex-col items-stretch gap-2 bg-main-bg transition-all`}
+	class={`${className} border-subtle relative flex flex-col items-stretch gap-2 bg-main-bg pb-2 transition-all`}
 >
 	<!-- In Play -->
 	<div class={`${opponent ? "order-2" : ""}`}>
@@ -251,7 +251,7 @@
 			{/each}
 		</div>
 		<div>
-			{#if gameState.turnPhase === "buy-0"}
+			{#if gameState.turnPhase === "buy-0" && !opponent}
 				<button
 					on:click={() => {
 						let playedACard = false;

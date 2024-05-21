@@ -7,12 +7,16 @@ type Options = {
 	animationSpeed: number;
 	opponentAllUpsideDown: boolean;
 	dragCardFromCenter: boolean;
+	showFullScreenButton: boolean;
+	invertScrollDirection: boolean;
 };
 
 let storedOptions: Options = {
 	animationSpeed: 5,
 	opponentAllUpsideDown: false,
 	dragCardFromCenter: false,
+	showFullScreenButton: true,
+	invertScrollDirection: false,
 };
 
 if (browser) {

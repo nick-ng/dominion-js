@@ -129,7 +129,7 @@
 	</div>
 {/if}
 
-<style>
+<style lang="postcss">
 	.supply-template-cols {
 		grid-template-columns: min-content auto;
 	}
