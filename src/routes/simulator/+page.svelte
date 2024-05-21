@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { gameStateStore } from "$lib/stores/game-state";
-	import { optionsStore } from "$lib/stores/options";
 	import {
 		getTestMerchantState,
 		getTestInPlayState,
@@ -22,7 +21,7 @@
 		["Many Actions"]: getTestActionsState,
 		["Many In-Play"]: getTestInPlayState,
 	};
-	const name = "player 1";
+	const name = "Player 1";
 	const playerId = "aaaaaa";
 	const token = "a12345";
 	const getPlayer = () => ({ name, playerId, token });

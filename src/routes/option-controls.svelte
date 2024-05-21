@@ -2,7 +2,6 @@
 	import { optionsStore } from "$lib/stores/options";
 
 	let isOpen = false;
-	let detailsEl: HTMLDetailsElement | null = null;
 	let summaryEl: HTMLElement | null = null;
 
 	$: {
@@ -10,7 +9,7 @@
 	}
 </script>
 
-<details bind:this={detailsEl} bind:open={isOpen}>
+<details bind:open={isOpen}>
 	<summary bind:this={summaryEl} class="button-default no-underline"
 		>Options</summary
 	>
@@ -103,7 +102,7 @@
 	</div>
 </details>
 
-<style>
+<style lang="postcss">
 	.options-table td {
 		@apply select-none whitespace-nowrap;
 	}
