@@ -126,4 +126,12 @@
 	.markdown li {
 		@apply ml-4;
 	}
+
+	.vignette {
+		background-color: #00000088;
+	}
+
+	.no-vignette {
+		background-color: #00000000;
+	}
 }

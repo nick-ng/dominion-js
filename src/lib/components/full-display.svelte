@@ -197,37 +197,44 @@
 	}
 
 	onMount(() => {
-		// @todo(nick-ng): option to invert direction
-		const wheelHandler = (e: WheelEvent) => {
-			if (!e.shiftKey) {
-				showMyBoard = e.deltaY > 0;
+		const wheelHandler = (event: WheelEvent) => {
+			if (!showSupply) {
+				if ($optionsStore.invertScrollDirection) {
+					showMyBoard = event.deltaY < 0;
+				} else {
+					showMyBoard = event.deltaY > 0;
+				}
 			}
 		};
 
 		window.addEventListener("wheel", wheelHandler);
 
 		let prevTouchY = 0;
-		const touchStartHandler = (e: TouchEvent) => {
+		const touchStartHandler = (event: TouchEvent) => {
 			let totalY = 0;
-			for (let i = 0; i < e.touches.length; i++) {
-				totalY += e.touches[i].screenY;
+			for (let i = 0; i < event.touches.length; i++) {
+				totalY += event.touches[i].screenY;
 			}
 
 			if (!showSupply) {
-				prevTouchY = totalY / e.touches.length;
+				prevTouchY = totalY / event.touches.length;
 			}
 		};
 
-		const touchHandler = (e: TouchEvent) => {
+		const touchHandler = (event: TouchEvent) => {
 			let totalY = 0;
-			for (let i = 0; i < e.touches.length; i++) {
-				totalY += e.touches[i].screenY;
+			for (let i = 0; i < event.touches.length; i++) {
+				totalY += event.touches[i].screenY;
 			}
 
-			const newTouchY = totalY / e.touches.length;
+			const newTouchY = totalY / event.touches.length;
 
 			if (!showSupply) {
-				showMyBoard = newTouchY < prevTouchY;
+				if ($optionsStore.invertScrollDirection) {
+					showMyBoard = newTouchY > prevTouchY;
+				} else {
+					showMyBoard = newTouchY < prevTouchY;
+				}
 			}
 		};
 
@@ -291,14 +298,23 @@
 						}}>Show Supply</button
 					>
 					<div class="grow" />
-					<div class="self-center text-xl">{gamePhaseMessage}</div>
-					<button
-						class={endActionsHint ? actionCardClass : ""}
-						on:click={() => {
-							onEndPhase("action");
-						}}
-						disabled={!endActionsHint}>End Actions</button
-					>
+					<h2 class="pointer-events-none self-center">You</h2>
+					<div class="grow" />
+
+					<div class="relative">
+						<div
+							class="absolute bottom-0 right-full-2 top-0 my-auto flex flex-row items-center whitespace-nowrap text-xl"
+						>
+							{gamePhaseMessage}
+						</div>
+						<button
+							class={`${endActionsHint ? actionCardClass : ""} h-full`}
+							on:click={() => {
+								onEndPhase("action");
+							}}
+							disabled={!endActionsHint}>End Actions</button
+						>
+					</div>
 					<button
 						class={buyCardsHint ? treasureCardClass : ""}
 						on:click={() => {
@@ -326,11 +342,6 @@
 						coins={myPlayerState.coins}
 						horizontal
 					/>
-					<h2
-						class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 m-auto flex items-center justify-center"
-					>
-						You
-					</h2>
 				</div>
 				<!-- Player's Play Area -->
 				<PlayArea
@@ -390,14 +401,6 @@
 </div>
 
 <style>
-	.vignette {
-		background-color: #00000088;
-	}
-
-	.no-vignette {
-		background-color: #00000000;
-	}
-
 	.transition-some {
 		transition-property: background;
 		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

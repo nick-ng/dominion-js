@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { PUBLIC_API_HOST } from "$env/static/public";
 
 	console.debug("PUBLIC_API_HOST", PUBLIC_API_HOST);

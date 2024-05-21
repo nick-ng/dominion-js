@@ -69,5 +69,8 @@ export default {
 			},
 		},
 	},
+	corePlugins: {
+		backgroundOpacity: false,
+	},
 	plugins: [],
 };
