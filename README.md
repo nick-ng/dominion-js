@@ -16,7 +16,7 @@ Dominion in JavaScript (TypeScript)
 - [ ] "complicated" effects (text descriptions)
    - Handle pending actions
 - [x] Options
-   - [ ] Options menu
+   - [x] Options menu
    - [ ] Control "wiggle"
 - [ ] Websocket Server
 - [ ] Svelte Store for Websockets on front-end

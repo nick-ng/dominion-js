@@ -134,6 +134,9 @@ export function applyDominionChoiceEffects(
 		case "cellar-1": {
 			return applyCellar1(prevGameState, effect);
 		}
+		case "workshop-1": {
+			return applyWorkshop1(prevGameState, effect);
+		}
 	}
 
 	return {
@@ -214,6 +217,8 @@ export function applyWorkshop1(
 	effect: QueueEffectAction,
 ): ChainResult {
 	const { playerId, payloadArray } = effect;
+
+	console.log("effect", effect);
 
 	if (
 		prevGameState.playerStates[playerId].queuedEffects.filter(

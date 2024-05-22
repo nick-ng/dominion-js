@@ -491,6 +491,8 @@ export default class Game {
 			return { success: true };
 		}
 
+		console.log("queuedEffect", queuedEffect);
+
 		return { success: false, reason: "Couldn't perform effect." };
 	}
 

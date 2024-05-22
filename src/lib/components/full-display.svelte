@@ -42,6 +42,20 @@
 	let gamePhaseMessage = "";
 	let blockingEffect: BlockingEffect | null = null;
 
+	const setShowSupply = (newVisibility: boolean): void => {
+		console.log("setShowSupply", newVisibility, transitionDurationMs);
+		if (newVisibility) {
+			showSupply = true;
+			vignetteState = 2;
+		} else {
+			showSupply = false;
+			vignetteState = 1;
+			setTimeout(() => {
+				vignetteState = 0;
+			}, transitionDurationMs);
+		}
+	};
+
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
 	$: transitionDurationStyle = `transition-duration: ${transitionDurationMs}ms;`;
 	$: showStyle = `${transitionDurationStyle}flex-grow: 100; flex-shrink: 0.001;`;
@@ -141,11 +155,6 @@
 		}
 	}
 	$: {
-		if (showSupply === true) {
-			vignetteState = 2;
-		}
-	}
-	$: {
 		blockingEffect = null;
 		if (myPlayerState && myPlayerState.queuedEffects.length > 0) {
 			for (let i = 0; i < myPlayerState.queuedEffects.length; i++) {
@@ -169,7 +178,7 @@
 							break;
 						}
 						case "workshop-1": {
-							showSupply = true;
+							setShowSupply(true);
 
 							blockingEffect = {
 								type: "workshop-1",
@@ -182,7 +191,7 @@
 									{
 										text: "Open Supply",
 										onClick: () => {
-											showSupply = true;
+											setShowSupply(true);
 										},
 									},
 								],
@@ -194,6 +203,9 @@
 				}
 			}
 		}
+	}
+	$: {
+		console.log("showSupply", showSupply);
 	}
 
 	onMount(() => {
@@ -294,7 +306,7 @@
 							? "button-next-action-here"
 							: ""}
 						on:click={() => {
-							showSupply = true;
+							setShowSupply(true);
 						}}>Show Supply</button
 					>
 					<div class="grow" />
@@ -322,7 +334,7 @@
 								activePlayerId === playerId &&
 								$gameStateStore.gameState?.turnPhase === "buy-0"
 							) {
-								showSupply = true;
+								setShowSupply(true);
 							}
 
 							onEndPhase("buy-0");
@@ -354,7 +366,7 @@
 						onEndPhase("buy-0");
 
 						if (myPlayerState && myPlayerState.buys > 0) {
-							showSupply = true;
+							setShowSupply(true);
 						}
 					}}
 					{onPlayEffect}
@@ -366,11 +378,7 @@
 			style={transitionDurationStyle}
 			on:click={(e) => {
 				if (e.target === e.currentTarget) {
-					showSupply = false;
-					vignetteState = 1;
-					setTimeout(() => {
-						vignetteState = 0;
-					}, transitionDurationMs);
+					setShowSupply(false);
 				}
 			}}
 		>
@@ -381,17 +389,27 @@
 				{#if showSupply}
 					<Supply
 						playerState={myPlayerState}
+						{blockingEffect}
 						gameState={$gameStateStore.gameState}
 						onBuy={(cardName, cardCenter) => {
 							boughtCardCenter = cardCenter;
 							onBuy(cardName, cardCenter);
 						}}
+						onCommitChoice={(cardName, cardCenter) => {
+							if (!blockingEffect) {
+								return;
+							}
+							boughtCardCenter = cardCenter;
+							console.log("commit choice", cardName, cardCenter);
+							onPlayEffect({
+								type: blockingEffect.type,
+								playerId,
+								payloadArray: [cardName],
+							});
+							setShowSupply(false);
+						}}
 						onHide={() => {
-							showSupply = false;
-							vignetteState = 1;
-							setTimeout(() => {
-								vignetteState = 0;
-							}, transitionDurationMs);
+							setShowSupply(false);
 						}}
 					/>
 				{/if}
