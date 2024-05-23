@@ -3,10 +3,6 @@
 
 	let isOpen = false;
 	let summaryEl: HTMLElement | null = null;
-
-	$: {
-		console.log("isOpen", isOpen);
-	}
 </script>
 
 <details bind:open={isOpen}>

@@ -27,19 +27,23 @@ export type ActionResult =
 export type Coordinates = { x: number; y: number };
 export type Dimensions = { width: number; height: number };
 
+type BlockingEffectButton = {
+	text: string;
+	className?: string;
+	args?: (string | number)[];
+	onClick?: () => void | Promise<void>;
+	disabled?: boolean;
+};
+
 export type BlockingEffect = {
 	message: string;
+	confirmMessage?: string;
 	type: QueueEffectAction["type"];
 	selectSource: "hand" | "discard" | "supply";
 	selectCount: number;
 	minCost: number;
 	maxCost: number;
-	buttons?: {
-		text: string;
-		args?: (string | number)[];
-		onClick?: () => void | Promise<void>;
-		disabled?: boolean;
-	}[];
+	buttons?: BlockingEffectButton[];
 };
 
 export type ChainResult = {

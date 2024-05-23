@@ -1,5 +1,10 @@
 <script lang="ts">
-	import type { GameState, Coordinates, PlayerState } from "$lib/schemas/types";
+	import type {
+		GameState,
+		Coordinates,
+		PlayerState,
+		BlockingEffect,
+	} from "$lib/schemas/types";
 
 	import {
 		BASE_CARD_LIST,
@@ -17,6 +22,7 @@
 
 	export let gameState: GameState | null = null;
 	export let playerState: PlayerState | null = null;
+	export let blockingEffect: BlockingEffect | null = null;
 	export let onClick: (
 		cardName: string,
 		cardCenter: Coordinates,
@@ -25,13 +31,27 @@
 		cardName: string,
 		cardCenter: Coordinates,
 	) => void | Promise<void> = () => {};
+	export let onCommitChoice: (
+		cardName: string,
+		cardCenter: Coordinates,
+	) => void | Promise<void> = () => {};
 	export let onHide: () => void | Promise<void> = () => {};
 
 	let chosenCardName = "";
 	let chosenCardCenter: Coordinates = { x: -1, y: -1 };
+	let maxCost = Infinity;
 
 	$: activePlayerId = gameState && getActivePlayerId(gameState);
 	$: card = getCardFromId(chosenCardName);
+	$: {
+		if (blockingEffect) {
+			maxCost = blockingEffect.maxCost;
+		} else if (playerState) {
+			maxCost = playerState.coins;
+		} else {
+			maxCost = Infinity;
+		}
+	}
 </script>
 
 {#if gameState}
@@ -54,18 +74,28 @@
 					</div>
 					<button
 						on:click={() => {
-							onBuy(chosenCardName, chosenCardCenter);
+							if (blockingEffect) {
+								onCommitChoice(chosenCardName, chosenCardCenter);
+							} else {
+								onBuy(chosenCardName, chosenCardCenter);
+							}
 							chosenCardName = "";
-						}}>Buy Card</button
+						}}
+						>{blockingEffect?.confirmMessage?.replace(
+							"%card-name%",
+							card.displayNames[0],
+						) || "Buy Card"}</button
 					>
-					<div>
-						<p>
-							Coins after: {playerState.coins - card.cost}
-						</p>
-						{#if playerState.coins - card.cost < 0}
-							<p>(Not enough {coinEmoji})</p>
-						{/if}
-					</div>
+					{#if !blockingEffect}
+						<div>
+							<p>
+								Coins after: {playerState.coins - card.cost}
+							</p>
+							{#if playerState.coins - card.cost < 0}
+								<p>(Not enough {coinEmoji})</p>
+							{/if}
+						</div>
+					{/if}
 				{:else}
 					<div class="text-center">Choose a card</div>
 				{/if}
@@ -73,7 +103,13 @@
 		{/if}
 
 		<div class="relative">
-			<h3 class="text-center">Supply</h3>
+			<h3 class="text-center">
+				{#if blockingEffect}
+					{blockingEffect.message}
+				{:else}
+					Supply
+				{/if}
+			</h3>
 			<button
 				class={`${playerState?.buys === 0 ? "button-nothing-to-do" : "bg-main-bg text-gray-100"} absolute left-0 top-0 transition-all`}
 				on:click={() => {
@@ -92,16 +128,21 @@
 				{#each BASE_CARD_LIST as cardName (cardName)}
 					{#if gameState.supplyList.includes(cardName)}
 						{@const supplyCard = getCardFromId(cardName)}
+						{@const isDisabled =
+							!playerState || (!!supplyCard && supplyCard.cost > maxCost)}
 						<SupplyPile
 							{cardName}
 							count={gameState.supply[cardName]?.length || 0}
 							onClick={(cardNameB, cardCenter) => {
+								if (isDisabled) {
+									return;
+								}
+
 								chosenCardName = cardNameB;
 								chosenCardCenter = cardCenter;
 								onClick(chosenCardName, chosenCardCenter);
 							}}
-							disabled={!playerState ||
-								(!!supplyCard && supplyCard.cost > playerState.coins)}
+							disabled={isDisabled}
 						/>
 					{/if}
 				{/each}
@@ -110,17 +151,22 @@
 				{#each KINGDOM_CARD_LIST as cardName (cardName)}
 					{#if gameState.supplyList.includes(cardName)}
 						{@const supplyCard = getCardFromId(cardName)}
+						{@const isDisabled =
+							!playerState || (!!supplyCard && supplyCard.cost > maxCost)}
 						<SupplyPile
 							{cardName}
 							count={gameState.supply[cardName]?.length || 0}
 							sortByCost
 							onClick={(cardNameB, cardCenter) => {
+								if (isDisabled) {
+									return;
+								}
+
 								chosenCardName = cardNameB;
 								chosenCardCenter = cardCenter;
 								onClick(chosenCardName, chosenCardCenter);
 							}}
-							disabled={!playerState ||
-								(!!supplyCard && supplyCard.cost > playerState.coins)}
+							disabled={isDisabled}
 						/>
 					{/if}
 				{/each}

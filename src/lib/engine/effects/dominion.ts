@@ -134,6 +134,9 @@ export function applyDominionChoiceEffects(
 		case "cellar-1": {
 			return applyCellar1(prevGameState, effect);
 		}
+		case "workshop-1": {
+			return applyWorkshop1(prevGameState, effect);
+		}
 	}
 
 	return {
@@ -231,10 +234,22 @@ export function applyWorkshop1(
 	const chosenCardName = payloadArray.pop();
 
 	if (!chosenCardName) {
+		// @todo(nick-ng): gaining a card is mandatory. but there may not be a card that costs 4 or fewer coins.
+		// return {
+		// 	success: false,
+		// 	nextGameState: prevGameState,
+		// 	reason: "You have to choose a card.",
+		// 	continue: false,
+		// };
+
+		prevGameState.playerStates[playerId].queuedEffects =
+			prevGameState.playerStates[playerId].queuedEffects.filter(
+				(q) => q.type !== "workshop-1",
+			);
+
 		return {
-			success: false,
+			success: true,
 			nextGameState: prevGameState,
-			reason: "You have to choose a card.",
 			continue: false,
 		};
 	}

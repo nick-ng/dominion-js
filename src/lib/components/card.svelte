@@ -288,6 +288,7 @@
 		on:touchend={() => {
 			endHandler(true);
 		}}
+		{disabled}
 	>
 		<CardContents {disabled} {card} />
 	</button>

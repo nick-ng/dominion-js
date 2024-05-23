@@ -16,7 +16,7 @@ Dominion in JavaScript (TypeScript)
 - [ ] "complicated" effects (text descriptions)
    - Handle pending actions
 - [x] Options
-   - [ ] Options menu
+   - [x] Options menu
    - [ ] Control "wiggle"
 - [ ] Websocket Server
 - [ ] Svelte Store for Websockets on front-end
@@ -35,6 +35,40 @@ Dominion in JavaScript (TypeScript)
    - Your turn
 - [ ] Swap Buy Cards and "Play Treasure and Buy Cards" buttons
 
+### Base Game Cards
+
+Recommended starting 10
+
+- [x] Cellar
+- [x] Market
+- [x] Merchant
+- [ ] Militia
+- [ ] Mine
+- [ ] Moat
+- [ ] Remodel
+- [x] Smithy
+- [x] Village
+- [x] Workshop
+
+Other base game cards
+
+- [ ] Artisan
+- [ ] Bandit
+- [ ] Bureaucrat
+- [ ] Chapel
+- [ ] Council Room
+- [ ] Festival
+- [ ] Gardens
+- [ ] Harbinger
+- [ ] Laboratory
+- [ ] Library
+- [ ] Moneylender
+- [ ] Poacher
+- [ ] Sentry
+- [ ] Throne Room
+- [ ] Vassal
+- [ ] Witch
+
 ### ToDo Comments
 
 File | ToDo
@@ -43,11 +77,13 @@ File | ToDo
 `src\lib\stores\game-state.ts` | (@nick-ng): should websocket stuff be in a .svelte file instead?
 `src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?
 `src\lib\engine\effects\dominion.ts` | (@nick-ng): use this return signature more
+`src\lib\engine\effects\dominion.ts` | (@nick-ng): gaining a card is mandatory. but there may not be a card that costs 4 or fewer coins.
 `src\lib\components\symbols\victory-point.svelte` | (@nick-ng): draw your own victory point symbol? 
 `src\lib\components\symbols\coin.svelte` | (@nick-ng): draw your own coin symbol? 
 `src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
 `src\lib\components\play-area.svelte` | (@nick-ng): put "set-aside" cards here 
 `src\lib\components\play-area.svelte` | (@nick-ng): indicate cards you can't play 
+`src\lib\components\play-area.svelte` | (@nick-ng): overrideBlocker not used? 
 `src\lib\components\full-display.svelte` | (@nick-ng): move button highlight class stuff here
 `src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 

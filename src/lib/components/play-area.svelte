@@ -271,6 +271,7 @@
 			{/if}
 		</div>
 	</div>
+	<!-- @todo(nick-ng): overrideBlocker not used? -->
 	{#if !opponent && overrideBlocker}
 		<div
 			class="border-subtle absolute left-0 right-0 top-10 z-50 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
@@ -314,7 +315,7 @@
 					(blockingEffect.selectCount === 1 && !selectedCard)}
 				{#each blockingEffect.buttons as blockingButton}
 					<button
-						class="button-default"
+						class={blockingButton.className || "button-default"}
 						disabled={blockingButton.onClick
 							? blockingButton.disabled
 							: canSubmit}
