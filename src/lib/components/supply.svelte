@@ -52,11 +52,6 @@
 			maxCost = Infinity;
 		}
 	}
-	$: {
-		console.log("gameState", gameState);
-		console.log("playerState", playerState);
-		console.log("activePlayerId", activePlayerId);
-	}
 </script>
 
 {#if gameState}
@@ -85,16 +80,22 @@
 								onBuy(chosenCardName, chosenCardCenter);
 							}
 							chosenCardName = "";
-						}}>Buy Card</button
+						}}
+						>{blockingEffect?.confirmMessage?.replace(
+							"%card-name%",
+							card.displayNames[0],
+						) || "Buy Card"}</button
 					>
-					<div>
-						<p>
-							Coins after: {playerState.coins - card.cost}
-						</p>
-						{#if playerState.coins - card.cost < 0}
-							<p>(Not enough {coinEmoji})</p>
-						{/if}
-					</div>
+					{#if !blockingEffect}
+						<div>
+							<p>
+								Coins after: {playerState.coins - card.cost}
+							</p>
+							{#if playerState.coins - card.cost < 0}
+								<p>(Not enough {coinEmoji})</p>
+							{/if}
+						</div>
+					{/if}
 				{:else}
 					<div class="text-center">Choose a card</div>
 				{/if}
@@ -127,16 +128,21 @@
 				{#each BASE_CARD_LIST as cardName (cardName)}
 					{#if gameState.supplyList.includes(cardName)}
 						{@const supplyCard = getCardFromId(cardName)}
+						{@const isDisabled =
+							!playerState || (!!supplyCard && supplyCard.cost > maxCost)}
 						<SupplyPile
 							{cardName}
 							count={gameState.supply[cardName]?.length || 0}
 							onClick={(cardNameB, cardCenter) => {
+								if (isDisabled) {
+									return;
+								}
+
 								chosenCardName = cardNameB;
 								chosenCardCenter = cardCenter;
 								onClick(chosenCardName, chosenCardCenter);
 							}}
-							disabled={!playerState ||
-								(!!supplyCard && supplyCard.cost > maxCost)}
+							disabled={isDisabled}
 						/>
 					{/if}
 				{/each}
@@ -145,17 +151,22 @@
 				{#each KINGDOM_CARD_LIST as cardName (cardName)}
 					{#if gameState.supplyList.includes(cardName)}
 						{@const supplyCard = getCardFromId(cardName)}
+						{@const isDisabled =
+							!playerState || (!!supplyCard && supplyCard.cost > maxCost)}
 						<SupplyPile
 							{cardName}
 							count={gameState.supply[cardName]?.length || 0}
 							sortByCost
 							onClick={(cardNameB, cardCenter) => {
+								if (isDisabled) {
+									return;
+								}
+
 								chosenCardName = cardNameB;
 								chosenCardCenter = cardCenter;
 								onClick(chosenCardName, chosenCardCenter);
 							}}
-							disabled={!playerState ||
-								(!!supplyCard && supplyCard.cost > maxCost)}
+							disabled={isDisabled}
 						/>
 					{/if}
 				{/each}

@@ -218,8 +218,6 @@ export function applyWorkshop1(
 ): ChainResult {
 	const { playerId, payloadArray } = effect;
 
-	console.log("effect", effect);
-
 	if (
 		prevGameState.playerStates[playerId].queuedEffects.filter(
 			(q) => q.type === "workshop-1",
@@ -236,10 +234,22 @@ export function applyWorkshop1(
 	const chosenCardName = payloadArray.pop();
 
 	if (!chosenCardName) {
+		// @todo(nick-ng): gaining a card is mandatory. but there may not be a card that costs 4 or fewer coins.
+		// return {
+		// 	success: false,
+		// 	nextGameState: prevGameState,
+		// 	reason: "You have to choose a card.",
+		// 	continue: false,
+		// };
+
+		prevGameState.playerStates[playerId].queuedEffects =
+			prevGameState.playerStates[playerId].queuedEffects.filter(
+				(q) => q.type !== "workshop-1",
+			);
+
 		return {
-			success: false,
+			success: true,
 			nextGameState: prevGameState,
-			reason: "You have to choose a card.",
 			continue: false,
 		};
 	}

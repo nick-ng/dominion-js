@@ -31,11 +31,16 @@
 		queueEffectAction: QueueEffectAction,
 	) => void | Promise<void> = () => {};
 
+	const vignetteClasses = {
+		none: "no-vignette -left-full right-full-2 pointer-events-none",
+		faded: "no-vignette left-0 right-0 pointer-events-none",
+		visible: "vignette left-0 right-0",
+	};
+
 	let boughtCardCenter: Coordinates = { x: -1, y: -1 };
 	let showMyBoard = true;
 	let showSupply = false;
-	let vignetteState = 0; // 0: not there, 1: faded out, 2: visible
-	let vignetteClass = "";
+	let vignetteClass = vignetteClasses.none;
 	let endActionsHint = false;
 	let buyCardsHint = false;
 	let endTurnHint = false;
@@ -43,17 +48,29 @@
 	let blockingEffect: BlockingEffect | null = null;
 
 	const setShowSupply = (newVisibility: boolean): void => {
-		console.log("setShowSupply", newVisibility, transitionDurationMs);
 		if (newVisibility) {
 			showSupply = true;
-			vignetteState = 2;
+			vignetteClass = vignetteClasses.visible;
 		} else {
 			showSupply = false;
-			vignetteState = 1;
+			vignetteClass = vignetteClasses.faded;
 			setTimeout(() => {
-				vignetteState = 0;
+				vignetteClass = vignetteClasses.none;
 			}, transitionDurationMs);
 		}
+	};
+	const getShowSupplyClass = (
+		gamePhaseName: string,
+		blockingEffectName: string | undefined,
+	): string => {
+		if (
+			gamePhaseName === "buy-1" ||
+			(blockingEffectName && ["workshop-1"].includes(blockingEffectName))
+		) {
+			return "button-next-action-here";
+		}
+
+		return "";
 	};
 
 	$: transitionDurationMs = $optionsStore.animationSpeed > 10 ? 0 : 100;
@@ -81,29 +98,6 @@
 			: "button-something-to-do";
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
-	$: {
-		switch (vignetteState) {
-			case 0: {
-				// not there
-				vignetteClass =
-					"no-vignette -left-full right-full-2 pointer-events-none";
-				break;
-			}
-			case 1: {
-				// faded out
-				vignetteClass = "no-vignette left-0 right-0 pointer-events-none";
-				break;
-			}
-			case 2: {
-				// visible
-				vignetteClass = "vignette left-0 right-0";
-				break;
-			}
-			default: {
-				vignetteClass = "";
-			}
-		}
-	}
 	$: {
 		if (activePlayerId !== playerId) {
 			endActionsHint = false;
@@ -183,6 +177,7 @@
 							blockingEffect = {
 								type: "workshop-1",
 								message: tempEffect.message || "",
+								confirmMessage: "Gain %card-name%",
 								selectCount: 0,
 								selectSource: "supply",
 								minCost: -Infinity,
@@ -190,8 +185,21 @@
 								buttons: [
 									{
 										text: "Open Supply",
+										className: "button-next-action-here",
 										onClick: () => {
 											setShowSupply(true);
+										},
+									},
+									{
+										text: "Skip",
+										className: "button-lots-to-do",
+										onClick: () => {
+											onPlayEffect({
+												type: "workshop-1",
+												playerId,
+												payloadArray: [],
+											});
+											setShowSupply(false);
 										},
 									},
 								],
@@ -203,9 +211,6 @@
 				}
 			}
 		}
-	}
-	$: {
-		console.log("showSupply", showSupply);
 	}
 
 	onMount(() => {
@@ -302,9 +307,10 @@
 			>
 				<div class="relative mb-2 flex flex-row items-stretch gap-2">
 					<button
-						class={$gameStateStore.gameState.turnPhase === "buy-1"
-							? "button-next-action-here"
-							: ""}
+						class={getShowSupplyClass(
+							$gameStateStore.gameState.turnPhase,
+							blockingEffect?.type,
+						)}
 						on:click={() => {
 							setShowSupply(true);
 						}}>Show Supply</button
@@ -373,6 +379,7 @@
 				/>
 			</div>
 		{/if}
+		<!-- Vignette Button -->
 		<button
 			class={`${vignetteClass} transition-some absolute bottom-0 top-0 z-50 m-0 h-full w-full border-none p-0`}
 			style={transitionDurationStyle}
@@ -399,8 +406,9 @@
 							if (!blockingEffect) {
 								return;
 							}
+
 							boughtCardCenter = cardCenter;
-							console.log("commit choice", cardName, cardCenter);
+
 							onPlayEffect({
 								type: blockingEffect.type,
 								playerId,

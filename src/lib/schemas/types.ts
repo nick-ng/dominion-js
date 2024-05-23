@@ -29,6 +29,7 @@ export type Dimensions = { width: number; height: number };
 
 type BlockingEffectButton = {
 	text: string;
+	className?: string;
 	args?: (string | number)[];
 	onClick?: () => void | Promise<void>;
 	disabled?: boolean;
