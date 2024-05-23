@@ -52,22 +52,22 @@ Recommended starting 10
 
 Other base game cards
 
-- Artisan
-- Bandit
-- Bureaucrat
-- Chapel
-- Council Room
-- Festival
-- Gardens
-- Harbinger
-- Laboratory
-- Library
-- Moneylender
-- Poacher
-- Sentry
-- Throne Room
-- Vassal
-- Witch
+- [ ] Artisan
+- [ ] Bandit
+- [ ] Bureaucrat
+- [ ] Chapel
+- [ ] Council Room
+- [ ] Festival
+- [ ] Gardens
+- [ ] Harbinger
+- [ ] Laboratory
+- [ ] Library
+- [ ] Moneylender
+- [ ] Poacher
+- [ ] Sentry
+- [ ] Throne Room
+- [ ] Vassal
+- [ ] Witch
 
 ### ToDo Comments
 
