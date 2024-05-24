@@ -6,6 +6,7 @@
 		getTestActionsState,
 		getTestCellarState,
 		getTestWorkshopState,
+		getTestBrowserCrashState,
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
@@ -20,6 +21,7 @@
 		["Cellar Test"]: getTestCellarState,
 		["Many Actions"]: getTestActionsState,
 		["Many In-Play"]: getTestInPlayState,
+		["Browser Crash: Play Smithy to crash"]: getTestBrowserCrashState,
 	};
 	const name = "Player 1";
 	const playerId = "aaaaaa";

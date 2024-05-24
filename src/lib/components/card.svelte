@@ -9,8 +9,6 @@
 
 	const WIGGLE_PX = Math.floor(Math.random() * 5) - 2;
 
-	let dragBorderXPx = 0;
-	let dragBorderYPx = 0;
 	let className = "";
 	export { className as class };
 	export let upsideDown = false;
@@ -110,6 +108,7 @@
 	let cardButtonEl: HTMLElement;
 	let buttonStyle2 = "";
 	let skipTransition = false;
+	let cardCoords: Dimensions = { height: 0, width: 0 };
 
 	$: card = getCardFromId(cardId);
 	$: buttonStyle = [
@@ -138,13 +137,29 @@
 		}
 	}
 
+	function getDragBorderPx() {
+		if ($optionsStore.dragCardFromCenter) {
+			return {
+				x: cardCoords.width / 2 - 1,
+				y: cardCoords.height / 2 - 1,
+			};
+		}
+
+		return {
+			x: 0,
+			y: 0,
+		};
+	}
+
 	function startHandler(e: TouchEvent | MouseEvent) {
 		const { x, y, clientX, clientY } = getCursorXY(e);
 		const rect = cardButtonEl.getBoundingClientRect();
 
+		const dragBorderPx = getDragBorderPx();
+
 		startX = x;
-		const l0 = rect.left + dragBorderXPx;
-		const r0 = rect.right - dragBorderXPx;
+		const l0 = rect.left + dragBorderPx.x;
+		const r0 = rect.right - dragBorderPx.x;
 		if (l0 > clientX) {
 			startX = x + (l0 - clientX);
 		} else if (r0 < clientX) {
@@ -152,8 +167,8 @@
 		}
 
 		startY = y;
-		const t0 = rect.top + dragBorderYPx;
-		const b0 = rect.bottom - dragBorderYPx;
+		const t0 = rect.top + dragBorderPx.y;
+		const b0 = rect.bottom - dragBorderPx.y;
 		if (t0 > clientY) {
 			startY = y + (t0 - clientY);
 		} else if (b0 < clientY) {
@@ -213,13 +228,7 @@
 	}
 
 	onMount(() => {
-		const cardCoords = getCardCenter();
-
-		// @todo(nick-ng): if you change dragCardFromCenter, existing cards won't change where they get dragged
-		if ($optionsStore.dragCardFromCenter) {
-			dragBorderXPx = cardCoords.width / 2 - 1;
-			dragBorderYPx = cardCoords.height / 2 - 1;
-		}
+		cardCoords = getCardCenter();
 
 		if (
 			$optionsStore.animationSpeed < 11 &&
@@ -253,7 +262,8 @@
 			}, animationSpeedMs + 2);
 		}
 
-		const bounceStopper = (e: TouchEvent) => {
+		// stop iOS tablets from "bouncing" when dragging cards around
+		const scrollBounceStopper = (e: TouchEvent) => {
 			if (isMouseDown) {
 				if (draggable) {
 					e.preventDefault();
@@ -262,12 +272,12 @@
 			}
 		};
 
-		cardButtonEl.addEventListener("touchmove", bounceStopper, {
+		cardButtonEl.addEventListener("touchmove", scrollBounceStopper, {
 			passive: false,
 		});
 
 		return () => {
-			cardButtonEl.removeEventListener("touchmove", bounceStopper);
+			cardButtonEl.removeEventListener("touchmove", scrollBounceStopper);
 		};
 	});
 
