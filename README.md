@@ -87,5 +87,4 @@ File | ToDo
 `src\lib\components\full-display.svelte` | (@nick-ng): move button highlight class stuff here
 `src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
-`src\lib\components\card.svelte` | (@nick-ng): if you change dragCardFromCenter, existing cards won't change where they get dragged
 `src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
