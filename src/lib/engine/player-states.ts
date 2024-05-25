@@ -108,9 +108,54 @@ export function getTestWorkshopState(playerId: string): PlayerState {
 		actions: 1,
 		coins: 0,
 		buys: 1,
-		deck: ["village:0t0"],
-		hand: ["workshop:0t0", ...estates, coppers.pop()!],
-		discardPile: [...coppers],
+		deck: [],
+		hand: [
+			"workshop:0t0",
+			coppers.pop()!,
+			coppers.pop()!,
+			coppers.pop()!,
+			coppers.pop()!,
+		],
+		discardPile: [...coppers, ...estates],
+		inPlay: [],
+		queuedEffects: [],
+	};
+
+	return {
+		...tempState,
+		ownedCards: [
+			...tempState.deck,
+			...tempState.discardPile,
+			...tempState.hand,
+			...tempState.inPlay,
+		].sort((a, b) => a.localeCompare(b)),
+	};
+}
+
+export function getTestRemodelState(playerId: string): PlayerState {
+	const coppers = [];
+	for (let i = 0; i < 7; i++) {
+		coppers.push(`copper:${i}t0`);
+	}
+	const estates = [];
+	for (let i = 0; i < 3; i++) {
+		estates.push(`estate:${i}t0`);
+	}
+
+	const tempState: Omit<PlayerState, "ownedCards"> = {
+		playerId,
+		actions: 1,
+		coins: 0,
+		buys: 1,
+		deck: [],
+		hand: [
+			"remodel:0t0",
+			coppers.pop()!,
+			coppers.pop()!,
+			coppers.pop()!,
+			coppers.pop()!,
+		],
+		discardPile: [...coppers, ...estates],
 		inPlay: [],
 		queuedEffects: [],
 	};
