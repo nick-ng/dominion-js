@@ -6,6 +6,7 @@
 		getTestActionsState,
 		getTestCellarState,
 		getTestWorkshopState,
+		getTestRemodelState,
 		getTestBrowserCrashState,
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
@@ -16,6 +17,7 @@
 	const testCases: {
 		[key: string]: ((playerId: string) => PlayerState) | undefined;
 	} = {
+		["Remodel Test"]: getTestRemodelState,
 		["Workshop Test"]: getTestWorkshopState,
 		["Merchant Test"]: getTestMerchantState,
 		["Cellar Test"]: getTestCellarState,
