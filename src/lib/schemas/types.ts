@@ -51,4 +51,5 @@ export type ChainResult = {
 	nextGameState: GameState;
 	reason?: string; // can be shown to the user
 	continue: boolean;
+	log?: string;
 };

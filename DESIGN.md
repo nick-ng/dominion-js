@@ -1,6 +1,8 @@
 # Dominion JS Design
 
-## Colours
+## Style
+
+### Colours
 
 - Phase advancement button colours
   - No other actions: There is only one action you can perform from this game state. If there is an "auto-end phase" option, this action will be performed
@@ -24,19 +26,24 @@
     - Tailwind: `blue-300`
     - `#93c5fd`
 
-## Ideas
-
-- Re-skin Dominion with cloud service provider theme?
-
-## Images
+### Images
 
 - Normal images: 300x200 pixels
   - Draw them at 1280x720 pixels?
 - "Full" images: 300x450 pixels
 
-## Base Game
+## Programming
 
-### Recommended Starting Set
+- Try not to copy objects in code that will run on the back-end
+  - Mutate objects/arrays if possible, especially in code that runs on the back-end
+
+## Ideas
+
+- Re-skin Dominion with cloud service provider theme?
+
+### Base Game
+
+#### Recommended Starting Set
 
 | Original | Cloud    | Notes |
 | :------- | :------- | :---- |

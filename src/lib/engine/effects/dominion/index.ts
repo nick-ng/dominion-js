@@ -9,11 +9,13 @@ import { coinEmoji } from "$lib/emojis";
 import { getCardFromId } from "$lib/engine/card-list";
 
 import { applyGainEffect, applyPlusEffect } from "../standard";
+import { applyRemodel0, applyRemodel1 } from "./remodel";
 
 export const dominionCardEffectFunctions = [
 	applyMerchant0,
 	applyCellar0,
 	applyWorkshop0,
+	applyRemodel0,
 ];
 
 function applyMerchant0(
@@ -127,6 +129,7 @@ export function applyMerchant1(
 }
 
 // @todo(nick-ng): use this return signature more
+// @todo(nick-ng): these can be combined with dominionCardEffectFunctions
 export function applyDominionChoiceEffects(
 	prevGameState: GameState,
 	effect: QueueEffectAction,
@@ -137,6 +140,9 @@ export function applyDominionChoiceEffects(
 		}
 		case "workshop-1": {
 			return applyWorkshop1(prevGameState, effect);
+		}
+		case "remodel-1": {
+			return applyRemodel1(prevGameState, effect);
 		}
 	}
 
@@ -235,7 +241,7 @@ export function applyWorkshop1(
 	const chosenCardName = payloadArray.pop();
 
 	if (!chosenCardName) {
-		// @todo(nick-ng): gaining a card is mandatory. but there may not be a card that costs 4 or fewer coins.
+		// @todo(nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
 		// return {
 		// 	success: false,
 		// 	nextGameState: prevGameState,
