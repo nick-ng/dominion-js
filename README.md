@@ -13,8 +13,13 @@ Dominion in JavaScript (TypeScript)
    - [x] Put your hand under your in-play cards
    - [ ] Choose which card you want to be the top of your discard pile
    - [ ] Animate clean-up
+- [ ] Show cards that have been trashed
+- [ ] Clicking on cards in hand while in "select a card" mode should select the card
+   - Currently you can only click the card selection buttons
 - [ ] "complicated" effects (text descriptions)
    - Handle pending actions
+- [ ] Handle "2-part" like Remodel and Mine in a single action
+   - Front-end handles each part in turn then constructs a single action to send
 - [x] Options
    - [x] Options menu
    - [ ] Control "wiggle"
@@ -75,7 +80,9 @@ File | ToDo
 :- | :-
 `src\lib\stores\game-state.ts` | (@nick-ng): connect to websocket here
 `src\lib\stores\game-state.ts` | (@nick-ng): should websocket stuff be in a .svelte file instead?
+`src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?
 `src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): trashing a card is mandatory but there may not be any cards in your hand.
+`src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): use this return signature more
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): these can be combined with dominionCardEffectFunctions
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
@@ -89,4 +96,3 @@ File | ToDo
 `src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
 `src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
 `src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
-`src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?

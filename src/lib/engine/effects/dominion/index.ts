@@ -9,7 +9,7 @@ import { coinEmoji } from "$lib/emojis";
 import { getCardFromId } from "$lib/engine/card-list";
 
 import { applyGainEffect, applyPlusEffect } from "../standard";
-import { applyRemodel0, applyRemodel1 } from "./remodel";
+import { applyRemodel0, applyRemodel1, applyRemodel2 } from "./remodel";
 
 export const dominionCardEffectFunctions = [
 	applyMerchant0,
@@ -143,6 +143,9 @@ export function applyDominionChoiceEffects(
 		}
 		case "remodel-1": {
 			return applyRemodel1(prevGameState, effect);
+		}
+		case "remodel-2": {
+			return applyRemodel2(prevGameState, effect);
 		}
 	}
 

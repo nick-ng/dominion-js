@@ -10,7 +10,8 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	copper: {
 		types: ["treasure"],
 		name: "copper",
-		displayNames: ["Copper", "Coppers"],
+		// displayNames: [singular, plural, with indefinite article]
+		displayNames: ["Copper", "Coppers", "a Copper"],
 		effects: [{ type: "coin", value: 1 }],
 		imageUrl: "copper.png",
 		fullImage: true,
@@ -19,7 +20,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	silver: {
 		types: ["treasure"],
 		name: "silver",
-		displayNames: ["Silver", "Silvers"],
+		displayNames: ["Silver", "Silvers", "a Silver"],
 		effects: [{ type: "coin", value: 2 }],
 		imageUrl: "silver.png",
 		fullImage: true,
@@ -28,7 +29,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	gold: {
 		types: ["treasure"],
 		name: "gold",
-		displayNames: ["Gold", "Golds"],
+		displayNames: ["Gold", "Golds", "a Gold"],
 		effects: [{ type: "coin", value: 3 }],
 		imageUrl: "gold.png",
 		fullImage: true,
@@ -37,7 +38,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	estate: {
 		types: ["victory"],
 		name: "estate",
-		displayNames: ["Estate", "Estates"],
+		displayNames: ["Estate", "Estates", "an Estate"],
 		effects: [],
 		imageUrl: "estate.png",
 		fullImage: true,
@@ -47,7 +48,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	duchy: {
 		types: ["victory"],
 		name: "duchy",
-		displayNames: ["Duchy", "Duchies"],
+		displayNames: ["Duchy", "Duchies", "a Duchy"],
 		effects: [],
 		imageUrl: "duchy.png",
 		fullImage: true,
@@ -57,7 +58,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	province: {
 		types: ["victory"],
 		name: "province",
-		displayNames: ["Province", "Provinces"],
+		displayNames: ["Province", "Provinces", "a Province"],
 		effects: [],
 		imageUrl: "province.png",
 		fullImage: true,
@@ -67,7 +68,7 @@ export const BASE_CARDS: { [key: string]: Card } = {
 	curse: {
 		types: ["curse"],
 		name: "curse",
-		displayNames: ["Curse", "Curses"],
+		displayNames: ["Curse", "Curses", "a Curse"],
 		effects: [],
 		imageUrl: "curse.png",
 		fullImage: true,
@@ -80,7 +81,7 @@ export const SPECIAL_CARDS: { [key: string]: Card } = {
 	unknown: {
 		types: ["unknown"],
 		name: "unknown",
-		displayNames: ["Unknown", "Unknowns"],
+		displayNames: ["Unknown", "Unknowns", "an Unknown"],
 		effects: [
 			{
 				type: "unknown-0",
@@ -95,7 +96,7 @@ export const SPECIAL_CARDS: { [key: string]: Card } = {
 	back: {
 		types: ["back"],
 		name: "back",
-		displayNames: ["", ""],
+		displayNames: ["", "", ""],
 		effects: [],
 		imageUrl: "favicon.png",
 		fullImage: true,
@@ -105,7 +106,7 @@ export const SPECIAL_CARDS: { [key: string]: Card } = {
 	cellary: {
 		types: ["action"],
 		name: "cellary",
-		displayNames: ["Cellary", "Cellaries"],
+		displayNames: ["Cellary", "Cellaries", "a Cellary"],
 		imageUrl: "cellar.png",
 		effects: [
 			{ type: "action", value: 1 },

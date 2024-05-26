@@ -63,9 +63,13 @@
 		gamePhaseName: string,
 		blockingEffectName: string | undefined,
 	): string => {
+		if (gamePhaseName === "buy-1") {
+			return "button-next-action-here";
+		}
+
 		if (
-			gamePhaseName === "buy-1" ||
-			(blockingEffectName && ["workshop-1"].includes(blockingEffectName))
+			blockingEffectName &&
+			["workshop-1", "remodel-2"].includes(blockingEffectName)
 		) {
 			return "button-next-action-here";
 		}
@@ -206,6 +210,57 @@
 							};
 							break;
 						}
+						case "remodel-1": {
+							blockingEffect = {
+								type: "remodel-1",
+								message: tempEffect.message || "",
+								selectCount: 1,
+								selectSource: "hand",
+								minCost: -Infinity,
+								maxCost: Infinity,
+								buttons: [
+									{
+										text: "Trash",
+									},
+								],
+							};
+							break;
+						}
+						case "remodel-2": {
+							setShowSupply(true);
+
+							blockingEffect = {
+								type: "remodel-2",
+								message: tempEffect.message || "",
+								confirmMessage: "Gain %card-name%",
+								selectCount: 0,
+								selectSource: "supply",
+								minCost: -Infinity,
+								maxCost: tempEffect.params?.maxCost || 0,
+								buttons: [
+									{
+										text: "Open Supply",
+										className: "button-next-action-here",
+										onClick: () => {
+											setShowSupply(true);
+										},
+									},
+									{
+										text: "Skip",
+										className: "button-lots-to-do",
+										onClick: () => {
+											onPlayEffect({
+												type: "remodel-2",
+												playerId,
+												payloadArray: [],
+											});
+											setShowSupply(false);
+										},
+									},
+								],
+							};
+							break;
+						}
 					}
 					break;
 				}
@@ -316,23 +371,16 @@
 						}}>Show Supply</button
 					>
 					<div class="grow" />
-					<h2 class="pointer-events-none self-center">You</h2>
-					<div class="grow" />
-
-					<div class="relative">
-						<div
-							class="absolute bottom-0 right-full-2 top-0 my-auto flex flex-row items-center whitespace-nowrap text-xl"
-						>
-							{gamePhaseMessage}
-						</div>
-						<button
-							class={`${endActionsHint ? actionCardClass : ""} h-full`}
-							on:click={() => {
-								onEndPhase("action");
-							}}
-							disabled={!endActionsHint}>End Actions</button
-						>
+					<div class="pointer-events-none self-center text-xl">
+						{gamePhaseMessage}
 					</div>
+					<button
+						class={endActionsHint ? actionCardClass : ""}
+						on:click={() => {
+							onEndPhase("action");
+						}}
+						disabled={!endActionsHint}>End Actions</button
+					>
 					<button
 						class={buyCardsHint ? treasureCardClass : ""}
 						on:click={() => {

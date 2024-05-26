@@ -108,7 +108,12 @@
 	let cardButtonEl: HTMLElement;
 	let buttonStyle2 = "";
 	let skipTransition = false;
-	let cardCoords: Dimensions = { height: 0, width: 0 };
+	let cardCoords: Coordinates & Dimensions = {
+		x: 0,
+		y: 0,
+		height: 0,
+		width: 0,
+	};
 
 	$: card = getCardFromId(cardId);
 	$: buttonStyle = [
