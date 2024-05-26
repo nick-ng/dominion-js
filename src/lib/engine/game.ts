@@ -163,7 +163,7 @@ export default class Game {
 		this.playerStates = result.nextGameState.playerStates;
 
 		for (let i = 0; i < cardEffectFunctions.length; i++) {
-			const result = dominionCardEffectFunctions[i](
+			const result = cardEffectFunctions[i](
 				this.getGameState(),
 				effect,
 				playerId,

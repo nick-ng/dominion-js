@@ -1,14 +1,36 @@
 import z from "zod";
 
-const queuedEffectTypes = z.enum(["cellar-1", "merchant-1", "workshop-1"]);
+const queuedEffectTypes = z.enum([
+	"cellar-1",
+	"merchant-1",
+	"workshop-1",
+	"remodel-1",
+	"remodel-2",
+]);
 
-export const queuedEffectSchema = z.object({
+export const baseQueuedEffectSchema = z.object({
 	type: queuedEffectTypes,
 	blocksPlayer: z.boolean().optional(),
 	blocksEveryone: z.boolean().optional(),
 	expiryTurn: z.number().optional(),
+	params: z.record(z.string(), z.any()).optional(),
 	message: z.string().optional(),
 });
+
+const queuedRemodel2Schema = z.intersection(
+	baseQueuedEffectSchema,
+	z.object({
+		type: z.literal("remodel-2"),
+		blocksPlayer: z.literal(true),
+		params: z.object({ maxCost: z.number() }),
+		message: z.string(),
+	}),
+);
+
+export const queuedEffectSchema = z.union([
+	baseQueuedEffectSchema,
+	queuedRemodel2Schema,
+]);
 
 export const cellarEffect1ActionSchema = z.object({
 	type: queuedEffectTypes,
