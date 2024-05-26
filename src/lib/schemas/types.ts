@@ -6,6 +6,7 @@ import {
 	cardSchema,
 	gameStateSchema,
 	effectSchema,
+	queuedEffectSchema,
 	queueEffectActionSchema,
 } from "./game";
 
@@ -15,6 +16,7 @@ export type Card = z.infer<typeof cardSchema>;
 
 export type GameState = z.infer<typeof gameStateSchema>;
 export type Player = z.infer<typeof playerSchema>;
+export type QueuedEffect = z.infer<typeof queuedEffectSchema>;
 export type QueueEffectAction = z.infer<typeof queueEffectActionSchema>;
 
 export type ActionResult =

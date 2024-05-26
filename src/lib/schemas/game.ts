@@ -8,7 +8,7 @@ const queuedEffectTypes = z.enum([
 	"remodel-2",
 ]);
 
-export const baseQueuedEffectSchema = z.object({
+export const queuedEffectSchema = z.object({
 	type: queuedEffectTypes,
 	blocksPlayer: z.boolean().optional(),
 	blocksEveryone: z.boolean().optional(),
@@ -16,21 +16,6 @@ export const baseQueuedEffectSchema = z.object({
 	params: z.record(z.string(), z.any()).optional(),
 	message: z.string().optional(),
 });
-
-const queuedRemodel2Schema = z.intersection(
-	baseQueuedEffectSchema,
-	z.object({
-		type: z.literal("remodel-2"),
-		blocksPlayer: z.literal(true),
-		params: z.object({ maxCost: z.number() }),
-		message: z.string(),
-	}),
-);
-
-export const queuedEffectSchema = z.union([
-	baseQueuedEffectSchema,
-	queuedRemodel2Schema,
-]);
 
 export const cellarEffect1ActionSchema = z.object({
 	type: queuedEffectTypes,
@@ -46,9 +31,11 @@ export const cellarEffect1ActionSchema = z.object({
  * Cellar: cardIds of cards in hand to discard
  * Mine: cardId of treasure in hand to trash and cardName of treasure to gain
  */
-export const queueEffectActionSchema = z.discriminatedUnion("type", [
-	cellarEffect1ActionSchema,
-]);
+export const queueEffectActionSchema = z.object({
+	type: queuedEffectSchema.shape.type,
+	playerId: z.string(),
+	payloadArray: z.string().array(),
+});
 
 export const playerStateSchema = z.object({
 	playerId: z.string(),

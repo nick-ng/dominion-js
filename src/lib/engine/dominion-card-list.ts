@@ -6,7 +6,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	cellar: {
 		types: ["action"],
 		name: "cellar",
-		displayNames: ["Cellar", "Cellars"],
+		displayNames: ["Cellar", "Cellars", "a Cellar"],
 		imageUrl: "cellar.png",
 		effects: [
 			{ type: "action", value: 1 },
@@ -20,7 +20,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	moat: {
 		types: ["action", "reaction"],
 		name: "moat",
-		displayNames: ["Moat", "Moats"],
+		displayNames: ["Moat", "Moats", "a Moat"],
 		imageUrl: "favicon.png",
 		effects: [
 			{ type: "action", value: 1 },
@@ -36,7 +36,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	village: {
 		types: ["action"],
 		name: "village",
-		displayNames: ["Village", "Villages"],
+		displayNames: ["Village", "Villages", "a Village"],
 		imageUrl: "favicon.png",
 		effects: [
 			{ type: "card", value: 1 },
@@ -47,7 +47,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	merchant: {
 		types: ["action"],
 		name: "merchant",
-		displayNames: ["Merchant", "Merchants"],
+		displayNames: ["Merchant", "Merchants", "a Merchant"],
 		imageUrl: "favicon.png",
 		effects: [
 			{ type: "card", value: 1 },
@@ -62,7 +62,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	workshop: {
 		types: ["action"],
 		name: "workshop",
-		displayNames: ["Workshop", "Workshops"],
+		displayNames: ["Workshop", "Workshops", "a Workshop"],
 		imageUrl: "favicon.png",
 		effects: [
 			{
@@ -75,7 +75,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	smithy: {
 		types: ["action"],
 		name: "smithy",
-		displayNames: ["Smithy", "Smithies"],
+		displayNames: ["Smithy", "Smithies", "a Smithy"],
 		imageUrl: "favicon.png",
 		effects: [{ type: "card", value: 3 }],
 		cost: 4,
@@ -83,7 +83,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	remodel: {
 		types: ["action"],
 		name: "remodel",
-		displayNames: ["Remodel", "Remodels"],
+		displayNames: ["Remodel", "Remodels", "a Remodel"],
 		imageUrl: "favicon.png",
 		effects: [
 			{
@@ -96,7 +96,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	militia: {
 		types: ["action", "attack"],
 		name: "militia",
-		displayNames: ["Militia", "Militias"],
+		displayNames: ["Militia", "Militias", "a Militia"],
 		imageUrl: "favicon.png",
 		effects: [
 			{ type: "coin", value: 2 },
@@ -110,7 +110,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	market: {
 		types: ["action"],
 		name: "market",
-		displayNames: ["Market", "Markets"],
+		displayNames: ["Market", "Markets", "a Market"],
 		imageUrl: "favicon.png",
 		effects: [
 			{ type: "card", value: 1 },
@@ -123,7 +123,7 @@ export const DOMINION_CARDS: { [key: string]: Card } = {
 	mine: {
 		types: ["action"],
 		name: "mine",
-		displayNames: ["Mine", "Mines"],
+		displayNames: ["Mine", "Mines", "a Mine"],
 		imageUrl: "favicon.png",
 		effects: [
 			{

@@ -94,6 +94,12 @@
 					>
 				</tbody>
 			</table>
+			<hr />
+			<div class="px-3 py-1">
+				<a href="https://github.com/nick-ng/dominion-js" target="_blank"
+					>GitHub</a
+				>
+			</div>
 		</div>
 	</div>
 </details>

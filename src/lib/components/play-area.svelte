@@ -293,7 +293,7 @@
 	{/if}
 	{#if !opponent && blockingEffect?.message}
 		<div
-			class="border-subtle absolute left-0 right-0 top-10 z-30 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
+			class="border-default absolute left-0 right-0 top-10 z-30 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
 		>
 			{blockingEffect?.message}
 			<div class="grow" />
@@ -315,7 +315,7 @@
 					(blockingEffect.selectCount === 1 && !selectedCard)}
 				{#each blockingEffect.buttons as blockingButton}
 					<button
-						class={blockingButton.className || "button-default"}
+						class={`${blockingButton.className || "button-default"} py-2`}
 						disabled={blockingButton.onClick
 							? blockingButton.disabled
 							: canSubmit}

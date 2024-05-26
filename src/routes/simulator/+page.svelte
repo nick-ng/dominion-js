@@ -34,6 +34,8 @@
 	let reason = "";
 	let game = new Game(getPlayer());
 	let chosenTestCase = "";
+	let gameJson = "";
+	let visibleGameStateJson = "";
 
 	$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
 
@@ -58,6 +60,12 @@
 		game.start();
 
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+		gameJson = JSON.stringify(game, null, "  ");
+		visibleGameStateJson = JSON.stringify(
+			game.getGameStateForPlayer(playerId),
+			null,
+			"  ",
+		);
 	});
 </script>
 
@@ -68,24 +76,48 @@
 		success = result.success;
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+		gameJson = JSON.stringify(game, null, "  ");
+		visibleGameStateJson = JSON.stringify(
+			game.getGameStateForPlayer(playerId),
+			null,
+			"  ",
+		);
 	}}
 	onPlayCard={(cardId) => {
 		const result = game.playCard(playerId, cardId);
 		success = result.success;
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+		gameJson = JSON.stringify(game, null, "  ");
+		visibleGameStateJson = JSON.stringify(
+			game.getGameStateForPlayer(playerId),
+			null,
+			"  ",
+		);
 	}}
 	onEndPhase={(phaseName) => {
 		const result = game.endPhase(playerId, phaseName);
 		success = result.success;
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+		gameJson = JSON.stringify(game, null, "  ");
+		visibleGameStateJson = JSON.stringify(
+			game.getGameStateForPlayer(playerId),
+			null,
+			"  ",
+		);
 	}}
 	onPlayEffect={(effect) => {
 		const result = game.doQueuedEffect(effect);
 		success = result.success;
 		reason = result.reason || "";
 		$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+		gameJson = JSON.stringify(game, null, "  ");
+		visibleGameStateJson = JSON.stringify(
+			game.getGameStateForPlayer(playerId),
+			null,
+			"  ",
+		);
 	}}
 >
 	<div class="flex flex-row items-start">
@@ -112,6 +144,12 @@
 				game.start();
 
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+				gameJson = JSON.stringify(game, null, "  ");
+				visibleGameStateJson = JSON.stringify(
+					game.getGameStateForPlayer(playerId),
+					null,
+					"  ",
+				);
 			}}>Default</button
 		>
 		<button
@@ -142,6 +180,12 @@
 				game.start();
 
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+				gameJson = JSON.stringify(game, null, "  ");
+				visibleGameStateJson = JSON.stringify(
+					game.getGameStateForPlayer(playerId),
+					null,
+					"  ",
+				);
 			}}>2 Players</button
 		>
 		<select
@@ -159,6 +203,12 @@
 				}
 
 				$gameStateStore.gameState = game.getGameStateForPlayer(playerId);
+				gameJson = JSON.stringify(game, null, "  ");
+				visibleGameStateJson = JSON.stringify(
+					game.getGameStateForPlayer(playerId),
+					null,
+					"  ",
+				);
 
 				chosenTestCase = "";
 			}}
@@ -180,15 +230,11 @@
 >
 	<details class="w-max">
 		<summary>Debug: Full Game</summary>
-		<pre class="w-max">{JSON.stringify(game, null, "  ")}</pre>
+		<pre class="w-max">{gameJson}</pre>
 	</details>
 	<details>
 		<summary>Debug: Visible Game</summary>
-		<pre class="w-max">{JSON.stringify(
-				game.getGameStateForPlayer(playerId),
-				null,
-				"  ",
-			)}</pre>
+		<pre class="w-max">{visibleGameStateJson}</pre>
 	</details>
 	<details>
 		<summary>Debug: Player State</summary>
