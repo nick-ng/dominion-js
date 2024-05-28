@@ -50,7 +50,7 @@ Recommended starting 10
 - [ ] Militia
 - [ ] Mine
 - [ ] Moat
-- [ ] Remodel
+- [x] Remodel
 - [x] Smithy
 - [x] Village
 - [x] Workshop
