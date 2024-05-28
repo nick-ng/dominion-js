@@ -41,11 +41,12 @@
 	let showMyBoard = true;
 	let showSupply = false;
 	let vignetteClass = vignetteClasses.none;
-	let endActionsHint = false;
 	let buyCardsHint = false;
 	let endTurnHint = false;
 	let gamePhaseMessage = "";
 	let blockingEffect: BlockingEffect | null = null;
+
+	let actionCardClass = "";
 
 	const setShowSupply = (newVisibility: boolean): void => {
 		if (newVisibility) {
@@ -61,9 +62,10 @@
 	};
 	const getShowSupplyClass = (
 		gamePhaseName: string,
+		buys: number,
 		blockingEffectName: string | undefined,
 	): string => {
-		if (gamePhaseName === "buy-1") {
+		if (gamePhaseName === "buy-1" && buys > 0) {
 			return "button-next-action-here";
 		}
 
@@ -103,14 +105,14 @@
 	$: activePlayerId = getActivePlayerId($gameStateStore.gameState);
 	$: activePlayer = $gameStateStore.gameState?.players[activePlayerId];
 	$: {
+		// reset classes
+		actionCardClass = "";
 		if (activePlayerId !== playerId) {
-			endActionsHint = false;
 			buyCardsHint = false;
 			endTurnHint = false;
 
 			gamePhaseMessage = `${activePlayer?.name}'s turn`;
 		} else if (blockingEffect) {
-			endActionsHint = false;
 			buyCardsHint = false;
 			endTurnHint = false;
 
@@ -119,7 +121,10 @@
 			// @todo(nick-ng): move button highlight class stuff here
 			switch ($gameStateStore.gameState?.turnPhase) {
 				case "action": {
-					endActionsHint = true;
+					actionCardClass =
+						actionCardCount === 0 || myPlayerState?.actions === 0
+							? "button-nothing-to-do"
+							: "button-something-to-do";
 					buyCardsHint = false;
 					endTurnHint = false;
 
@@ -127,7 +132,6 @@
 					break;
 				}
 				case "buy-0": {
-					endActionsHint = false;
 					buyCardsHint = true;
 					endTurnHint = false;
 
@@ -135,7 +139,6 @@
 					break;
 				}
 				case "buy-1": {
-					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = true;
 
@@ -143,7 +146,6 @@
 					break;
 				}
 				default: {
-					endActionsHint = false;
 					buyCardsHint = false;
 					endTurnHint = false;
 
@@ -364,6 +366,7 @@
 					<button
 						class={getShowSupplyClass(
 							$gameStateStore.gameState.turnPhase,
+							$gameStateStore.gameState.playerStates[playerId].buys,
 							blockingEffect?.type,
 						)}
 						on:click={() => {
@@ -375,11 +378,12 @@
 						{gamePhaseMessage}
 					</div>
 					<button
-						class={endActionsHint ? actionCardClass : ""}
+						class={actionCardClass}
 						on:click={() => {
 							onEndPhase("action");
 						}}
-						disabled={!endActionsHint}>End Actions</button
+						disabled={$gameStateStore.gameState?.turnPhase !== "action"}
+						>End Actions</button
 					>
 					<button
 						class={buyCardsHint ? treasureCardClass : ""}

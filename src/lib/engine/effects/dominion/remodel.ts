@@ -213,7 +213,7 @@ export function applyRemodel2(
 		};
 	}
 
-	// apply a?ction
+	// apply action
 	const result = applyGainEffect(prevGameState, playerId, chosenCardName);
 
 	if (!result.success) {
