@@ -49,6 +49,38 @@ export function applyRemodel1(
 		};
 	}
 
+	if (payloadArray.length === 1) {
+		return applyRemodel1b(prevGameState, effect);
+	}
+
+	// @todo(nick-ng): handle trashing and gaining card for remodel in one action
+	return {
+		success: false,
+		nextGameState: prevGameState,
+		reason: "cannot handle multiple parameter remodel1 effect",
+		continue: true,
+	};
+}
+
+export function applyRemodel1b(
+	prevGameState: GameState,
+	effect: QueueEffectAction,
+): ChainResult {
+	const { playerId, payloadArray } = effect;
+
+	// validate action
+	const effectIndex = prevGameState.playerStates[
+		playerId
+	].queuedEffects.findIndex((qe) => qe.type === "remodel-1");
+	if (effectIndex < 0) {
+		return {
+			success: false,
+			nextGameState: prevGameState,
+			reason: "effect not queued",
+			continue: true,
+		};
+	}
+
 	const chosenCardId = payloadArray.pop();
 
 	if (!chosenCardId) {
