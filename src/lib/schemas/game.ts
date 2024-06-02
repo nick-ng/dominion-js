@@ -6,6 +6,8 @@ const queuedEffectTypes = z.enum([
 	"workshop-1",
 	"remodel-1",
 	"remodel-2",
+	"mine-1",
+	"mine-2",
 ]);
 
 export const queuedEffectSchema = z.object({
