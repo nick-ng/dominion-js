@@ -78,21 +78,21 @@ Other base game cards
 
 File | ToDo
 :- | :-
-`src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?
-`src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
 `src\lib\stores\game-state.ts` | (@nick-ng): connect to websocket here
 `src\lib\stores\game-state.ts` | (@nick-ng): should websocket stuff be in a .svelte file instead?
+`src\lib\engine\game.ts` | (@nick-ng): extra step to let players choose which card goes on top of their discard pile?
+`src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): trashing a card is mandatory but there may not be any cards in your hand.
+`src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): use this return signature more
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): these can be combined with dominionCardEffectFunctions
 `src\lib\engine\effects\dominion\index.ts` | (@nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
-`src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): trashing a card is mandatory but there may not be any cards in your hand.
-`src\lib\engine\effects\dominion\remodel.ts` | (@nick-ng): gaining a card is mandatory but there may not be a card that costs 4 or fewer coins.
-`src\lib\components\full-display.svelte` | (@nick-ng): move button highlight class stuff here
-`src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
-`src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
+`src\lib\components\symbols\victory-point.svelte` | (@nick-ng): draw your own victory point symbol? 
+`src\lib\components\symbols\coin.svelte` | (@nick-ng): draw your own coin symbol? 
 `src\lib\components\play-area.svelte` | (@nick-ng): make an array of centers then make discard cards for each one
 `src\lib\components\play-area.svelte` | (@nick-ng): put "set-aside" cards here 
 `src\lib\components\play-area.svelte` | (@nick-ng): indicate cards you can't play 
 `src\lib\components\play-area.svelte` | (@nick-ng): overrideBlocker not used? 
-`src\lib\components\symbols\victory-point.svelte` | (@nick-ng): draw your own victory point symbol? 
-`src\lib\components\symbols\coin.svelte` | (@nick-ng): draw your own coin symbol? 
+`src\lib\components\full-display.svelte` | (@nick-ng): move button highlight class stuff here
+`src\lib\components\full-display.svelte` | (@nick-ng): active player indicator
+`src\lib\components\full-display.svelte` | (@nick-ng): show various opponent info like deck size, hand size, active player, etc. 
+`src\lib\components\card.svelte` | (@nick-ng): add tooltip to cards for extra rules
