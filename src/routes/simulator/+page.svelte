@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import { gameStateStore } from "$lib/stores/game-state";
 	import {
 		getTestMerchantState,
@@ -11,7 +12,6 @@
 	} from "$lib/engine/player-states";
 	import FullDisplay from "$lib/components/full-display.svelte";
 	import Game from "$lib/engine/game";
-	import { onMount } from "svelte";
 	import type { PlayerState } from "$lib/schemas/types";
 
 	const testCases: {
