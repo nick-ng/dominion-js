@@ -102,31 +102,6 @@
 		@apply border border-gray-600;
 	}
 
-	.markdown td,
-	.markdown th {
-		@apply border-default px-2;
-	}
-
-	.markdown tbody tr {
-		@apply odd-rows;
-	}
-
-	.markdown hr {
-		@apply my-1;
-	}
-
-	.markdown ul {
-		@apply list-disc;
-	}
-
-	.markdown ol {
-		@apply list-decimal;
-	}
-
-	.markdown li {
-		@apply ml-4;
-	}
-
 	.vignette {
 		background-color: #00000088;
 	}
