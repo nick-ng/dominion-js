@@ -1,0 +1,1 @@
+import{w as r}from"./index.CucIgzGC.js";const o="PUX_JURISDICTION_OPTIONS";let e={animationSpeed:5,opponentAllUpsideDown:!1,dragCardFromCenter:!1,showFullScreenButton:!0,invertScrollDirection:!1};try{const t=localStorage.getItem(o);t&&(e={...e,...JSON.parse(t)})}catch{}const s=r(e);s.subscribe(t=>{localStorage.setItem(o,JSON.stringify(t))});export{s as o};
