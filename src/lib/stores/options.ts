@@ -29,8 +29,8 @@ if (browser) {
 				...JSON.parse(storedOptionsString),
 			};
 		}
-	} catch (_e) {
-		// noop
+	} catch (e) {
+		console.error("could not load options", e);
 	}
 }
 

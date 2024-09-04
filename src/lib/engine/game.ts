@@ -100,7 +100,7 @@ export default class Game {
 		// playerStates: Record<string, PlayerState> = {};
 		// supply: Record<string, string[]> = {};
 		// trash: string[] = [];
-		this.turnOrder;
+		this.turnOrder = [];
 		this.turn = 0;
 		this.turnAdjustment = 0;
 		this.turnPhase = "lobby";
