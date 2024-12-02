@@ -373,7 +373,7 @@
 							setShowSupply(true);
 						}}>Show Supply</button
 					>
-					<div class="grow" />
+					<div class="grow"></div>
 					<div class="pointer-events-none self-center text-xl">
 						{gamePhaseMessage}
 					</div>

@@ -222,7 +222,7 @@
 		{#if !success}
 			<div>{reason}</div>
 		{/if}
-		<div class="grow" />
+		<div class="grow"></div>
 	</div>
 </FullDisplay>
 <div

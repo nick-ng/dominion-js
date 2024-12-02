@@ -22,7 +22,7 @@
 		<a class="button-default inline-block px-2 no-underline" href="card-list"
 			>Card List</a
 		>
-		<div class="flex-grow" />
+		<div class="flex-grow"></div>
 		{#if $optionsStore.showFullScreenButton && document.fullscreenEnabled}
 			<button
 				class="can-hover:hidden"

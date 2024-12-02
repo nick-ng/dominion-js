@@ -277,7 +277,7 @@
 			class="border-subtle absolute left-0 right-0 top-10 z-50 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
 		>
 			{overrideBlocker?.message}
-			<div class="grow" />
+			<div class="grow"></div>
 			{#if overrideBlocker?.buttons}
 				{#each overrideBlocker.buttons as overrideButton}
 					<button
@@ -296,7 +296,7 @@
 			class="border-default absolute left-0 right-0 top-10 z-30 mx-auto flex max-w-prose flex-row items-center gap-2 bg-main-bg p-2"
 		>
 			{blockingEffect?.message}
-			<div class="grow" />
+			<div class="grow"></div>
 			{#if blockingEffect.selectCount > 1 && blockingEffect.selectCount > selectedCards.length}
 				{@const remainingSelect =
 					blockingEffect.selectCount - selectedCards.length}

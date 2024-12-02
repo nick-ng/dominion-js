@@ -19,9 +19,9 @@
 >
 	<h4 class="mb-1 leading-none">{card.displayNames[0]}</h4>
 	{#if isFullImage || !card.imageUrl}
-		<div class="flex-grow" />
+		<div class="flex-grow"></div>
 	{:else}
-		<div class="mx-1 mb-0 flex-shrink basis-16 border" style={imageStyle} />
+		<div class="mx-1 mb-0 flex-shrink basis-16 border" style={imageStyle}></div>
 	{/if}
 	{#each card.effects as effect}
 		{#if effect.type === "card"}
@@ -53,7 +53,7 @@
 		<div>{victoryPointEmoji}{card.victoryPoints}</div>
 	{/if}
 	{#if !isFullImage && card.imageUrl}
-		<div class="flex-grow" />
+		<div class="flex-grow"></div>
 	{/if}
 	{#if card.name !== "back"}
 		<div
