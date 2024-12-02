@@ -12,9 +12,11 @@
 <table class={className}>
 	{#if horizontal}
 		<thead>
-			<th class="border px-2 py-0.5 text-center">Actions</th>
-			<th class="border px-2 py-0.5 text-center">Buys</th>
-			<th class="border px-2 py-0.5 text-center">{coinEmoji}</th>
+			<tr>
+				<th class="border px-2 py-0.5 text-center">Actions</th>
+				<th class="border px-2 py-0.5 text-center">Buys</th>
+				<th class="border px-2 py-0.5 text-center">{coinEmoji}</th>
+			</tr>
 		</thead>
 	{/if}
 	<tbody>

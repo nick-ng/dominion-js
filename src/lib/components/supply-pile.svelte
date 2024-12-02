@@ -4,16 +4,25 @@
 	import { ALL_CARDS } from "$lib/engine/card-list";
 	import Card from "./card.svelte";
 
-	export let cardName: string;
-	export let count: number;
-	export let sortByCost = false;
-	export let disabled = false;
-	export let onClick: (
-		cardName: string,
-		cardCenter: Coordinates,
-	) => void | Promise<void> = () => {};
+	// @todo(nick-ng): check that this still works
+	let {
+		cardName,
+		count,
+		sortByCost = false,
+		disabled = false,
+		onClick = () => {},
+	} = $props<{
+		cardName: string;
+		count: number;
+		sortByCost?: boolean;
+		disabled?: boolean;
+		onClick?: (
+			cardName: string,
+			cardCenter: Coordinates,
+		) => void | Promise<void>;
+	}>();
 
-	$: card = ALL_CARDS[cardName];
+	const card = $derived(ALL_CARDS[cardName]);
 </script>
 
 {#if card}
@@ -33,7 +42,7 @@
 		{:else}
 			<div
 				class="border-subtle font flex h-card w-card items-center justify-center rounded-xl border-2 border-dashed"
-			/>
+			></div>
 		{/if}
 	</div>
 {/if}

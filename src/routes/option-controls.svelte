@@ -12,12 +12,13 @@
 	{#if isOpen}
 		<button
 			class="vignette absolute bottom-0 left-0 right-0 top-0 z-10 border-none"
+			aria-label="close-vignette"
 			on:click={() => {
 				if (summaryEl) {
 					summaryEl.click();
 				}
 			}}
-		/>
+		></button>
 	{/if}
 	<div class="relative">
 		<div
