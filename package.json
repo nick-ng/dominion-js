@@ -18,26 +18,26 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.8",
-		"@sveltejs/kit": "^2.19.0",
+		"@sveltejs/kit": "^2.21.1",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
-		"@typescript-eslint/eslint-plugin": "^8.26.0",
+		"@typescript-eslint/eslint-plugin": "^8.32.1",
 		"autoprefixer": "^10.4.21",
-		"esbuild": "^0.25.1",
-		"eslint": "^9.22.0",
-		"eslint-config-prettier": "^10.1.1",
+		"esbuild": "^0.25.4",
+		"eslint": "^9.27.0",
+		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-svelte": "^2.46.1",
 		"postcss": "^8.5.3",
 		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.3.3",
+		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.6.11",
-		"svelte": "^5.22.6",
-		"svelte-check": "^4.1.5",
+		"svelte": "^5.30.2",
+		"svelte-check": "^4.2.1",
 		"tailwindcss": "^3.4.17",
 		"tslib": "^2.8.1",
-		"typescript": "^5.8.2",
+		"typescript": "^5.8.3",
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
-		"zod": "^3.24.2"
+		"zod": "^3.24.4"
 	}
 }
