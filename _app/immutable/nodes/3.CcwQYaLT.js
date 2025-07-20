@@ -1,0 +1,1 @@
+import"../chunks/CWj6FrbW.js";import"../chunks/iV1n4tMy.js";import{a as i,f as d,r as m,g as e,d as n}from"../chunks/CExAVGEf.js";import{e as p,i as v,A as c,C as f}from"../chunks/CctZp9Tj.js";var _=d("<div></div>");function A(r){var a=_();p(a,5,()=>Object.values(c),v,(s,o)=>{const t=n(()=>`${e(o).name}:0`);f(s,{get cardId(){return e(t)}})}),m(a),i(r,a)}export{A as component};
