@@ -1,0 +1,1 @@
+import"../chunks/CWj6FrbW.js";import"../chunks/CcW2EM-M.js";import{a as r,f as t}from"../chunks/PBm0O4Vo.js";const n="https://jurisdiction-server.pux.one";var p=t("<div><h1>Jurisdiction</h1> <p>Dominion</p></div>");function m(o){console.debug("PUBLIC_API_HOST",n);var i=p();r(o,i)}export{m as component};
