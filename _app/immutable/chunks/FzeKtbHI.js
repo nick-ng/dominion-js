@@ -1,0 +1,1 @@
+import{m as o,n as t,l as u,o as a,u as c}from"./f0Mku_kX.js";function f(e){o===null&&t(),u&&o.l!==null?l(o).m.push(e):a(()=>{const n=c(e);if(typeof n=="function")return n})}function l(e){var n=e.l;return n.u??(n.u={a:[],b:[],m:[]})}export{f as o};
